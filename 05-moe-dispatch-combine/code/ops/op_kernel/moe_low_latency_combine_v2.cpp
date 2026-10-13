@@ -1,11 +1,9 @@
 #include "kernel_operator.h"
 #include "moe_distribute_combine_v2_tiling.h"
 #include "moe_distribute_combine_v2.h"
-#include "moe_distribute_combine_v2_a5.h"
 
 using namespace AscendC;
 using namespace MoeDistributeCombineV2Impl;
-using namespace MoeDistributeCombineV2A5Impl;
 
 namespace {
 template <TemplateMC2TypeClass>
@@ -34,8 +32,8 @@ __aicore__ inline void ExecMoeDistributeCombineV2(GM_ADDR expandX, GM_ADDR exper
  * 第3位（百位）：是否做tp域allgather:
  *     0: 不做, 1: 做
  * 第4位（千位）：无实际意义:
- * 第5位（万位）: A2/A3/A5
- *     20000: A2, 30000: A3, 50000: A5
+ * 第5位（万位）: A2/A3
+ *     20000: A2, 30000: A3
  */
 
 extern "C" __global__ __aicore__ void moe_low_latency_combine_v2(
@@ -66,13 +64,6 @@ extern "C" __global__ __aicore__ void moe_low_latency_combine_v2(
         ExecMoeDistributeCombineV2<DTYPE_EXPAND_X, DTYPE_X, int32_t, false, true>(
             expandX, expertIds, assistInfoForCombine, epSendCount, tpSendCount, scales, xActiveMask, sharedExpertX,
             elasticInfo, oriX, constExpertAlpha1, constExpertAlpha2, constExpertV, XOut, workspaceGM, tilingGM, &pipe);
-    } else if (TILING_KEY_IS(50000)) {  // A5 tp=1 IsInt8Quant=0
-        GET_TILING_DATA_WITH_STRUCT(MoeDistributeCombineV2TilingData, tilingData, tilingGM);
-        MoeDistributeCombineV2A5<DTYPE_EXPAND_X, DTYPE_X, int32_t, false, false> op;
-        op.Init(expandX, expertIds, assistInfoForCombine, epSendCount, tpSendCount, scales, xActiveMask, sharedExpertX,
-                elasticInfo, oriX, constExpertAlpha1, constExpertAlpha2, constExpertV, XOut, workspaceGM, &pipe,
-                &tilingData);
-        op.Process();
     }
 #endif
 }

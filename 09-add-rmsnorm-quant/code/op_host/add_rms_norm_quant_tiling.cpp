@@ -13,7 +13,7 @@
  * \brief
  */
 #include <iostream>
-#include "op_host/tiling_util.h"
+#include "../common/inc/op_host/tiling_util.h"
 #include "add_rms_norm_quant_tiling.h"
 
 namespace optiling {

@@ -16,7 +16,6 @@
 #include "error_util.h"
 #include "op_host/tiling_util.h"
 #include <chrono>
-#include "../swi_glu_grad/op_host/swi_glu_grad_tiling_regbase.h"
 #include "register/op_impl_registry.h"
 
 namespace optiling {
@@ -520,6 +519,5 @@ ge::graphStatus Tiling4SwiGlu(gert::TilingContext* context) {
 struct SwiGluCompileInfo {};
 
 IMPL_OP_OPTILING(SwiGlu).Tiling(Tiling4SwiGlu<SWIGLU_SINGLE>).TilingParse<SwiGluCompileInfo>(TilingPrepare4SwiGlu);
-IMPL_OP_OPTILING(SwiGluGrad).Tiling(Tiling4SwiGlu<SWIGLU_GRAD_SINGLE>).TilingParse<SwiGluCompileInfo>(TilingPrepare4SwiGlu);
 
 }  // namespace optiling

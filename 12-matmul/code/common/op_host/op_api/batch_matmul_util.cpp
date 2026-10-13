@@ -15,11 +15,11 @@
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/reshape.h"
 #include "op_api/op_api_def.h"
-#include "common/op_host/op_api/matmul.h"
-#include "common/op_host/op_api/batch_matmul.h"
+#include "matmul.h"
+#include "batch_matmul.h"
 #include "level0/fill.h"
 #include "level0/mul.h"
-#include "common/op_host/op_api/matmul_v2tov3.h"
+#include "matmul_v2tov3.h"
 #include "aclnn_kernels/transdata.h"
 #include "cube_util.h"
 #include "matmul_util.h"
@@ -34,8 +34,8 @@
 #include "opdev/shape_utils.h"
 #include "opdev/tensor_view_utils.h"
 #include "opdev/make_op_executor.h"
-#include "common/op_host/math_util.h"
-#include "common/op_host/op_api/fusedmatmul.h"
+#include "../math_util.h"
+#include "fusedmatmul.h"
 
 using Ops::Base::CeilDiv;
 using Ops::Base::CeilAlign;

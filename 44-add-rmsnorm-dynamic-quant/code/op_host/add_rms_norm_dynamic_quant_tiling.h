@@ -13,7 +13,7 @@
 #ifndef OPS_BUILT_IN_OP_TILING_RUNTIME_ADD_RMS_NORM_DYN_QUANT_TILING_H
 #define OPS_BUILT_IN_OP_TILING_RUNTIME_ADD_RMS_NORM_DYN_QUANT_TILING_H
 #include "register/tilingdata_base.h"
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "register/op_impl_registry.h"
 #include "util/math_util.h"
 #include "tiling/platform/platform_ascendc.h"

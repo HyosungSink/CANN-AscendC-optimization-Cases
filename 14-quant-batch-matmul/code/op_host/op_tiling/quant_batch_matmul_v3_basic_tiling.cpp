@@ -19,13 +19,13 @@
 #include <numeric>
 #include <set>
 #include <tuple>
-#include "common/op_host/op_tiling/hash.h"
+#include "../../common/op_host/op_tiling/hash.h"
 #include "graph/utils/type_utils.h"
 #include "log/log.h"
 #include "quant_batch_matmul_v3_tiling_cache.h"
 #include "register/op_impl_registry.h"
 #include "op_host/tiling_templates_registry.h"
-#include "common/op_host/op_tiling/tiling_type.h"
+#include "../../common/op_host/op_tiling/tiling_type.h"
 #include "error_util.h"
 #include "../../op_kernel/quant_batch_matmul_v3_tiling_key.h"
 

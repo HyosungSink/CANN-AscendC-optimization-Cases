@@ -16,7 +16,7 @@
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/reshape.h"
 #include "aclnn_kernels/transpose.h"
-#include "../../convolution_forward/op_host/op_api/convolution.h"
+#include "../../common/op_api/convolution.h"
 #include "opdev/common_types.h"
 #include "opdev/data_type_utils.h"
 #include "opdev/format_utils.h"

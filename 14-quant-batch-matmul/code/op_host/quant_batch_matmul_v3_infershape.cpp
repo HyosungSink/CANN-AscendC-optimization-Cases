@@ -12,7 +12,7 @@
  * \file quant_batch_matmul_v3_infershape.cpp
  * \brief
  */
-#include "common/op_host/matmul_common_infershape.h"
+#include "../common/op_host/matmul_common_infershape.h"
 #include "runtime/infer_datatype_context.h"
 
 namespace {

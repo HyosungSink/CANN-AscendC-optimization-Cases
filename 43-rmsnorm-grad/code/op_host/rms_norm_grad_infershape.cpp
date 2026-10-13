@@ -13,7 +13,7 @@
  * \brief
  */
 
-#include "op_common/log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "register/op_impl_registry.h"
 
 using namespace ge;

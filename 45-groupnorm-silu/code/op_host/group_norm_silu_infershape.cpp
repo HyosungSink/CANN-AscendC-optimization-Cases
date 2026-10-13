@@ -12,7 +12,7 @@
  * \file group_norm_silu_infershape.cpp
  * \brief
  */
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "register/op_impl_registry.h"
 #include "util/shape_util.h"
 #include "platform/platform_infos_def.h"

@@ -16,9 +16,9 @@
 #ifndef MOE_DISTRIBUTE_COMBINE_V2_QUANT_H
 #define MOE_DISTRIBUTE_COMBINE_V2_QUANT_H
 
-#if __has_include("../moe_distribute_dispatch_v2/check_winsize.h")
-#include "../moe_distribute_dispatch_v2/moe_distribute_v2_constant.h"
-#include "../moe_distribute_dispatch_v2/moe_distribute_v2_base.h"
+#if __has_include("../../moe_distribute_dispatch_v2/op_kernel/check_winsize.h")
+#include "../../moe_distribute_dispatch_v2/op_kernel/moe_distribute_v2_constant.h"
+#include "../../moe_distribute_dispatch_v2/op_kernel/moe_distribute_v2_base.h"
 #else
 #include "../../moe_distribute_dispatch_v2/op_kernel/moe_distribute_v2_constant.h"
 #include "../../moe_distribute_dispatch_v2/op_kernel/moe_distribute_v2_base.h"

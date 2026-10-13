@@ -15,7 +15,7 @@
 #ifndef MATMUL_COMMON_MATH_UTIL_H_
 #define MATMUL_COMMON_MATH_UTIL_H_
 
-#include "util/math_util.h"
+#include "math_util.h"
 
 namespace Ops {
 namespace Transformer {

@@ -15,7 +15,7 @@
 #ifndef WEIGHT_QUANT_BATCH_MATMUL_V2_WHITE_LIST_H
 #define WEIGHT_QUANT_BATCH_MATMUL_V2_WHITE_LIST_H
 
-#include "common/op_host/math_util.h"
+#include "../../common/op_host/math_util.h"
 #include "op_cache_def_tiling.h"
 
 namespace optiling {

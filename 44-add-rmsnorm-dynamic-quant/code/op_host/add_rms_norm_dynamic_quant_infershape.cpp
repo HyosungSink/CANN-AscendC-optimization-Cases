@@ -12,7 +12,7 @@
  * \file add_rms_norm_dynamic_quant_infershape.cpp
  * \brief
  */
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "util/shape_util.h"
 #include "register/op_impl_registry.h"
 

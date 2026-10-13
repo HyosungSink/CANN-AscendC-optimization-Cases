@@ -20,7 +20,7 @@
 #include <graph/utils/type_utils.h>
 #include "tiling/platform/platform_ascendc.h"
 #include "platform/soc_spec.h"
-#include "log/log.h"
+#include "../../stub/op_api/level0/log.h"
 
 #ifdef ASCENDC_OP_TEST
 #define ASCENDC_EXTERN_C extern "C"

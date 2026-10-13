@@ -18,8 +18,8 @@
 
 #include "kernel_operator.h"
 #include "lib/matmul_intf.h"
-#include "pse.h"
-#include "dropmask.h"
+#include "../../common/include/kernel/pse.h"
+#include "../../common/include/kernel/dropmask.h"
 
 constexpr uint32_t DROPOUT4BIT_LEN = 16;
 

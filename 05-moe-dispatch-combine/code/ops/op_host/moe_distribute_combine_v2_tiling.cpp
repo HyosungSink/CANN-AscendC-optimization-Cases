@@ -20,7 +20,6 @@
 #include "../op_kernel/moe_distribute_combine_v2_tiling.h"
 #include "tiling_args.h"
 #include "platform/platform_infos_def.h"
-#include "moe_distribute_combine_v2_ccu_tiling.h"
 
 using namespace AscendC;
 using namespace ge;
@@ -66,8 +65,6 @@ constexpr uint32_t ATTR_CONST_EXPERT_NUM_INDEX = 17;
 // tiling key
 constexpr uint32_t INT8_COMM_QUANT = 2U;
 constexpr uint64_t INIT_TILINGKEY = 10000;
-constexpr uint64_t TILING_KEY_CCU_TYPE = 60000;
-constexpr uint64_t TILING_KEY_A5_TYPE = 50000;
 constexpr uint64_t TILING_KEY_A3_TYPE = 30000;
 constexpr uint64_t TILING_KEY_A2_TYPE = 20000;
 constexpr uint64_t TILINGKEY_TP_WORLD_SIZE = 100;
@@ -1095,24 +1092,7 @@ static void SetHCommCfg(const gert::TilingContext *context, MoeDistributeCombine
     mc2CcTilingConfig.GetTiling(tiling->mc2CcTiling2);
 }
 
-static void CcuSetCommTiling(const gert::TilingContext *context, MoeDistributeCombineV2TilingData &tilingData,
-                             const std::string groupEp, const std::string groupTp)
-{
-    const char *nodeName = context->GetNodeName();
-    OP_LOGD(nodeName, "MoeDistributeCombineV2 groupEp = %s, groupTp = %s", groupEp.c_str(), groupTp.c_str());
-    // Only HalfAllToAllV is set, as A5 does not support TP communication.
-    // Setting op types other than HalfAllToAllV will result in an error.
-    uint32_t opType = static_cast<uint32_t>(mc2tiling::AicpuComType::HCCL_CMD_HALFALLTOALLV);
-    std::string algConfigStr = "AlltoAll=level0:fullmesh;level1:pairwise";
 
-    AscendC::Mc2CcTilingConfig mc2CcTilingConfig(groupEp, opType, algConfigStr);
-    mc2CcTilingConfig.SetCommEngine(mc2tiling::A5_CCU_ENGINE);
-    mc2CcTilingConfig.GetTiling(tilingData.mc2InitTiling);
-    mc2CcTilingConfig.GetTiling(tilingData.mc2CcTiling1);
-
-    mc2CcTilingConfig.SetGroupName(groupTp);
-    mc2CcTilingConfig.GetTiling(tilingData.mc2CcTiling2);
-}
 
 static ge::graphStatus MoeDistributeCombineA3TilingFuncImpl(gert::TilingContext *context)
 {
@@ -1124,7 +1104,6 @@ static ge::graphStatus MoeDistributeCombineA3TilingFuncImpl(gert::TilingContext 
     OP_TILING_CHECK(attrs == nullptr, OP_LOGE(nodeName, "attrs is nullptr."), return ge::GRAPH_FAILED);
     auto commAlgPtr = attrs->GetAttrPointer<char>(static_cast<int>(ATTR_COMM_ALG_INDEX));
     OP_TILING_CHECK(commAlgPtr == nullptr, OP_LOGE(nodeName, "commAlgPtr is nullptr."), return ge::GRAPH_FAILED);
-    bool ccuFlag = strcmp(commAlgPtr, "ccu") == 0;
     OP_LOGD(nodeName, "commAlgPtr %s", commAlgPtr);
     std::string groupEp = "";
     std::string groupTp = "";
@@ -1140,9 +1119,7 @@ static ge::graphStatus MoeDistributeCombineA3TilingFuncImpl(gert::TilingContext 
         OP_LOGE(nodeName, "Getting attr failed."), return ge::GRAPH_FAILED);
     uint64_t tpWorldSize = static_cast<uint64_t>(tilingData->moeDistributeCombineV2Info.tpWorldSize);
     uint32_t blockDim = 1U;
-    if (ccuFlag) {
-        return MoeDistributeCombineTilingImpl(context);
-    }
+
     uint64_t tilingKey = TILING_KEY_A3_TYPE;
     fe::PlatFormInfos *platformInfoPtr = context->GetPlatformInfo();
     fe::PlatFormInfos &platformInfo = *platformInfoPtr;

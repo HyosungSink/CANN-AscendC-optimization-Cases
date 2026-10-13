@@ -18,7 +18,7 @@
 
 #include "kernel_operator.h"
 #include "kernel_tiling/kernel_tiling.h"
-#include "util.h"
+#include "../../../../common/include/kernel/util.h"
 
 using AscendC::CopyRepeatParams;
 using AscendC::DataCopyExtParams;

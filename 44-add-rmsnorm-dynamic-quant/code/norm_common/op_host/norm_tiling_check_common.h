@@ -15,7 +15,7 @@
 #define NORM_COMMON_NORM_TILING_CHECK_COMMON_H_
 
 #include "register/tilingdata_base.h"
-#include "log/log.h"
+#include "../../common/stub/op_api/level0/log.h"
 #include "register/op_impl_registry.h"
 #include "util/math_util.h"
 #include "tiling/platform/platform_ascendc.h"

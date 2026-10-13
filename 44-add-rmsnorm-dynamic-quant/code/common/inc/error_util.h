@@ -15,7 +15,7 @@
 #ifndef COMMON_INC_ERROR_UTIL_H_
 #define COMMON_INC_ERROR_UTIL_H_
 
-#include "log/log.h"
+#include "../stub/op_api/level0/log.h"
 #include "graph/operator.h"
 
 #define CUBE_INNER_ERR_REPORT(opName, errMsg, ...)                                                            \

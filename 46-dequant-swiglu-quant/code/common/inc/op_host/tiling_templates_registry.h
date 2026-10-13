@@ -21,7 +21,7 @@
 #include "exe_graph/runtime/tiling_context.h"
 #include "tiling_base.h"
 #include "static_register_symbol.h"
-#include "log/log.h"
+#include "../../stub/op_api/level0/log.h"
 
 namespace Ops {
 namespace NN {

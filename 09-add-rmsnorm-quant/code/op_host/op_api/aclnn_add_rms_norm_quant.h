@@ -11,7 +11,7 @@
 #define OP_API_INC_LEVEL2_ADD_RMS_NORM_QUANT_H_
 
 #include "aclnn/aclnn_base.h"
-#include "aclnn_util.h"
+#include "../../common/inc/op_api/aclnn_util.h"
 
 #ifdef __cplusplus
 extern "C" {

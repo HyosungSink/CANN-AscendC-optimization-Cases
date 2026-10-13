@@ -21,7 +21,6 @@
 #include "../op_kernel/moe_distribute_dispatch_tiling.h"
 #include "../op_kernel/moe_distribute_dispatch_v2_tiling.h"
 #include "tiling_args.h"
-#include "moe_distribute_dispatch_v2_ccu_tiling.h"
 #include "platform/platform_infos_def.h"
 
 using namespace AscendC;
@@ -87,8 +86,6 @@ constexpr int64_t BS_UPPER_BOUND = 512;
 
 // tilingkey
 constexpr uint64_t INIT_TILINGKEY = 30000;
-constexpr uint64_t TILING_KEY_CCU_TYPE = 60000;
-constexpr uint64_t TILING_KEY_A5_TYPE = 50000;
 constexpr uint64_t TILING_KEY_A3_TYPE = 30000;
 constexpr uint64_t TILING_KEY_A2_TYPE = 20000;
 constexpr uint32_t TILINGKEY_COMM_ALG = 1000;
@@ -752,7 +749,7 @@ static ge::graphStatus CheckAndSetSpecialExpertInfo(const gert::TilingContext *c
         return ge::GRAPH_FAILED);
     OP_TILING_CHECK(
         (strlen(commAlgPtr) != 0) && (strcmp(commAlgPtr, "fullmesh_v1") != 0) &&
-            (strcmp(commAlgPtr, "fullmesh_v2") != 0 && (strcmp(commAlgPtr, "ccu") != 0)),
+            (strcmp(commAlgPtr, "fullmesh_v2") != 0),
         OP_LOGE(nodeName,
                 "Attr commAlg is invalid, current only support fullmesh_v1 and fullmesh_v2, but got commAlg = %s.",
                 commAlgPtr),
@@ -1381,11 +1378,8 @@ static ge::graphStatus MoeDistributeDispatchA3TilingFuncImpl(gert::TilingContext
     auto attrs = context->GetAttrs();
     auto commAlgPtr = attrs->GetAttrPointer<char>(static_cast<int>(ATTR_COMM_ALG_INDEX));
     std::string socVersion;
-    bool ccuFlag = strcmp(commAlgPtr, "ccu") == 0;
     (void)platformInfo.GetPlatformResWithLock("version", "Short_SoC_version", socVersion);
-    if (ccuFlag) {
-        return MoeDistributeDispatchTilingImpl(context);
-    }
+
     OP_LOGD(nodeName, "socVersion %s", socVersion.c_str());
     OP_LOGD(nodeName, "commAlgPtr %s", commAlgPtr);
     if (socVersion == "Ascend910B") {

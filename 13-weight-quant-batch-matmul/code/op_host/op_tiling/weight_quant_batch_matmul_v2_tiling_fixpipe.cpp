@@ -16,7 +16,7 @@
 #include "weight_quant_batch_matmul_v2_tiling_fixpipe.h"
 
 #include "weight_quant_batch_matmul_v2_tiling_key.h"
-#include "common/op_host/math_util.h"
+#include "../../common/op_host/math_util.h"
 #include "../../op_kernel/weight_quant_batch_matmul_v2_kernel_tiling_key.h"
 
 namespace optiling {

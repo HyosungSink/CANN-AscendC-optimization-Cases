@@ -15,7 +15,7 @@
 #ifndef OPS_BUILD_IN_OP_TILING_RUNTIME_RMS_NORM_GRAD_H
 #define OPS_BUILD_IN_OP_TILING_RUNTIME_RMS_NORM_GRAD_H
 
-#include "op_common/log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "register/tilingdata_base.h"
 #include "register/op_impl_registry.h"
 #include "register/tilingdata_base.h"

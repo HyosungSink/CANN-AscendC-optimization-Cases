@@ -18,15 +18,15 @@
 #include "../../op_kernel/mat_mul_v3_tiling_key.h"
 
 #include "matmul_v3_l2_cache.h"
-#include "util/math_util.h"
+#include "../../common/op_host/math_util.h"
 #include "log/log.h"
 #include "op_host/tiling_key.h"
 #include "error_util.h"
 #include "op_cache_tiling.h"
 #include "runtime_kb_api.h"
 #include "matmul_v3_tuning.h"
-#include "common/op_host/math_util.h"
-#include "common/op_host/op_tiling/debug_tiling.h"
+#include "../../common/op_host/math_util.h"
+#include "../../common/op_host/op_tiling/debug_tiling.h"
 #include "platform/platform_infos_def.h"
 
 using namespace optiling::matmul_v3;

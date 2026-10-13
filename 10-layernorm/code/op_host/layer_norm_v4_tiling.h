@@ -21,8 +21,8 @@
 #include "register/op_impl_registry.h"
 #include "register/tilingdata_base.h"
 #include "tiling/tiling_api.h"
-#include "op_host/tiling_base.h"
-#include "op_host/tiling_templates_registry.h"
+#include "../common/inc/op_host/tiling_base.h"
+#include "../common/inc/op_host/tiling_templates_registry.h"
 #include "op_common/op_host/util/platform_util.h"
 
 namespace optiling {

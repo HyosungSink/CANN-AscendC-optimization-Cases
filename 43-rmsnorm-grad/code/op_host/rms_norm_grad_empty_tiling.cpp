@@ -13,7 +13,7 @@
  * \brief RmsNormGrad empty tiling file
  */
 
-#include "op_common/log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "op_common/op_host/util/platform_util.h"
 #include "util/math_util.h"
 #include "rms_norm_grad_tiling.h"

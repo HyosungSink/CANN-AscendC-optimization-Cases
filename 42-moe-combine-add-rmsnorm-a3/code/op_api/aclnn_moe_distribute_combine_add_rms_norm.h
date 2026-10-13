@@ -13,7 +13,7 @@
 #include <string>
 
 #include "aclnn/aclnn_base.h"
-#include "aclnn_util.h"
+#include "../common/inc/aclnn_util.h"
 
 #ifdef __cplusplus
 extern "C" {

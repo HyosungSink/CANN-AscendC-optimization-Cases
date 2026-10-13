@@ -25,7 +25,7 @@
 
 #include "aclnn/aclnn_base.h"
 #include "fallback_comm.h"
-#include "mc2_log.h"
+#include "../../inc/mc2_log.h"
 #include "runtime/base.h"
 #include "log/log.h"
 

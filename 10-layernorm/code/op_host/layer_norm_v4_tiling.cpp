@@ -13,7 +13,7 @@
  * \brief
  */
 
-#include "op_host/tiling_util.h"
+#include "../common/inc/op_host/tiling_util.h"
 #include "layer_norm_v4_tiling.h"
 
 namespace optiling {

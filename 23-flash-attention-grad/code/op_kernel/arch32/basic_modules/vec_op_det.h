@@ -16,7 +16,7 @@
 #ifndef _VEC_OP_DET_H_
 #define _VEC_OP_DET_H_
 
-#include "dropmask.h"
+#include "../../../common/include/kernel/dropmask.h"
 #include "common_header.h"
 #include "kernel_operator.h"
 

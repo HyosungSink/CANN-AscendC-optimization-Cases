@@ -17,12 +17,12 @@
 
 #include "register/tilingdata_base.h"
 #include "log/log.h"
-#include "error_util.h"
+#include "../common/inc/error_util.h"
 #include "register/op_impl_registry.h"
 #include "util/math_util.h"
 #include "tiling/platform/platform_ascendc.h"
 #include "platform/platform_infos_def.h"
-#include "op_host/tiling_templates_registry.h"
+#include "../common/inc/op_host/tiling_templates_registry.h"
 #include "op_common/op_host/util/platform_util.h"
 
 

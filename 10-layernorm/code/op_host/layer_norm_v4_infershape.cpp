@@ -14,7 +14,7 @@
  */
 
 #include "op_common/log/log.h"
-#include "error_util.h"
+#include "../common/inc/error_util.h"
 #include "register/op_impl_registry.h"
 
 using namespace ge;

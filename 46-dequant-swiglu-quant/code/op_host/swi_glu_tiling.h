@@ -18,7 +18,7 @@
 #include <cstdint>
 #include "register/op_impl_registry.h"
 #include "util/math_util.h"
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "tiling/platform/platform_ascendc.h"
 #include "platform/platform_infos_def.h"
 #include "register/tilingdata_base.h"

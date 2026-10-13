@@ -31,7 +31,7 @@
     #include "utils/hccl_shmem.hpp"
     #include "utils/const_args.hpp"
     #include "utils/layout3d.hpp"
-    #include "tiling/moe_init_routing_quant_v2_tiling.h"
+    #include "moe_init_routing_quant_v2/moe_init_routing_quant_v2_tiling.h"
     #include "moe_init_routing_quant_v2/moe_init_routing_quant_v2.cpp"
     #include "moe_init_routing_quant_v2/moe_v2_fullload_dynamic_quant.h"
     #include "unpermute/moe_token_unpermute.h"

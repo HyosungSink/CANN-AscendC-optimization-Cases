@@ -17,7 +17,8 @@
 
 #include "tiling/platform/platform_ascendc.h"
 #include "../utils/defines.h"
-#include "../utils/torch_helper.h"
+#include "torch_npu/csrc/core/npu/NPUStream.h"
+#include "torch_npu/csrc/framework/OpCommand.h"
 #include "catlass_op_utils.h"
 #include "aclrtlaunch_catlass_fp8w8a16_matmul_bfloat16_t.h"
 

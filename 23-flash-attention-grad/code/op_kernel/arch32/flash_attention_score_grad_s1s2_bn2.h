@@ -18,8 +18,8 @@
 
 #include "lib/matmul_intf.h"
 #include "kernel_operator.h"
-#include "pse.h"
-#include "dropmask.h"
+#include "../../common/include/kernel/pse.h"
+#include "../../common/include/kernel/dropmask.h"
 #include "basic_modules/common_header.h"
 #include "basic_modules/cube_op_bn2.h"
 using matmul::Matmul;

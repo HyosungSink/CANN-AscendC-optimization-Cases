@@ -14,8 +14,8 @@
  */
 
 #include "weight_quant_batch_matmul_v2_checker_for_mmads8s4.h"
-#include "common/op_host/math_util.h"
-#include "common/op_host/op_tiling/debug_tiling.h"
+#include "../../common/op_host/math_util.h"
+#include "../../common/op_host/op_tiling/debug_tiling.h"
 
 namespace {
 constexpr size_t MM_SHAPE_LEN_ND = 2UL;

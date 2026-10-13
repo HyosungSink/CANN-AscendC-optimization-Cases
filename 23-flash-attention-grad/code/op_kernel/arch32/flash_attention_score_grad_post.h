@@ -17,7 +17,7 @@
 #define _FLASH_ATTENTION_SCORE_GRAD_POST_H_
 
 #include "kernel_operator.h"
-#include "util.h"
+#include "../../common/include/kernel/util.h"
 #include "flash_attention_score_grad_tiling.h"
 
 using AscendC::CopyRepeatParams;

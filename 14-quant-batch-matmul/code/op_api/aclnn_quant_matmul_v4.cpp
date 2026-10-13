@@ -19,14 +19,14 @@
 #include "opdev/op_executor.h"
 #include "opdev/op_log.h"
 #include "opdev/platform.h"
-#include "common/op_host/op_api/matmul_util.h"
+#include "../common/op_host/op_api/matmul_util.h"
 #include "quant_matmul_v3.h"
 #include "quant_batch_matmul_v4/op_host/op_api/quant_matmul_v4.h"
 #include "aclnn_kernels/transdata.h"
 #include "aclnn_kernels/transpose.h"
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/reshape.h"
-#include "util/math_util.h"
+#include "../common/op_host/math_util.h"
 #include "quant_matmul_checker.h"
 
 using namespace op;

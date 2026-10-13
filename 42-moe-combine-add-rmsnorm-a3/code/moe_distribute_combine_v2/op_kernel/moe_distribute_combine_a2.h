@@ -22,9 +22,9 @@
 #include "utils/std/algorithm.h"
 #include "kernel_tiling/kernel_tiling.h"
 #include "moe_distribute_combine_tiling.h"
-#if __has_include("../common/inc/kernel/moe_distribute_base.h")
-#include "../common/inc/kernel/moe_distribute_base.h"
-#include "../common/inc/kernel/mc2_kernel_utils.h"
+#if __has_include("../../common/inc/kernel/moe_distribute_base.h")
+#include "../../common/inc/kernel/moe_distribute_base.h"
+#include "../../common/inc/kernel/mc2_kernel_utils.h"
 #else
 #include "../../common/inc/kernel/moe_distribute_base.h"
 #include "../../common/inc/kernel/mc2_kernel_utils.h"

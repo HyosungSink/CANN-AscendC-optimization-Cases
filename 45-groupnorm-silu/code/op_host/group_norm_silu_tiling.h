@@ -20,7 +20,7 @@
 #include "register/tilingdata_base.h"
 #include "tiling/tiling_api.h"
 #include "../common/inc/op_host/tiling_base.h"
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "tiling/platform/platform_ascendc.h"
 #include "platform/platform_infos_def.h"
 #include "../common/inc/op_host/tiling_base.h"

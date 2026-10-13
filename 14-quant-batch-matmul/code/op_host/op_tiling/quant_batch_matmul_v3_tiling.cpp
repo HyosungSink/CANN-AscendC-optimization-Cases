@@ -19,7 +19,7 @@
 #include <numeric>
 
 #include "op_host/tiling_templates_registry.h"
-#include "common/op_host/op_tiling/tiling_type.h"
+#include "../../common/op_host/op_tiling/tiling_type.h"
 #include "graph/utils/type_utils.h"
 #include "log/log.h"
 #include "register/op_impl_registry.h"

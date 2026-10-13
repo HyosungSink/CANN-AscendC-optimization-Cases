@@ -13,7 +13,7 @@
  * \brief
  */
 
-#include "log/log.h"
+#include "../common/stub/op_api/level0/log.h"
 #include "platform/platform_info.h"
 #include "platform/platform_infos_def.h"
 #include "register/op_def_registry.h"

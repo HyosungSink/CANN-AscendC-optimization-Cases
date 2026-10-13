@@ -16,7 +16,7 @@
 #define QUANT_BATCH_MATMUL_V3_TILING_CACHE_H
 
 #include "quant_batch_matmul_v3_basic_tiling.h"
-#include "common/op_host/op_tiling/tiling_cache.h"
+#include "../../common/op_host/op_tiling/tiling_cache.h"
 
 namespace optiling {
 struct QuantBatchMatmulV3BitField {
