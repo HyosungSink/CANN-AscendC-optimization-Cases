@@ -1,0 +1,52 @@
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+
+/*!
+ * \file matmul_reduce_scatter_tiling_key.h
+ * \brief
+ */
+
+#ifndef __OP_KERNEL_MATMUL_REDUCE_SCATTER_TILING_KEY_H__
+#define __OP_KERNEL_MATMUL_REDUCE_SCATTER_TILING_KEY_H__
+
+#include "ascendc/host_api/tiling/template_argument.h"
+
+namespace matmul_reduce_scatter_tiling_key{
+// 模板参数
+ASCENDC_TPL_ARGS_DECL(
+    MatmulReduceScatter, // 算子OpType
+    ASCENDC_TPL_BOOL_DECL(MM_REDUCE_SCATTER_FULL_MESH, 0, 1),
+    ASCENDC_TPL_BOOL_DECL(MM_REDUCE_SCATTER_ND2NZ_OPT, 0, 1),
+    ASCENDC_TPL_BOOL_DECL(MM_REDUCE_SCATTER_BIAS_CAST, 0, 1)
+);
+
+// 模板参数组合
+// 用于调用GET_TPL_TILING_KEY获取TilingKey时，接口内部校验TilingKey是否合法
+ASCENDC_TPL_SEL(
+    ASCENDC_TPL_ARGS_SEL(
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_FULL_MESH, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_ND2NZ_OPT, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_BIAS_CAST, 0)),
+    ASCENDC_TPL_ARGS_SEL(
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_FULL_MESH, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_ND2NZ_OPT, 0),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_BIAS_CAST, 0)),
+    ASCENDC_TPL_ARGS_SEL(
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_FULL_MESH, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_ND2NZ_OPT, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_BIAS_CAST, 1)),
+    ASCENDC_TPL_ARGS_SEL(
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_FULL_MESH, 1),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_ND2NZ_OPT, 0),
+        ASCENDC_TPL_BOOL_SEL(MM_REDUCE_SCATTER_BIAS_CAST, 1))
+);
+} // matmul_reduce_scatter_tiling_key
+
+#endif // __OP_KERNEL_MATMUL_REDUCE_SCATTER_TILING_KEY_H__
