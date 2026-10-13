@@ -532,10 +532,7 @@ aclnnStatus aclnnAllGatherMatmulV2GetWorkspaceSize(const aclTensor* x1, const ac
                                                    aclOpExecutor** executor)
 {
     aclnnStatus ret = ACLNN_SUCCESS;
-    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        ret = allGatherMatmulV2GetWorkspaceSizeCCUMode(x1, x2, bias, x1Scale, x2Scale, quantScale, blockSize, group, gatherIndex, commTurn,
-                                                       streamMode, groupSize, commMode, output, gatherOut, amaxOut, workspaceSize, executor);
-    } else if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
+    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
         ret = allGatherMatmulV2GetWorkspaceSizeAIVMode(x1, x2, bias, x1Scale, x2Scale, quantScale, blockSize, group, gatherIndex, commTurn,
                                                        streamMode, groupSize, commMode, output, gatherOut, amaxOut, workspaceSize, executor);
     } else {
@@ -554,9 +551,7 @@ aclnnStatus aclnnAllGatherMatmulV2(void* workspace, uint64_t workspaceSize, aclO
   }
 
   if (NnopbaseSetHcclServerType) {
-    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-      NnopbaseSetHcclServerType(executor, NnopbaseHcclServerType::NNOPBASE_HCCL_SERVER_TYPE_CCU);
-    } else if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
+    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
       NnopbaseSetHcclServerType(executor, NnopbaseHcclServerType::NNOPBASE_HCCL_SERVER_TYPE_MTE);
     }
   }

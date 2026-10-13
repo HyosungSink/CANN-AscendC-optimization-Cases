@@ -11,8 +11,6 @@
 #ifndef CATLASS_GEMM_TILE_COPY_L1_TO_FP_HPP
 #define CATLASS_GEMM_TILE_COPY_L1_TO_FP_HPP
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
 #include "atlasa2/copy_l1_to_fp.hpp"
-#endif
 
 #endif

@@ -222,8 +222,7 @@ inline static const std::initializer_list<DataType>& GetDtypeSupportListV1(
 inline static const std::initializer_list<DataType>& GetDtypeSupportListV2(
     const std::initializer_list<op::DataType>& l1, const std::initializer_list<op::DataType>& l2)
 {
-    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201 ||
-        Ops::NN::AclnnUtil::IsRegbase()) {
+    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
         return l1;
     } else {
         return l2;
@@ -235,12 +234,9 @@ inline static const std::initializer_list<op::DataType> GetDtypeSupportListV3(
 {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
     switch (npuArch) {
-        case NpuArch::DAV_3510:
+
         case NpuArch::DAV_2201: {
             return l1;
-        }
-        case NpuArch::DAV_1001: {
-            return l2;
         }
         default: {
             // 如果既不是1971也不是1980，先暂且默认当做1971处理
@@ -362,8 +358,7 @@ static inline bool CheckPromoteTypeGeluBackward(const aclTensor* gradOutput, con
         return false;
     }
 
-    if (!(GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201 ||
-          Ops::NN::AclnnUtil::IsRegbase()) && (promoteType == op::DataType::DT_BF16)) {
+    if (((!(GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201)) && (promoteType == op::DataType::DT_BF16))) {
         OP_LOGE(ACLNN_ERR_PARAM_INVALID, "Input dtype of gelu is not support bfloat16 in current socversion.");
         return false;
     }

@@ -15,7 +15,6 @@
 
 #include <sstream>
 #include "hc_pre_tiling.h"
-#include "hc_pre_tiling_arch35.h"
 
 using namespace ge;
 namespace optiling {
@@ -453,11 +452,7 @@ ge::graphStatus TilingForHcPre(gert::TilingContext *context)
     "Tiling platformInfo is null"), return ge::GRAPH_FAILED);
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     auto socVersion = ascendcPlatform.GetSocVersion();
-    if (socVersion == platform_ascendc::SocVersion::ASCEND950) {
-        OPS_LOG_I(context, "Using arch35 tiling for ASCEND950");
-        HcPreTilingRegbase::HcPreTilingRegbase hcPreTiling(context);
-        return hcPreTiling.DoOpTiling();
-    }
+
     HcPreTiling hcPreTiling(context);
     return hcPreTiling.DoOpTiling();
 }

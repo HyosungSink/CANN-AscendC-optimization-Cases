@@ -99,9 +99,7 @@ static bool CheckShape(const aclTensor* x, const aclTensor* mask)
     }
 
     int32_t dDimLimit = D_LIMIT;
-    if (Ops::NN::AclnnUtil::IsRegbase()) {
-        dDimLimit = D_LIMIT_D;
-    }
+
 
     if ((x->GetViewShape().GetDim(DIM_3) <= 0) || (x->GetViewShape().GetDim(DIM_3) > dDimLimit)) {
         OP_LOGE(ACLNN_ERR_PARAM_INVALID, "Expected x and mask dim4 in range of (0, 4096].");

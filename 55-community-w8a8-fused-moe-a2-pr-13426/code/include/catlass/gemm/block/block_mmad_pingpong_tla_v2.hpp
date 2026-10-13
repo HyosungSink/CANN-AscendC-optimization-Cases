@@ -178,14 +178,8 @@ public:
         using CopyGmToL1B = typename TileCopy_::template CopyGmToL1B<TensorB>;
         CopyGmToL1A copyGmToL1A;
         CopyGmToL1B copyGmToL1B;
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 2201)
         using CopyL0CToGm = typename TileCopy_::template CopyL0CToGm<TensorC>;
         CopyL0CToGm copyL0CToDst;
-#endif        
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 3510)
-        using CopyL0CToDst = typename TileCopy_::template CopyL0CToDst<TensorC>;
-        CopyL0CToDst copyL0CToDst;
-#endif
 
         // Create an accumulator tensor view on L0C buffer.
         // - Logical size comes from tensorC.layout().originShape() (tail-aware)

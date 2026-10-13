@@ -79,8 +79,8 @@ ge::graphStatus GetCommonPlatformInfo(
     commonParams.coreNum = compileInfo->coreNum;
     commonParams.ubSizePlatForm = compileInfo->ubSizePlatForm;
     commonParams.blockSize = compileInfo->blockSize;
-    commonParams.isAscend310P = compileInfo->isAscend310P;
-    commonParams.isRegBase = compileInfo->isRegBase;
+    commonParams.isAscend310P = false;
+    commonParams.isRegBase = false;
     commonParams.vlFp32 = compileInfo->vectorLength / sizeof(float);
     return ge::GRAPH_SUCCESS;
 }

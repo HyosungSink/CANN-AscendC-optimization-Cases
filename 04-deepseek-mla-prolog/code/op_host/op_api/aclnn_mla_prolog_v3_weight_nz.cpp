@@ -88,9 +88,7 @@ private:
 // 校验weightQuantMode参数的合法性
 bool CheckWeightQuantModeValidity(int64_t weightQuantMode) {
     std::set<int64_t> supportedWeightQuantMode;
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        supportedWeightQuantMode = {0LL, 1LL, 2LL, 3LL};
-    } else {
+    {
         supportedWeightQuantMode = {0LL, 1LL, 2LL};
     }
 

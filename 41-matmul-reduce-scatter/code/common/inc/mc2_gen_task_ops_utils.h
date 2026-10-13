@@ -25,7 +25,6 @@
 namespace ops {
 const std::set<std::string> PLATFORM_A2 = {"Ascend910B"};
 const std::set<std::string> PLATFORM_A3 = {"Ascend910_93"};
-const std::set<std::string> NPUARCH_A5 = {std::to_string(static_cast<uint32_t>(NpuArch::DAV_3510))};
 
 class Mc2GenTaskOpsUtils {
 public:

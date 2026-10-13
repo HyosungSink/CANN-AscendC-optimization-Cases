@@ -1152,9 +1152,7 @@ static ge::graphStatus MoeDistributeCombineA3TilingFuncImpl(gert::TilingContext 
     OP_TILING_CHECK(SetWorkspace(context, nodeName) != ge::GRAPH_SUCCESS,
                     OP_LOGE(context->GetNodeName(), "Tiling set workspace Failed"), return ge::GRAPH_FAILED);
 
-    if (socVersion == "Ascend950") {
-        tilingKey = ccuFlag ? TILING_KEY_CCU_TYPE : TILING_KEY_A5_TYPE;
-    } else if (socVersion == "Ascend910B") {
+    if (socVersion == "Ascend910B") {
         tilingKey = TILING_KEY_A2_TYPE;
     }
     CalTilingKey(tilingKey, tpWorldSize, commQuantMode);

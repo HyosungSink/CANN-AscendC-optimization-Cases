@@ -534,10 +534,6 @@ ge::graphStatus RotateHalfTiling::DoRotateHalfTiling()
                     ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND910,
                 OP_LOGE(context, "current soc does not support non aligned calculations."), return ge::GRAPH_FAILED);
     
-    OP_CHECK_IF(dLength != 32  && dLength != 64 && dLength != 96 && dLength != 128 &&
-                    ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P,
-                OP_LOGE(context, "current soc only support d = 32/64/96/128."), return ge::GRAPH_FAILED);
-
     ChooseTilingMode(xShape, cosShape);
     OP_CHECK_IF(tilingData_.get_tilingMode() == TILING_MODE_UNKNOWN,
                 OP_LOGE(context, "unknow input layout, unable to calculate."), return ge::GRAPH_FAILED);
@@ -552,11 +548,6 @@ ge::graphStatus RotateHalfTiling::DoRotateHalfTiling()
     CalcRotateHalfTiling(inputDtype, ubSize);
     OP_CHECK_IF(tilingData_.get_storeSLines() <= 0, OP_LOGE(context, "head_dim shape is too large to compute."),
                 return ge::GRAPH_FAILED);
-    
-    if (ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P) {
-        OP_CHECK_IF(ge::GRAPH_SUCCESS != CheckStrideSupport(inputDtype), OP_LOGE(context, "Stride is too large to compute."),
-                    return ge::GRAPH_FAILED);
-    }
 
     PrintTilingParams();
     return ge::GRAPH_SUCCESS;

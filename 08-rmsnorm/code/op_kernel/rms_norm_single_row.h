@@ -160,9 +160,7 @@ private:
     __aicore__ inline void CopyOutRstd(uint32_t outerProgress, uint32_t num)
     {
         LocalTensor<float> rstdLocal = outQueueRstd.DeQue<float>();
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         DataCopyCustom<float>(rstdGm[outerProgress * rowFactor], rstdLocal, num);
-#endif
         outQueueRstd.FreeTensor(rstdLocal);
     }
 

@@ -19,9 +19,6 @@
 #include "kernel_operator.h"
 #include "kernel_operator_intf.h"
 
-#if (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
-#define SYNC_AIC_FLAG 1
-#endif
 
 namespace AscendC {
 template <typename yType>
@@ -34,13 +31,7 @@ public:
         InitTilingData(tilingData);
         // init global buffer
         yGm_.SetGlobalBuffer((__gm__ yType *)y);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        workspaceGm_.SetGlobalBuffer((__gm__ int32_t *)workSpace);
-        tPipe->InitBuffer(localBuffer_, tilingData->params.ubSize);
-        ClearWorkSpace();
-#else
         tPipe->InitBuffer(localBuffer_, TOTAL_L1_SIZE);
-#endif
     }
 
     /** main logical function
@@ -102,37 +93,6 @@ public:
         SyncAllCores();
     }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    __aicore__ inline void ClearWorkSpace()
-    {
-        LocalTensor<int32_t> tmpUb = localBuffer_.Get<int32_t>();
-        uint32_t size = GetBlockNum() * ONE_BLK_SIZE / sizeof(int32_t);
-        Duplicate(tmpUb, 0, size);
-
-        TEventID eventIdVtoMte3 = GetTPipePtr()->FetchEventID<HardEvent::V_MTE3>();
-        SetFlag<HardEvent::V_MTE3>(eventIdVtoMte3);
-        WaitFlag<HardEvent::V_MTE3>(eventIdVtoMte3);
-
-        DataCopy(workspaceGm_, tmpUb, size);
-    }
-
-    __aicore__ inline void ClearLocalTensor(LocalTensor<yType> &tmpBuf, uint32_t size)
-    {
-        LocalTensor<int16_t> tmpTensor = tmpBuf.template ReinterpretCast<int16_t>();
-        // Duplicate not support int8
-        Duplicate(tmpTensor, static_cast<int16_t>(0), DequantBmm::CeilDiv(size * sizeof(yType), sizeof(int16_t)));
-
-        TEventID eventIdVtoMte3 = GetTPipePtr()->FetchEventID<HardEvent::V_MTE3>();
-        SetFlag<HardEvent::V_MTE3>(eventIdVtoMte3);
-        WaitFlag<HardEvent::V_MTE3>(eventIdVtoMte3);
-    }
-
-    __aicore__ inline void SyncAllCores()
-    {
-        LocalTensor<int32_t> ubWorkspace = localBuffer_.Get<int32_t>();
-        SyncAll(workspaceGm_, ubWorkspace);
-    }
-#else
     __aicore__ inline void ClearLocalTensor(LocalTensor<yType> &tmpBuf, uint32_t size)
     {
         uint16_t blockNum = size / ONE_BLK_ITEM_NUM;
@@ -148,17 +108,11 @@ public:
         CrossCoreSetFlag<0, PIPE_MTE3>(SYNC_AIC_FLAG);
         CrossCoreWaitFlag(SYNC_AIC_FLAG);
     }
-#endif
 
 private:
     uint64_t outputSize_;
     GlobalTensor<yType> yGm_;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    GlobalTensor<int32_t> workspaceGm_;
-    TBuf<TPosition::VECCALC> localBuffer_;
-#else
     TBuf<TPosition::TSCM> localBuffer_;
-#endif
 
     static constexpr uint64_t MIN_CLEAR_BYTE = 512UL;
     static constexpr uint64_t MIN_CLEAR_SIZE = MIN_CLEAR_BYTE / sizeof(yType);

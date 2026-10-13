@@ -72,9 +72,6 @@ private:
     uint16_t elementCountListTail[4];
     uint32_t listSortedNums[4];
     LocalTensor<float> tmpUbInputs[4];
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    bool needCopyOut = true;
-#endif
 };
 
 __aicore__ inline void MoeV2MrgsortOut::ClearCache()
@@ -101,9 +98,6 @@ __aicore__ inline void MoeV2MrgsortOut::SetOutput(GlobalTensor<int32_t> &gmOutpu
     this->gmOutput2 = gmOutput2;
     this->ubOutput2 = ubOutput2.ReinterpretCast<uint32_t>();
     this->ubOutputInt2 = ubOutput2.ReinterpretCast<int32_t>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    needCopyOut = !(this->gmOutput1.GetPhyAddr() == this->gmOutput2.GetPhyAddr());
-#endif
 }
 
 __aicore__ inline void MoeV2MrgsortOut::SetBuffer(LocalTensor<float> &tempBuffer)
@@ -193,23 +187,12 @@ __aicore__ inline void MoeV2MrgsortOut::Extract()
 
 __aicore__ inline void MoeV2MrgsortOut::CopyOut()
 {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyExtParams intriParams;
-#else
     DataCopyParams intriParams;
-#endif
     intriParams.blockCount = 1;
     intriParams.blockLen = curLoopSortedNum * sizeof(int32_t);
     SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    if (needCopyOut) {
-        DataCopyCustom<int32_t,true,false>(this->gmOutput1[outOffset], this->ubOutputInt1, intriParams.blockCount, intriParams.blockLen);
-    }
-    DataCopyCustom<int32_t,true,false>(this->gmOutput2[outOffset], this->ubOutputInt2, intriParams.blockCount, intriParams.blockLen);
-#else
     DataCopyPad(this->gmOutput2[outOffset], this->ubOutputInt2, intriParams);
     DataCopyPad(this->gmOutput1[outOffset], this->ubOutputInt1, intriParams);
-#endif
     outOffset += curLoopSortedNum;
 }
 

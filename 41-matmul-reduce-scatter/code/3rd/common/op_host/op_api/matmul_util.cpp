@@ -267,9 +267,7 @@ static aclnnStatus SetMatmulOpSupportInfo(
 
     if (IsSplitk(&SpTensor_sefl, &SpTensor_mat2)) {
         mmOpInfo.supporSplitK = true;
-        if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-            mmOpInfo.support_info.output_dtype = DataType::DT_FLOAT;
-        } else if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910) {
+        if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910) {
             mmOpInfo.support_info.output_format = Format::FORMAT_FRACTAL_NZ;
             mmOpInfo.support_info.output_dtype = DataType::DT_FLOAT;
         }
@@ -543,7 +541,7 @@ bool CheckGemmV3Support(const aclTensor* mat1, const aclTensor* mat2, MmOpInfo& 
         return false;
     }
     // 当前支持平台
-    if (GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    {
         OP_LOGI("Current SOC version does not support GemmV3.");
         return false;
     }
@@ -556,8 +554,7 @@ bool CheckGemmV3Support(const aclTensor* mat1, const aclTensor* mat2, MmOpInfo& 
 }
 
 bool IsInputSupportFp32() {
-  if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_2201 &&
-      op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+  if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_2201) {
     return false;
   }
   return true;
@@ -615,8 +612,7 @@ bool NeedToConvertBias(const aclTensor *self, const aclTensor *mat1, const aclTe
   TensorInfo Tensor_mat2 = {mat2, mat2->GetDataType(), Format::FORMAT_ND};
 
   bool isSplitK = false;
-  if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_2201 &&
-      op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+  if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_2201) {
     isSplitK = IsSplitk(&Tensor_matl, &Tensor_mat2);;
   }
   op::Shape selfShape = self->GetViewShape();
@@ -678,9 +674,7 @@ bool IsSplitk(const TensorInfo* self, const TensorInfo* mat2) {
 }
 
 bool IsFormatSupportNd(const aclTensor *self, const aclTensor *mat2) {
-  if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-    return true;
-  }
+
   if (GetCurrentPlatformInfo().GetSocVersion() != SocVersion::ASCEND910B &&
       GetCurrentPlatformInfo().GetSocVersion() != SocVersion::ASCEND910_93) {
     op::Shape selfShape = self->GetViewShape();
@@ -823,13 +817,7 @@ aclnnStatus SetMmSupportFormat(const aclTensor* self, const aclTensor* mat2, MmO
   } else {
     OP_LOGD("Matmul do not support NDNDND");
     // if 310p and n%16==0
-    bool is310p = GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P;
-    if (IsSupportNzNzNd(self, mat2) && is310p) {
-      mmOpInfo.support_info.output_format = Format::FORMAT_ND;
-      mmOpInfo.support_info.self_format = Format::FORMAT_FRACTAL_NZ;
-      mmOpInfo.support_info.mat2_format = Format::FORMAT_FRACTAL_NZ;
-      return ACLNN_SUCCESS;
-    }
+
     mmOpInfo.support_info.output_format = Format::FORMAT_FRACTAL_NZ;
     mmOpInfo.support_info.self_format = Format::FORMAT_FRACTAL_NZ;
     mmOpInfo.support_info.mat2_format = Format::FORMAT_FRACTAL_NZ;
@@ -1024,9 +1012,7 @@ const aclTensor *ContiguousBias(const aclTensor *self, const aclTensor *bias, ac
     auto contiguousBias = l0op::Contiguous(bias, executor);
     CHECK_RET(contiguousBias != nullptr, nullptr);
     // bias为bf16时cast为fp32保证精度
-    if ((contiguousBias->GetDataType() == DataType::DT_BF16 &&
-          GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510)||
-        self->GetDataType() == DataType::DT_FLOAT) {
+    if (((contiguousBias->GetDataType() == DataType::DT_BF16) || (self->GetDataType() == DataType::DT_FLOAT))) {
         contiguousBias = l0op::Cast(contiguousBias, op::DataType::DT_FLOAT, executor);
         CHECK_RET(contiguousBias != nullptr, nullptr);
     }

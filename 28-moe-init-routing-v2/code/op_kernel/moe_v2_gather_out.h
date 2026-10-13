@@ -75,11 +75,7 @@ __aicore__ inline void MoeV2GatherOut<T>::CopyInIndices(int64_t progress)
     LocalTensor<int32_t> indicesLocal = expandDstToSrcRowCopyInQueue.AllocTensor<int32_t>();
     DataCopyExtParams dataCopyParams{1, static_cast<uint32_t>(this->currentLoopRows * sizeof(int32_t)), 0, 0, 0};
     DataCopyPadExtParams<int32_t> dataCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyPadCustom(indicesLocal, expandedRowIdxGm[indicesOffset], dataCopyParams, dataCopyPadParams);
-#else
     DataCopyPad(indicesLocal, expandedRowIdxGm[indicesOffset], dataCopyParams, dataCopyPadParams);
-#endif
     expandDstToSrcRowCopyInQueue.EnQue<int32_t>(indicesLocal);
 }
 
@@ -103,11 +99,7 @@ __aicore__ inline void MoeV2GatherOut<T>::CopyOut(int64_t progress)
             inputOffset = row * this->cols + colsLoop * this->perLoopCols;
             DataCopyExtParams dataCopyParams{1, static_cast<uint32_t>(this->colsTileLength * sizeof(T)), 0, 0, 0};
             DataCopyPadExtParams<T> dataCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            DataCopyPadCustom(inLocal, inputXGm[inputOffset], dataCopyParams, dataCopyPadParams);
-#else
             DataCopyPad(inLocal, inputXGm[inputOffset], dataCopyParams, dataCopyPadParams);
-#endif
             SetWaitFlag<HardEvent::MTE2_MTE3>(HardEvent::MTE2_MTE3);
 
             DataCopyExtParams intriParams{1, static_cast<uint32_t>(this->colsTileLength * sizeof(T)), 0, 0, 0};
@@ -125,11 +117,7 @@ __aicore__ inline void MoeV2GatherOut<T>::CopyOut(int64_t progress)
                     continue;
                 }
 #endif
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-                DataCopyCustom(expandedXGm[outOffset], inLocal, intriParams.blockCount, intriParams.blockLen);
-#else
                 DataCopyPad(expandedXGm[outOffset], inLocal, intriParams);
-#endif
             }
             inputActivationsCopyInQueue.FreeTensor(inLocal);
         }

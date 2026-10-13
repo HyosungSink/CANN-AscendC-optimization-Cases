@@ -23,12 +23,8 @@ namespace GROUPED_MATMUL {
 constexpr uint32_t thresholdBlockNum = 8;   // 8 is obtained by tests, indicating the threshold of basic block numbers
                                             // in both directions when assigning data blocks to cube cores when using
                                             // diagnal strategy
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-constexpr uint32_t thresholdDimM = 1;       // not needs any special strategies
-#else
 constexpr uint32_t thresholdDimM = 5;       // 5 is obtained by tests, indicating the threshold for distinguishing
                                             // strategies for large/small shapes
-#endif
 
 /*@brief store variables for core split configuration
 */
@@ -440,17 +436,9 @@ __aicore__ inline void GMMCompute<mmType, sync>::Init(GM_ADDR x, GM_ADDR weight,
 #if defined(GMM_QUANT_INT8)
     scaleTensorPtr = scale;
 #endif
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    TBuf<> ubBuf;
-    pipe->InitBuffer(ubBuf, TOTAL_UB_SIZE / 2);
-    LocalTensor<uint8_t> buf = ubBuf.template Get<uint8_t>();
-    mm.SetLocalWorkspace(buf);
-#endif
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
     if (gmmBaseParams->isOutputDisableL2Cache != 0) {
         yGm.SetL2CacheHint(CacheMode::CACHE_MODE_DISABLE);
     }
-#endif
 }
 
 template <typename mmType, bool sync>
@@ -462,16 +450,12 @@ __aicore__ inline void GMMCompute<mmType, sync>::SetGlobalBufferBias(uint32_t gr
         } else {
             biasGm.SetGlobalBuffer(GetTensorAddr<BiasT>(0, biasTensorPtr) + mnConfig.nAxisBaseOffset);
         }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
         constexpr bool isBiasEpilogue_ =
             AscendC::IsSameType<DTYPE_BIAS, bfloat16_t>::value &&
             (AscendC::IsSameType<DTYPE_SCALE, bfloat16_t>::value || AscendC::IsSameType<DTYPE_SCALE, float>::value);
         if constexpr (!isBiasEpilogue_) {
             mm.SetBias(biasGm[tailN]);
         }
-#else
-        mm.SetBias(biasGm[tailN]);
-#endif
     }
 }
 

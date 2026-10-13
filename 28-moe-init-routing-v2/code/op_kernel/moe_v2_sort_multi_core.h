@@ -30,9 +30,6 @@ public:
                                 GM_ADDR expertTokensBeforeCapacity, GM_ADDR workspace, const TilingData *tilingData,
                                 TPipe *tPipe);
     __aicore__ inline void Process();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    __aicore__ inline void ResetIO(GM_ADDR expandedRowIdx, GM_ADDR workspace);
-#endif
 private:
     __aicore__ inline void VBSProcess();
     __aicore__ inline void UBSortProcess(int64_t progress, int64_t size, int64_t sortNum);
@@ -73,9 +70,6 @@ private:
     int64_t perCoreExpert;
     int64_t needInitExpertCore;
     int64_t currentCoreExpert;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    int64_t perCoreOffset;
-#endif
     static constexpr int64_t MAX_MRGSORT_LIST = 4;
 };
 
@@ -83,36 +77,14 @@ __aicore__ inline void MoeV2SortMultiCore::InitExpertTokensGlobalMemory()
 {
     if (this->blockIdx < this->needInitExpertCore) {
         if (this->expertTokensCountOrCumsumFlag > EXERPT_TOKENS_NONE) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            InitGlobalMemory(expertTokensCountOrCumsumGm, Align(this->currentCoreExpert, sizeof(int32_t)), 0);
-#else
             InitGlobalMemory(expertTokensCountOrCumsumGm, currentCoreExpert, 0);
-#endif
         }
         if (this->expertTokensBeforeCapacityFlag == EXERPT_TOKENS_BEFORE_CAPACITY) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            InitGlobalMemory(expertTokensBeforeCapacityGm, Align(this->currentCoreExpert, sizeof(int32_t)), 0);
-#else
             InitGlobalMemory(expertTokensBeforeCapacityGm, currentCoreExpert, 0);
-#endif
         }
     }
 }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-__aicore__ inline void MoeV2SortMultiCore::ResetIO(GM_ADDR expandedRowIdx, GM_ADDR workspace)
-{
-    sortedexpertIdxGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(expandedRowIdx),
-        Align(this->totalLength, sizeof(int32_t)));
-    expandDstToSrcRowGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(expandedRowIdx),
-        Align(this->totalLength, sizeof(int32_t)));
-    expertIdxGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(workspace) +
-                                Align(this->totalLength, sizeof(int32_t)) + this->blockIdx * perCoreOffset,
-                                this->sortTotalLength);
-    this->srcWsIndex = 0;
-    this->needInitExpertCore = 0;
-}
-#endif
 
 __aicore__ inline void MoeV2SortMultiCore::VBSCopyIn(int64_t progress, int64_t size, int64_t sortNum)
 {
@@ -120,11 +92,7 @@ __aicore__ inline void MoeV2SortMultiCore::VBSCopyIn(int64_t progress, int64_t s
     int64_t inOffset = progress * sortCoreLoopElements;
     DataCopyExtParams dataCopyParams{static_cast<uint16_t>(1), static_cast<uint32_t>(size * sizeof(int32_t)), 0, 0, 0};
     DataCopyPadExtParams<int32_t> dataCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyPadCustom(inLocal[0], expertIdxGm[inOffset], dataCopyParams, dataCopyPadParams);
-#else
     DataCopyPad(inLocal[0], expertIdxGm[inOffset], dataCopyParams, dataCopyPadParams);
-#endif
     LocalTensor<int32_t> rowIdxLocal = inLocal[sortNum];
     int64_t startValue = this->blockIdx * this->vbsTilingData->perCoreElements + inOffset;
     SetWaitFlag<HardEvent::MTE3_S>(HardEvent::MTE3_S);
@@ -139,11 +107,7 @@ __aicore__ inline void MoeV2SortMultiCore::UBSortCompute(int64_t progress, int64
     LocalTensor<float> expertForSourceRowLocalFp32;
 
     expertForSourceRowLocalFp32 = expertForSourceRowLocal.ReinterpretCast<float>();
-    #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    Cast(expertForSourceRowLocalFp32, expertForSourceRowLocal, RoundMode::CAST_NONE, sortNum);
-    #else
     Cast(expertForSourceRowLocalFp32, expertForSourceRowLocal, RoundMode::CAST_ROUND, sortNum);
-    #endif
     PipeBarrier<PIPE_V>();
     Muls(expertForSourceRowLocalFp32, expertForSourceRowLocalFp32, (float)-1, sortNum);
     PipeBarrier<PIPE_V>();
@@ -163,20 +127,6 @@ __aicore__ inline void MoeV2SortMultiCore::UBSortCompute(int64_t progress, int64
     LocalTensor<uint32_t> sourceRowLocal;
     sourceRowLocal = inLocal[sortNum].ReinterpretCast<uint32_t>();
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> concatLocal;
-    SetWaitFlag<HardEvent::MTE3_V>(HardEvent::MTE3_V);
-
-    LocalTensor<float> outLocal = tempBuffer.Get<float>(GetSortLen<float>(sortNum));
-
-    Concat(concatLocal, expertForSourceRowLocalFp32, sortedLocal, sortNum / ONE_REPEAT_SORT_NUM);
-
-    PipeBarrier<PIPE_V>();
-
-    Sort<float, true>(outLocal, concatLocal, sourceRowLocal, concatLocal, sortNum / ONE_REPEAT_SORT_NUM);
-
-    SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-#else
     LocalTensor<float> outLocal = sortDataCopyOutQueue.AllocTensor<float>();
 
     LocalTensor<float> concatLocal = expertForSourceRowLocalFp32;
@@ -184,61 +134,40 @@ __aicore__ inline void MoeV2SortMultiCore::UBSortCompute(int64_t progress, int64
     Sort<float, true>(outLocal, concatLocal, sourceRowLocal, sortedLocal, sortNum / ONE_REPEAT_SORT_NUM);
 
     sortDataCopyOutQueue.EnQue<float>(outLocal);
-#endif
     sortDataCopyInQueue.FreeTensor(inLocal);
 }
 
 __aicore__ inline void MoeV2SortMultiCore::VBSCopyOut(int64_t progress, int64_t size, int64_t sortNum)
 {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> outLocal = tempBuffer.Get<float>(GetSortLen<float>(sortNum));
-#else
     LocalTensor<float> outLocal = sortDataCopyOutQueue.DeQue<float>();
-#endif
     DataCopy(workspaceGms[0][this->blockIdx * GetSortLen<float>(this->vbsTilingData->perCoreElements) +
                              GetSortLen<float>(progress * sortCoreLoopElements)],
              outLocal, Align(GetSortLen<float>(size), sizeof(float)));
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    SetWaitFlag<HardEvent::MTE3_V>(HardEvent::MTE3_V);
-#else
     sortDataCopyOutQueue.FreeTensor(outLocal);
-#endif       
 }
 
 __aicore__ inline void MoeV2SortMultiCore::InitMoeMrgSort(MoeV2Mrgsort *sorter, int64_t listNum, int64_t coreOffset,
                                                           int64_t loopOffset)
 {
     GlobalTensor<float> srcWsGm = workspaceGms[srcWsIndex][blockIdx * coreOffset + loopOffset];
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> inLocal = sortedBuffer.Get<float>(GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * MAX_MRGSORT_LIST);
-    LocalTensor<float> outLocal = tempBuffer.Get<float>(GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * MAX_MRGSORT_LIST);
-#else
     LocalTensor<float> inLocal = sortDataCopyInQueue.AllocTensor<float>();
     LocalTensor<float> outLocal = sortDataCopyOutQueue.AllocTensor<float>();
-#endif
     for (int64_t i = 0; i < listNum; i++) {
         LocalTensor<float> inLocalT = inLocal[GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * i];
         sorter->SetInput(srcWsGm, inLocalT);
     }
     GlobalTensor<float> dstWsGm = workspaceGms[1 - srcWsIndex][blockIdx * coreOffset + loopOffset];
     sorter->SetOutput(dstWsGm, outLocal);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ != 200
     sortDataCopyInQueue.FreeTensor(inLocal);
     sortDataCopyOutQueue.FreeTensor(outLocal);
-#endif
 }
 
 __aicore__ inline void MoeV2SortMultiCore::InitMoeMrgSortOut(MoeV2MrgsortOut *sorter, int64_t listNum,
                                                              int64_t coreOffset)
 {
     GlobalTensor<float> srcWsGm = workspaceGms[srcWsIndex];
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> inLocal = sortedBuffer.Get<float>(GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * MAX_MRGSORT_LIST);
-    LocalTensor<float> outLocal = sortDataCopyOutQueue.AllocTensor<float>();
-#else
     LocalTensor<float> inLocal = sortDataCopyInQueue.AllocTensor<float>();
     LocalTensor<float> outLocal = sortDataCopyOutQueue.AllocTensor<float>();
-#endif
     for (int64_t i = 0; i < listNum; i++) {
         LocalTensor<float> inLocalT = inLocal[GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * i];
         sorter->SetInput(srcWsGm, inLocalT);
@@ -247,19 +176,12 @@ __aicore__ inline void MoeV2SortMultiCore::InitMoeMrgSortOut(MoeV2MrgsortOut *so
     LocalTensor<float> outLocalV = outLocal[this->sortOutTilingData->oneLoopMaxElements * MAX_MRGSORT_LIST];
     sorter->SetOutput(this->sortedexpertIdxGm, this->expandDstToSrcRowGm, outLocal, outLocalV);
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> tempLocal = tempBuffer.Get<float>(GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * MAX_MRGSORT_LIST);
-    // buffer for Extract
-    sorter->SetBuffer(tempLocal);
-    sortDataCopyOutQueue.FreeTensor(outLocal);
-#else
     LocalTensor<float> tempLocal =
         sortedBuffer.Get<float>(GetSortLen<float>(this->sortOutTilingData->oneLoopMaxElements) * MAX_MRGSORT_LIST);
     // buffer for Extract
     sorter->SetBuffer(tempLocal);
     sortDataCopyInQueue.FreeTensor(inLocal);
     sortDataCopyOutQueue.FreeTensor(outLocal);
-#endif
 }
 
 __aicore__ inline void MoeV2SortMultiCore::OneCoreVMSProcess(int64_t listNum, int64_t perListElements,
@@ -322,12 +244,7 @@ __aicore__ inline void MoeV2SortMultiCore::VBSProcess()
         }
     }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-    AscendC::SyncAll(syncTmpSpaceGm_, syncLocal, GetBlockNum());
-#else
     SyncAll();
-#endif
 }
 
 __aicore__ inline void MoeV2SortMultiCore::VMSProcess()
@@ -363,12 +280,7 @@ __aicore__ inline void MoeV2SortMultiCore::VMSProcess()
 
         lastListElements = perListElements * (remainListNum - 1) + lastListElements;
         perListElements = perListElements * MAX_MRGSORT_LIST;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-        AscendC::SyncAll(syncTmpSpaceGm_, syncLocal, GetBlockNum());
-#else
         SyncAll();
-#endif
     }
 }
 
@@ -384,12 +296,7 @@ __aicore__ inline void MoeV2SortMultiCore::SortOutProcess()
         sorter.Init(&mrgsortParam, pipe);
         sorter.Process();
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-    AscendC::SyncAll(syncTmpSpaceGm_, syncLocal, GetBlockNum());
-#else
     SyncAll();
-#endif
 }
 
 template <typename TilingData>
@@ -402,9 +309,6 @@ __aicore__ inline void MoeV2SortMultiCore::Init(GM_ADDR expertIdx, GM_ADDR exper
     this->vbsTilingData = &(tilingData->vbsComputeParamsOp);
     this->vmsTilingData = &(tilingData->vmsMiddleComputeParamsOp);
     this->sortOutTilingData = &(tilingData->sortOutComputeParamsOp);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    this->perCoreOffset = this->vbsTilingData->perCoreElements;
-#endif
     this->blockIdx = GetBlockIdx();
     this->tileLength = this->vbsTilingData->perCorePerLoopElements;
     this->sortTotalLength = this->vbsTilingData->perCoreElements;
@@ -457,42 +361,18 @@ __aicore__ inline void MoeV2SortMultiCore::Init(GM_ADDR expertIdx, GM_ADDR exper
     }
     // key and value
     int64_t kvFactor = 2;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    int64_t workspaceLen = GetSortLen<float>(Align(this->totalLength, sizeof(int32_t)));
-    workspaceGms[0].SetGlobalBuffer((__gm__ float *)workspace + Align(this->totalLength, sizeof(int32_t)) * 2,
-                                    workspaceLen);
-    workspaceGms[1].SetGlobalBuffer((__gm__ float *)workspace +
-                                        Align(this->totalLength, sizeof(int32_t)) * 2 + workspaceLen,
-                                    workspaceLen);
-                                    
-#else
     workspaceGms[0].SetGlobalBuffer((__gm__ float *)workspace + Align(this->totalLength, sizeof(int32_t)) * 2,
                                     Align(this->totalLength, sizeof(int32_t)) * kvFactor);
     workspaceGms[1].SetGlobalBuffer((__gm__ float *)workspace +
                                         Align(this->totalLength, sizeof(int32_t)) * (kvFactor + 2),
                                     Align(this->totalLength, sizeof(int32_t)) * kvFactor);
-#endif
 
     int64_t bufferSize = Ceil(Max(this->sortOutTilingData->oneLoopMaxElements * MAX_MRGSORT_LIST, sortCoreLoopElements),
                               ONE_REPEAT_SORT_NUM) *
                          ONE_REPEAT_SORT_NUM * sizeof(int32_t) * kvFactor;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    syncTmpSpaceGm_.SetGlobalBuffer((__gm__ int32_t *)workspace +
-                                        Align(this->totalLength, sizeof(int32_t)) * 2 + 2 * workspaceLen,
-                                    INT32_ONE_BLOCK_NUM * GetBlockNum() * BLOCK_BYTES);
-    pipe->InitBuffer(sortDataCopyInQueue, bufferNum, bufferSize);
-    pipe->InitBuffer(sortDataCopyOutQueue, bufferNum, bufferSize);
-    pipe->InitBuffer(tempBuffer, bufferSize * REGIONP_ROPOSAL_KV_RATIO);
-    pipe->InitBuffer(sortedBuffer, bufferSize* REGIONP_ROPOSAL_KV_RATIO);
-    LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-    Duplicate<int32_t>(syncLocal, 0, SYNC_LEN);
-    SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-    DataCopy(syncTmpSpaceGm_, syncLocal, SYNC_LEN);
-#else
     pipe->InitBuffer(sortDataCopyInQueue, bufferNum, bufferSize);
     pipe->InitBuffer(sortDataCopyOutQueue, bufferNum, bufferSize);
     pipe->InitBuffer(sortedBuffer, bufferSize);
-#endif
 }
 
 __aicore__ inline void MoeV2SortMultiCore::Process()

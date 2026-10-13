@@ -18,8 +18,6 @@
 
 #include "../../../mat_mul_v3/op_host/op_tiling/matmul_v3_simplifiedkey.h"
 #include "../../../mat_mul_v3/op_host/op_tiling/matmul_v3_platform_common.h"
-#include "mat_mul_v3/op_host/op_tiling/arch35/matmul_v3_compile_info_advanced.h"
-#include "./arch35/batch_matmul_v3_tiling_advanced.h"
 #include "batch_mat_mul_v3_base_tiling.h"
 
 #include "../../../../common/include/tiling_base/tiling_templates_registry.h"

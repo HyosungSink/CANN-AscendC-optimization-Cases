@@ -716,30 +716,25 @@ static aclnnStatus CheckOptionalParams(FFNParams &ffnParams)
 
 static aclnnStatus CheckFormat(const FFNParams &ffnParams)
 {
-    bool is310P = GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P;
     op::Format xFormat = ffnParams.x->GetStorageFormat();
     op::Format weight1Format = ffnParams.weight1->GetStorageFormat();
     op::Format weight2Format = ffnParams.weight2->GetStorageFormat();
     op::Format yFormat = ffnParams.y->GetStorageFormat();
-    bool isXFormatValid = xFormat < Format::FORMAT_END &&
-                          (!op::IsPrivateFormat(xFormat) || (is310P && xFormat == Format::FORMAT_FRACTAL_NZ));
+    bool isXFormatValid = ((xFormat < Format::FORMAT_END) && (!(op::IsPrivateFormat(xFormat))));
     CHECK_COND(isXFormatValid, ACLNN_ERR_PARAM_INVALID, "format of x %s is invalid.",
                op::ToString(xFormat).GetString());
 
     bool isWeight1FormatValid =
-        weight1Format < Format::FORMAT_END &&
-        (!op::IsPrivateFormat(weight1Format) || (is310P && weight1Format == Format::FORMAT_FRACTAL_NZ));
+        ((weight1Format < Format::FORMAT_END) && (!(op::IsPrivateFormat(weight1Format))));
     CHECK_COND(isWeight1FormatValid, ACLNN_ERR_PARAM_INVALID, "format of weight1 %s is invalid.",
                op::ToString(weight1Format).GetString());
 
     bool isWeight2FormatValid =
-        weight2Format < Format::FORMAT_END &&
-        (!op::IsPrivateFormat(weight2Format) || (is310P && weight2Format == Format::FORMAT_FRACTAL_NZ));
+        ((weight2Format < Format::FORMAT_END) && (!(op::IsPrivateFormat(weight2Format))));
     CHECK_COND(isWeight2FormatValid, ACLNN_ERR_PARAM_INVALID, "format of weight2 %s is invalid.",
                op::ToString(weight2Format).GetString());
 
-    bool isYFormatValid = yFormat < Format::FORMAT_END &&
-                          (!op::IsPrivateFormat(yFormat) || (is310P && yFormat == Format::FORMAT_FRACTAL_NZ));
+    bool isYFormatValid = ((yFormat < Format::FORMAT_END) && (!(op::IsPrivateFormat(yFormat))));
     CHECK_COND(isYFormatValid, ACLNN_ERR_PARAM_INVALID, "format of y %s is invalid.",
                op::ToString(yFormat).GetString());
 
@@ -752,20 +747,7 @@ inline static aclnnStatus CheckParam(FFNParams &ffnParams)
     CHECK_RET(CheckY(ffnParams), ACLNN_ERR_PARAM_INVALID);
     CHECK_RET(CheckFmapWeightShape(ffnParams) == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
     CHECK_RET(CheckBias(ffnParams), ACLNN_ERR_PARAM_INVALID);
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        auto xDimNum = ffnParams.x->GetViewShape().GetDimNum();
-        CHECK_COND(xDimNum == DIM_LIMIT_LOWER, ACLNN_ERR_PARAM_INVALID,
-                   "FFN only supports x dim 2 on ASCEND310P, but x dim is %zu", xDimNum);
-        CHECK_COND(ffnParams.innerPrecise == HIGH_PERFORMANCE, ACLNN_ERR_PARAM_INVALID,
-                   "FFN is only support high performance now!");
-        CHECK_COND(ffnParams.activationType <= ActiveType::GELU, ACLNN_ERR_PARAM_INVALID,
-                   "now activation types supported by ffn are fastgelu, gelu, relu, silu, please check activation.");
-        OP_CHECK_DTYPE_NOT_MATCH(ffnParams.x, op::DataType::DT_FLOAT16, return ACLNN_ERR_PARAM_INVALID);
-        OP_CHECK_DTYPE_NOT_MATCH(ffnParams.y, op::DataType::DT_FLOAT16, return ACLNN_ERR_PARAM_INVALID);
-        CHECK_COND(ffnParams.expertTokens == nullptr, ACLNN_ERR_PARAM_INVALID,
-                   "FFN only supports no expert cases on ASCEND310P.");
-        CHECK_RET(CheckHighPerformance(ffnParams) == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
-    } else {
+    {
         CHECK_RET(ffnParams.activationType != ActiveType::INVALID_TYPE, ACLNN_ERR_PARAM_INVALID);
         CHECK_RET(CheckOptionalParams(ffnParams) == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
     }
@@ -784,9 +766,8 @@ static aclnnStatus InputsContiguousAndTransFormat(const aclTensor *tensor, const
         reformatedTensor = l0op::Contiguous(tensor, executor);
         CHECK_COND(reformatedTensor != nullptr, ACLNN_ERR_INNER_NULLPTR, "%s Contiguous failed.", tensorName.c_str());
 
-        bool is310P = GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P;
         // only in 310P, tensor should be transdata to NZ format
-        if (!is310P) {
+        {
             return ACLNN_SUCCESS;
         }
 
@@ -983,9 +964,7 @@ aclnnStatus aclnnFFNGetWorkspaceSize(const aclTensor *x, const aclTensor *weight
                                      const aclTensor *antiquantOffset2, const char *activation, int64_t innerPrecise,
                                      const aclTensor *y, uint64_t *workspaceSize, aclOpExecutor **executor)
 {
-    CHECK_COND(GetCurrentPlatformInfo().GetSocVersion() != SocVersion::ASCEND310P, ACLNN_ERR_PARAM_INVALID,
-               "aclnnFFNGetWorkspaceSize and aclnnFFN are not supported on Ascend310P Soc. Please use "
-               "aclnnFFNV2GetWorkspaceSize and aclnnFFNV2!");
+
     ActiveType activationType = GetActiveType(activation);
     CHECK_COND(activationType != ActiveType::INVALID_TYPE, ACLNN_ERR_PARAM_INVALID,
                "the activation type %s is not supported by ffn operator, please select right activation according to "

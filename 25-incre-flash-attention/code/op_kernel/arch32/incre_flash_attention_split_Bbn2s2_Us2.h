@@ -1656,7 +1656,6 @@ __aicore__ inline void IncreFlashAttentionAttenSplitBbn2s2Us2<IFAT>::AttenMaskCo
     LocalTensor<bool> maskUb = inputQue2.AllocTensor<bool>();
     attenMaskSizeAlign = Align(actualColumnCount, 32U);
     maskUb.SetSize(dealRowCount * attenMaskSizeAlign);
-#if (__CCE_AICORE__ > 200)
     if (actualColumnCount % 32 == 0) {
         DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
     } else {
@@ -1673,9 +1672,6 @@ __aicore__ inline void IncreFlashAttentionAttenSplitBbn2s2Us2<IFAT>::AttenMaskCo
         padParams.paddingValue = 0;
         DataCopyPad(maskUb, attenMaskBoolGm[offset], intriParams, padParams);
     }
-#else
-    DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
-#endif
     inputQue2.template EnQue(maskUb);
 }
 
@@ -2777,7 +2773,6 @@ __aicore__ inline void IncreFlashAttentionAttenSplitBbn2s2Us2<IFAT>::PseShiftCop
     pseMaskSizeAlign = Align(actualColumnCount, 16U); // 16: align to 32bytes
     uint32_t computeSize = rowCount * pseMaskSizeAlign;
     pseShiftUb.SetSize(computeSize);
-#if (__CCE_AICORE__ > 200)
     if (actualColumnCount % 16 == 0) {
         for (uint32_t i = 0; i < rowCount; ++i) {
             DataCopy(pseShiftUb[i * pseMaskSizeAlign],
@@ -2800,12 +2795,6 @@ __aicore__ inline void IncreFlashAttentionAttenSplitBbn2s2Us2<IFAT>::PseShiftCop
                         pseShiftGm[pseShiftOffset + startRow * pseShiftS + i * pseShiftS], intriParams, padParams);
         }
     }
-#else
-    for (uint32_t i = 0; i < rowCount; ++i) {
-        DataCopy(pseShiftUb[i * pseMaskSizeAlign], pseShiftGm[pseShiftOffset + startRow * pseShiftS + i * pseShiftS],
-                 pseMaskSizeAlign);
-    }
-#endif
     inputQue1.EnQue(pseShiftUb);
 }
 

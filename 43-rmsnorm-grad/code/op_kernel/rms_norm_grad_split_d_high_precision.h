@@ -29,7 +29,6 @@ public:
         const RmsNormGradTilingData* tiling, GM_ADDR usrWorkspace)
     {
         InitVar(tiling);
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ != 200)
         dgammaGm_.SetGlobalBuffer((__gm__ float*)dgamma, colVal_);
         if (isDeterministic_ == 0 && GetBlockIdx() == 0) {
             InitOutput<float>(dgammaGm_, colVal_, 0);
@@ -40,10 +39,6 @@ public:
             workspaceGmOri_.SetGlobalBuffer((__gm__ float*)usrWorkspace);
         }
         SyncAll();
-#endif
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 200)
-        InitGammaFor310(gamma, dgamma, usrWorkspace);
-#endif
         InitGmBuffer(dy, x, rstd, gamma, dx);
         InitUB();
     }
@@ -159,19 +154,6 @@ public:
             SubProcess(loopMainOuter, tailOuter);
         }
         if (isDeterministic_) {
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 200)
-            LocalTensor<int32_t> workLocal = syncTmpBuf_.Get<int32_t>();
-            SyncAll(syncTmpSpaceGm_, workLocal);
-            if (GetBlockIdx() != 0) {
-                return;
-            }
-            for (uint32_t j = 0; j < loopMainCol_; j++) {
-                AddDgamma(j, ubFactor_);
-            }
-            if (tailCol_ > 0) {
-                AddDgamma(loopMainCol_, tailCol_);
-            }
-#else
             SyncAll();
             LocalTensor<float> buffer1_ = inQueX_.AllocTensor<float>();
             LocalTensor<float> buffer2_ = inQueDY_.AllocTensor<float>();
@@ -179,7 +161,6 @@ public:
             FinalProcessDeterministic(colValAlign_, blockDim_, colVal_, deterministicStruct);
             inQueX_.FreeTensor(buffer1_);
             inQueDY_.FreeTensor(buffer2_);
-#endif
         }
     }
 
@@ -267,21 +248,15 @@ public:
     __aicore__ inline void CopyRstdIn(uint32_t iOuter, uint32_t calcRow)
     {
         LocalTensor<float> rstdLocal = inQueRstd_.AllocTensor<float>();
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParamsRstd{1, (uint32_t)(calcRow * sizeof(float)), 0, 0, 0};
         DataCopyPadExtParams<float> padParams{true, 0, 0, 0};
         DataCopyPad(rstdLocal, rstdGm_[iOuter * rowFactor_], dataCopyParamsRstd, padParams);
-#else
-        uint32_t calcRow_align = ROUND_UP(calcRow, alignLen_);
-        DataCopy(rstdLocal, rstdGm_[iOuter * rowFactor_], calcRow_align);
-#endif
         inQueRstd_.EnQue(rstdLocal);
     }
 
     __aicore__ inline void CopyGammaIn(uint32_t dIdx, uint32_t calcLen)
     {
         LocalTensor<T_GAMMA> gammaLocal = inQueGamma_.AllocTensor<T_GAMMA>();
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParams{1, (uint32_t)(calcLen * sizeof(T_GAMMA)), 0, 0, 0};
         DataCopyPadExtParams<T_GAMMA> padParams{false, 0, 0, 0};
         if constexpr (!is_same<T_GAMMA, float>::value) {
@@ -289,14 +264,6 @@ public:
         } else {
             DataCopyPad(gammaLocal, gammaGm_[dIdx * ubFactor_], dataCopyParams, padParams);
         }
-#else
-        uint32_t calcLen_align = ROUND_UP(calcLen, alignLen_);
-        if constexpr (!is_same<T_GAMMA, float>::value) {
-            DataCopy(gammaLocal[ubFactor_], gammaGm_[dIdx * ubFactor_], calcLen_align);
-        } else {
-            DataCopy(gammaLocal, gammaGm_[dIdx * ubFactor_], calcLen_align);
-        }
-#endif
 
         inQueGamma_.EnQue(gammaLocal);
     }
@@ -305,40 +272,8 @@ public:
     {
         LocalTensor<float> dgamma_out = outQueDgamma_.DeQue<float>();
         SetAtomicAdd<float>();
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParams{1, (uint32_t)(calcLen * sizeof(float)), 0, 0, 0};
         DataCopyPad(outGm[dIdx * ubFactor_], dgamma_out, dataCopyParams);
-#else
-        if (calcLen < ALIGN_32) {
-            for (uint32_t i = 0; i < ALIGN_32; i++) {
-                if (i >= calcLen) {
-                    dgamma_out.SetValue(i, 0.0f);
-                }
-            }
-            DataCopy(outGm[dIdx * ubFactor_], dgamma_out, ALIGN_32);
-            SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
-            WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
-        } else {
-            uint32_t calcLenAlign = (calcLen / ALIGN_32) * ALIGN_32;
-            uint32_t calcLenTail = calcLen - calcLenAlign;
-            DataCopy(outGm[dIdx * ubFactor_], dgamma_out, calcLenAlign);
-            if (calcLenTail > 0) {
-                SetFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                for (uint32_t i = 0; i < ALIGN_32; i++) {
-                    if (i < (ALIGN_32 - calcLenTail)) {
-                        dgamma_out.SetValue(i, 0.0f);
-                    } else {
-                        uint32_t tailOffset = calcLenAlign + i - (ALIGN_32 - calcLenTail);
-                        dgamma_out.SetValue(i, dgamma_out.GetValue(tailOffset));
-                    }
-                }
-                DataCopy(outGm[dIdx * ubFactor_ + calcLen - ALIGN_32], dgamma_out, ALIGN_32);
-                SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
-                WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
-            }
-        }
-#endif
         SetAtomicNone();
         outQueDgamma_.FreeTensor(dgamma_out);
     }
@@ -349,7 +284,6 @@ public:
         LocalTensor<T_DY> xLocal = inQueX_.AllocTensor<T_DY>();
         LocalTensor<T_DY> dyLocal = inQueDY_.AllocTensor<T_DY>();
         uint32_t gmOffset = nIdx * colVal_ + dIdx * ubFactor_;
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParams{1, (uint32_t)(calcLen * sizeof(T_DY)), 0, 0, 0};
         DataCopyPadExtParams<T_DY> padParams{true, 0, 0, 0};
         if constexpr (!is_same<T_DY, float>::value) {
@@ -362,19 +296,6 @@ public:
         } else {
             DataCopyPad(dyLocal, dyGm_[gmOffset], dataCopyParams, padParams);
         }
-#else
-        uint32_t calcLen_align = ROUND_UP(calcLen, alignLen_);
-        if constexpr (!is_same<T_DY, float>::value) {
-            DataCopy(xLocal[ubFactor_], xGm_[gmOffset], calcLen_align);
-        } else {
-            DataCopy(xLocal, xGm_[gmOffset], calcLen_align);
-        }
-        if constexpr (!is_same<T_DY, float>::value) {
-            DataCopy(dyLocal[ubFactor_], dyGm_[gmOffset], calcLen_align);
-        } else {
-            DataCopy(dyLocal, dyGm_[gmOffset], calcLen_align);
-        }
-#endif
         inQueX_.EnQue(xLocal);
         inQueDY_.EnQue(dyLocal);
     }
@@ -427,13 +348,11 @@ public:
             Cast(dxLocalB16, dxLocal, RoundMode::CAST_NONE, calcLen);
             PipeBarrier<PIPE_V>();
         }
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         else if constexpr (is_same<T_DY, bfloat16_t>::value) {
             LocalTensor<T_DY> dxLocalB16 = dxLocal.ReinterpretCast<T_DY>();
             Cast(dxLocalB16, dxLocal, RoundMode::CAST_RINT, calcLen);
             PipeBarrier<PIPE_V>();
         }
-#endif
         inQueX_.FreeTensor(xLocal);
         inQueDY_.FreeTensor(dyLocal);
         outQueDX_.EnQue(dxLocal);
@@ -443,28 +362,8 @@ public:
     {
         LocalTensor<T_DY> dx = outQueDX_.DeQue<T_DY>();
         uint32_t gmOffset = nIdx * colVal_ + dIdx * ubFactor_;
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParams{1, (uint32_t)(calcLen * sizeof(T_DY)), 0, 0, 0};
         DataCopyPad(dxGm_[gmOffset], dx, dataCopyParams);
-#else
-        uint32_t calcLenAlign32 = (calcLen / alignLen_) * alignLen_;
-        if (calcLenAlign32 > 0) {
-            DataCopy(dxGm_[gmOffset], dx, calcLenAlign32);
-        }
-        uint32_t calcLenTail32 = calcLen % alignLen_;
-
-        if (calcLenTail32 > 0) {
-            SetFlag<HardEvent::MTE3_S>(EVENT_ID0);
-            WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
-            for (uint32_t i = 0; i < calcLenTail32; i++) {
-                dxGm_.SetValue(gmOffset + calcLenAlign32 + i, dx.GetValue(calcLenAlign32 + i));
-            }
-            DataCacheCleanAndInvalid<T_DY, CacheLine::ENTIRE_DATA_CACHE>(dxGm_);
-            PipeBarrier<PIPE_ALL>();
-            SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
-            WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
-        }
-#endif
         outQueDX_.FreeTensor(dx);
     }
 
@@ -478,11 +377,7 @@ public:
         DataCopyPadExtParams<float> padParams{true, 0, 0, 0};
         for (uint32_t blockidx = 0; blockidx < blockDim_; blockidx++) {
             LocalTensor<float> dgammaPart = inQueGamma_.AllocTensor<float>();
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
             DataCopyPad(dgammaPart, workspaceGm_[blockidx * colVal_ + j * ubFactor_], dataCopyParams, padParams);
-#else
-            DataCopy(dgammaPart, workspaceGm_[blockidx * colVal_ + j * ubFactor_], calcCol_align);
-#endif
             inQueGamma_.EnQue(dgammaPart);
             LocalTensor<float> dgammaPartLocal = inQueGamma_.DeQue<float>();
             Add(dgamma, dgamma, dgammaPartLocal, calcCol);
@@ -491,12 +386,8 @@ public:
         }
         outQueDgamma_.EnQue(dgamma);
         LocalTensor<float> dgammaOut = outQueDgamma_.DeQue<float>();
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 220)
         DataCopyExtParams dataCopyParamsOut{1, (uint32_t)(calcCol * sizeof(float)), 0, 0, 0};
         DataCopyPad(dgammaGm_[j * ubFactor_], dgammaOut, dataCopyParamsOut);
-#else
-        DataCopy(dgammaGm_[j * ubFactor_], dgammaOut, calcCol_align);
-#endif
         outQueDgamma_.FreeTensor(dgammaOut);
     }
 

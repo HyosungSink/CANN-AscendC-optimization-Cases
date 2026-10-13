@@ -168,20 +168,6 @@ public:
         this->Attr("out_dtype").AttrType(OPTIONAL).Int(0);
         this->Attr("softmax_out_layout").AttrType(OPTIONAL).String("");
 
-        OpAICoreConfig aicore_config_95;
-        aicore_config_95.DynamicCompileStaticFlag(true)
-            .DynamicFormatFlag(true)
-            .DynamicRankSupportFlag(true)
-            .DynamicShapeSupportFlag(true)
-            .NeedCheckSupportFlag(false)
-            .PrecisionReduceFlag(true)
-            .ExtendCfgInfo("prebuildPattern.value", "Opaque")
-            .ExtendCfgInfo("coreType.value", "AiCore")
-            .ExtendCfgInfo("opFile.value", "flash_attention_score_apt")
-            .ExtendCfgInfo("jitCompile.flag", "static_false,dynamic_false");
-
-        this->AICore().AddConfig("ascend950", aicore_config_95);
-
         OpAICoreConfig aicore_config;
         aicore_config.Input("query")
             .ParamType(REQUIRED)

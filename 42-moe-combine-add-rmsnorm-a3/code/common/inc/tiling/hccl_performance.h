@@ -40,15 +40,9 @@ public:
 
     void SetCommParametersBaseSocType(SocVersion inputSocVersion)
     {
-        if (inputSocVersion == SocVersion::SOC310_P) {
-            SetCommMethodVersion310P();  // 310P只支持MatmulAllreduce算子
-            socVersion_ = SocVersion::SOC310_P;
-        } else if (inputSocVersion == SocVersion::SOC910_93) {
+        if (inputSocVersion == SocVersion::SOC910_93) {
             InitSOC91093();
             socVersion_ = SocVersion::SOC910_93;
-        } else if (inputSocVersion == SocVersion::SOC950) {
-            InitParametersForFullMesh();
-            socVersion_ = SocVersion::SOC950;
         } else {
             InitParametersForFullMesh();
         }
@@ -69,7 +63,6 @@ explicit HCCLPerformanceModel(uint32_t inputRankDim, KernelType inputKernelType,
             std::to_string(static_cast<int>(commTypeInfo_.commMethod));
     }
 
-    void SetCommMethodVersion310P();
     void SetMaxStepSize();
     void SetCommShapeLen(uint64_t len)
     {

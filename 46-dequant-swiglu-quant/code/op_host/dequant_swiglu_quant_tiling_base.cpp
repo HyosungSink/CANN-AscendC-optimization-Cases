@@ -93,9 +93,7 @@ public:
 protected:
     bool IsCapable() override
     {
-        if (Ops::NN::OpTiling::IsRegbaseSocVersion(context_)) {
-            return false;
-        }
+
         auto shapeGroupIndex = context_->GetOptionalInputShape(6);
         if (shapeGroupIndex == nullptr) {
             return true;
@@ -475,11 +473,7 @@ bool DequantSwigluQuantTiling::CalcTiling(
     tilingData.set_is32BAligned(tilingData.get_colLen() % ubMinBlockLen == 0);
     // 310p not support Non-64B
     const uint32_t blockSizeOf64B = ALIGN_UINT_IN_CACHE_64B / inputDTypeLen;
-    if (((socVersion_ == platform_ascendc::SocVersion::ASCEND310P)) &&
-        (tilingData.get_colLen() % blockSizeOf64B != 0)) {
-        OP_LOGE("DequantSwigluQuant", "input shape is not support Non-64B aligned");
-        return false;
-    }
+
     GluSingleTilingOptParam optTilingDb;
     if (!CalcOptTiling(ubSize, xInputDataType, optTilingDb)) {
         return false;

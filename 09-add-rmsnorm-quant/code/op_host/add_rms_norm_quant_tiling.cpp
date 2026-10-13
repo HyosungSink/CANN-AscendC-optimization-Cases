@@ -212,7 +212,7 @@ static void CalcModeAndUbFactor(
         singleUbFactor = (tmp / BLOCK_ALIGN_NUM_32) * BLOCK_ALIGN_NUM_32;
     }
 
-    if (blockFactor == 1 && socVersion != platform_ascendc::SocVersion::ASCEND310P && numCol <= singleUbFactor) {
+    if (((blockFactor == 1) && (numCol <= singleUbFactor))) {
         modeKey = MODE_SINGLE_N;
         ubFactor = singleUbFactor;
         OP_LOGD("Tiling4AddRmsNormQuantNotRegbase", "kernel template: singleN, ubFactor: %d", ubFactor);
@@ -278,10 +278,7 @@ static ge::graphStatus Tiling4AddRmsNormQuantNotRegbase(gert::TilingContext* con
 
 ge::graphStatus Tiling4AddRmsNormQuant(gert::TilingContext* context)
 {
-    if (IsRegbaseSocVersion(context)) {
-        AddRmsNormQuantRegbaseTiling regbaseTiling(context);
-        return regbaseTiling.DoTiling();
-    }
+
     return Tiling4AddRmsNormQuantNotRegbase(context);
 }
 

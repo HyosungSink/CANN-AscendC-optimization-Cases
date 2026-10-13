@@ -44,9 +44,7 @@ void MMPlusReduceScatter::SetCommTimeFactorForOther()
 
 void MMPlusReduceScatter::SetCommTimeFactor()
 {
-    if (clusterInfo_.socType == SocVersion::SOC950) {
-        SetCommTimeFactorForA5();
-    } else {
+    {
         SetCommTimeFactorForOther();
     }
     return;

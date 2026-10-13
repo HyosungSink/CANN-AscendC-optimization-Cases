@@ -136,11 +136,7 @@ constexpr int FINISH_MM_QN_SPLIT_N = 0X6;
 
 class NoneType {};
 
-#if __CCE_AICORE__ == 310
-  using FP8E4M3 = fp8_e4m3fn_t;
-#else
   using FP8E4M3 = NoneType;
-#endif
 
 // mte2 <> mte1
 #define SCALE_EVENT EVENT_ID3

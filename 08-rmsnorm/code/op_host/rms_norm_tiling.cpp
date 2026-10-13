@@ -324,11 +324,7 @@ static ge::graphStatus Tiling4RmsNorm(gert::TilingContext* context)
     }
 
     numColAlign = CeilDiv(numCol, static_cast<uint64_t>(dataPerBlock)) * dataPerBlock;
-    if (Ops::NN::OpTiling::IsRegbaseSocVersion(context) || curSocVersion == platform_ascendc::SocVersion::MC62CM12A) {
-        RMSNormArch35TilingData arch35TilingData;
-        return TilingArch354RmsNorm(
-            context, numRow, numCol, numCore, ubSize, xDataType, gammaDataType, *epsilon, tiling, arch35TilingData);
-    } else if (curSocVersion == platform_ascendc::SocVersion::ASCEND910) {
+    if (curSocVersion == platform_ascendc::SocVersion::ASCEND910) {
         SocVersion = 1U;
         colAlign = numColAlign == numCol ? 1ULL : 0ULL;
         int64_t ubDataNum = static_cast<int64_t>(ubSize) / static_cast<int64_t>(FLOAT_BYTE_SIZE);
@@ -413,7 +409,7 @@ static ge::graphStatus Tiling4RmsNorm(gert::TilingContext* context)
             modeKey = MODE_SPLIT_D;
         }
 
-        if ((numColAlign <= SMALL_REDUCE_NUM && curSocVersion == platform_ascendc::SocVersion::ASCEND910B) || (xDtypeKey == DTYPE_KEY_FP16 && numCol == 128 && curSocVersion == platform_ascendc::SocVersion::ASCEND310P && numRow % BYTE_SIZE_2_BLOCK_ALIGN_NUM == 0)) {
+        if (((numColAlign <= SMALL_REDUCE_NUM) && (curSocVersion == platform_ascendc::SocVersion::ASCEND910B))) {
             modeKey = MODE_MERGE_N;
         }
 
@@ -430,19 +426,11 @@ static ge::graphStatus Tiling4RmsNorm(gert::TilingContext* context)
             }
         }
         if (modeKey == MODE_MERGE_N) {
-            if (curSocVersion == platform_ascendc::SocVersion::ASCEND310P) {
-                ubSize = ubSize - BRCB_RESERVED_UB_USED;
-            }
+
             tiling.set_normal_flag(PERFORMANC_DIM_ZERO);
             uint64_t numColAlignWeight = 16UL;
             rowFactor = ubSize / (numColAlign * numColAlignWeight + 260UL);
-            if (curSocVersion == platform_ascendc::SocVersion::ASCEND310P) {
-                rowFactor = rowFactor / FLOAT_BLOCK_ALIGN_NUM * FLOAT_BLOCK_ALIGN_NUM; // BroadCast need 32B Align
-                blockFactor = (blockFactor + FLOAT_BLOCK_ALIGN_NUM - 1) / FLOAT_BLOCK_ALIGN_NUM * FLOAT_BLOCK_ALIGN_NUM;
-                useCoreNum = CeilDiv(numRow, blockFactor);
-                latsBlockFactor = numRow - blockFactor * (useCoreNum - 1);
-                isPerformance = 1;
-            }
+
             ubFactor = rowFactor * numColAlign;
             OP_TILING_CHECK(
                 ubFactor == 0,
@@ -469,10 +457,7 @@ static ge::graphStatus Tiling4RmsNorm(gert::TilingContext* context)
     if ((curSocVersion == platform_ascendc::SocVersion::ASCEND910) && (modeKey == 0)) {
         tilingKey = tilingKey + xDtypeKey * DTYPE_WEIGHT;
     }
-    if (Ops::NN::OpTiling::IsRegbaseSocVersion(context) ||
-        curSocVersion == platform_ascendc::SocVersion::MC62CM12A) {
-        tilingKey = SocVersion * SOC_WEIGHT + modeKey;
-    }
+
     context->SetTilingKey(tilingKey);
 
     tiling.set_is_performance(isPerformance);

@@ -866,7 +866,7 @@ that of %s is %zu, x1 is %zu",  GetX2ScaleName().c_str(),  GetX2ScaleName().c_st
 
 bool QuantMatmulChecker::CheckGroupSize() const
 {
-    if (npuArch_ != NpuArch::DAV_3510) {
+    {
         return true;
     }
     uint64_t groupSizeM = (static_cast<uint64_t>(groupSize_) >> GROUP_M_OFFSET) & GROUP_MNK_BIT_SIZE;
@@ -995,14 +995,10 @@ FLOAT8_E8M0, actual x1Scale is %s, x2Scale is %s.",
 bool QuantMatmulChecker::CheckFormat() const
 {
     auto x2StorageFormat = ge::GetPrimaryFormat(x2_->GetStorageFormat());
-    if (x1Scale_ != nullptr && npuArch_ == NpuArch::DAV_2002) {
-        OP_LOGD("QuantMatmul pertoken mode in Arch 2002: x1 should be FORMAT_FRACTAL_NZ");
-    } else {
+    {
         CHECK_RET(x1_->GetStorageFormat() == op::Format::FORMAT_ND, false);
     }
-    if (npuArch_ == NpuArch::DAV_2002) {
-        CHECK_RET(x2_->GetStorageFormat() == op::Format::FORMAT_FRACTAL_NZ, false);
-    } else {
+    {
         CHECK_RET(x2StorageFormat == op::Format::FORMAT_ND || x2StorageFormat == op::Format::FORMAT_FRACTAL_NZ, false);
     }
     if (x1Scale_ != nullptr) {
@@ -1420,12 +1416,6 @@ but got %s and %s.",
     switch (npuArch_) {
         case NpuArch::DAV_2201:
             CHECK_RET(CheckDtypeOnlyL0c2out() == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
-            break;
-        case NpuArch::DAV_3510:
-            CHECK_RET(CheckDtypeL0c2outOrL0c2ub() == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
-            break;
-        case NpuArch::DAV_2002:
-            CHECK_RET(CheckDtypeOnlyL0c2ub() == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
             break;
         default:
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "AclnnQuantMatmul do not support this platform: %s.",

@@ -356,11 +356,9 @@ MatMulUnAlignedSingleCoreSplitKKernelBase<A_TYPE, B_TYPE, C_TYPE, BIAS_TYPE, BLO
     if ASCEND_IS_AIC {
         WaitFlagDevLocal(6);
         if (GetBlockIdx() >= matmulTilingData_->matmulTiling.usedCoreNum) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             if constexpr (sizeof(C_T) != sizeof(float)) {
                 NotifyEvent<PIPE_FIX>(5);
             }
-#endif
             PipeBarrier<PIPE_ALL>();
             return;
         }
@@ -372,11 +370,9 @@ MatMulUnAlignedSingleCoreSplitKKernelBase<A_TYPE, B_TYPE, C_TYPE, BIAS_TYPE, BLO
         } else if (innerParams_.nd2nzFlag == 3) {
             mmab_.UnAlignedProcess(enAtomic);
         }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
         if constexpr (sizeof(C_T) != sizeof(float)) {
             NotifyEvent<PIPE_FIX>(5);
         }
-#endif
         PipeBarrier<PIPE_ALL>();
         return;
     }

@@ -63,7 +63,6 @@ protected:
     virtual ge::graphStatus CheckArgs();
     virtual ge::graphStatus GetArgs();
     virtual ge::graphStatus GetMoreArgs();
-    ge::graphStatus CheckDimsAligned310P();
     ge::graphStatus InitTilingData();
     void SetRunInfo();
     void SetNd2NzInfo();
@@ -84,7 +83,6 @@ protected:
     void OptimizeBasicKernelStepK();
     void OptimizeLoadBalanceBasicKernel();
     bool DoL2CacheTiling();
-    bool DoL2CacheTiling310P();
     virtual void UpdateNd2nzFlag() {};
     void DoNd2NzVectorTiling();
     bool DoBL1FullloadWithFixpipeTiling();

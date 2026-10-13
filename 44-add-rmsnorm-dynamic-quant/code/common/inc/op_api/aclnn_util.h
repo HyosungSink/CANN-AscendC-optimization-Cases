@@ -33,14 +33,14 @@ inline static bool IsRegbase()
 {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
     const static std::set<NpuArch> regbaseNpuArchs = {
-        NpuArch::DAV_3510};
+        };
     return regbaseNpuArchs.find(npuArch) != regbaseNpuArchs.end();
 }
 
 inline static bool IsRegbase(NpuArch npuArch)
 {
     const static std::set<NpuArch> regbaseNpuArchs = {
-        NpuArch::DAV_3510};
+        };
     return regbaseNpuArchs.find(npuArch) != regbaseNpuArchs.end();
 }
 

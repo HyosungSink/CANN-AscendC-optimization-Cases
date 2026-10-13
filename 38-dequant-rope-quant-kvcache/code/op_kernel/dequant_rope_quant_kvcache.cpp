@@ -47,12 +47,10 @@ extern "C" __global__ __aicore__ void dequant_rope_quant_kvcache(
             offset_v, q, k, v, k_cache_ref, v_cache_ref);
         op.Process();
     } else if (TILING_KEY_IS(3)) {
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         RopeQuantKvcacheV2<DTYPE_X, bfloat16_t, DTYPE_COS> op(&tilingData);
         op.Init(
             x, cos, sin, k_cache, v_cache, indices, weight_scale, activation_scale, bias, scale_k, scale_v, offset_k,
             offset_v, q, k, v, k_cache_ref, v_cache_ref);
         op.Process();
-#endif
     }
 }

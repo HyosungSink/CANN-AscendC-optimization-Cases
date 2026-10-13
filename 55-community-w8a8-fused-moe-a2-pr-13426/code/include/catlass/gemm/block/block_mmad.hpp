@@ -17,7 +17,6 @@
 
 namespace Catlass::Gemm::Block {
 
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 2201)    
 template <
     class DispatchPolicy,
     class L1TileShape,
@@ -79,7 +78,6 @@ struct BlockMmadSparseTla {
     static_assert(DEPENDENT_FALSE<DispatchPolicy>, "BlockMmadSparseTla is not implemented for this DispatchPolicy");
 };
 
-#endif
 
 template <
     class DispatchPolicy,
@@ -100,7 +98,6 @@ struct BlockMmadTla {
 
 } // namespace Catlass::Gemm::Block
 
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 2201)
 #include "block_mmad_pingpong.hpp"
 #include "block_mmad_fa_qk.hpp"
 #include "block_mmad_fa_pv.hpp"
@@ -136,7 +133,6 @@ struct BlockMmadTla {
 #include "block_mmad_fai_qk_normal_tla.hpp"
 #include "block_mmad_fai_pv_head_tail_tla.hpp"
 #include "block_mmad_fai_pv_normal_tla.hpp"
-#endif
 
 #include "block_mmad_pingpong_tla.hpp"
 #include "block_mmad_pingpong_dequant_tla.hpp"

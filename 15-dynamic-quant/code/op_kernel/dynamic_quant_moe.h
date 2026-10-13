@@ -19,7 +19,6 @@
 namespace DynamicQuantNDOpt {
 using namespace AscendC;
 
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 template <typename T1, typename T3, typename yDtype>
 class DynamicQuantMoe : public DynamicQuantBase
 {
@@ -334,6 +333,5 @@ private:
     T3 baseRow = 0; // 记录开始处理的行数
     LocalTensor<T3> groupLocal;
 };
-#endif
 } // namespace DynamicQuantNDOpt
 #endif // DYNAMIC_QUANT_MOE_H

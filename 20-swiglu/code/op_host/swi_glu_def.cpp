@@ -35,29 +35,6 @@ public:
       this->AICore().AddConfig("ascend910b");
       this->AICore().AddConfig("ascend910_93");
 
-      OpAICoreConfig config_without_bf16;
-      config_without_bf16.Input("x")
-          .ParamType(REQUIRED)
-          .DataType({ge::DT_FLOAT16, ge::DT_FLOAT})
-          .Format({ge::FORMAT_ND, ge::FORMAT_ND})
-          .AutoContiguous();
-      config_without_bf16.Output("y")
-          .ParamType(REQUIRED)
-          .DataType({ge::DT_FLOAT16, ge::DT_FLOAT})
-          .Format({ge::FORMAT_ND, ge::FORMAT_ND});
-      config_without_bf16.DynamicCompileStaticFlag(true)
-        .DynamicRankSupportFlag(true)
-        .DynamicShapeSupportFlag(true);
-      this->AICore().AddConfig("ascend310p", config_without_bf16);
-      this->AICore().AddConfig("kirinx90", config_without_bf16);
-      this->AICore().AddConfig("kirin9030", config_without_bf16);
-
-      OpAICoreConfig regbaseCfg;
-      regbaseCfg.DynamicCompileStaticFlag(true)
-              .DynamicRankSupportFlag(true)
-              .DynamicShapeSupportFlag(true)
-              .ExtendCfgInfo("opFile.value", "swi_glu_apt");
-      this->AICore().AddConfig("ascend950", regbaseCfg);
     }
 };
 OP_ADD(SwiGlu);

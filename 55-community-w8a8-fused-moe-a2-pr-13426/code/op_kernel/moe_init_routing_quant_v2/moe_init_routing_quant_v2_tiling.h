@@ -56,8 +56,6 @@ struct MoeInitRoutingQuantV2TilingData {
     InnerMoeV2GatherOutComputeTilingData gatherOutComputeParamsOp;
 };
 
-
-
 class MoeInitRoutingQuantV2TilingBase : public InnerMoeInitRoutingV2TilingBase {
 public:
 protected:
@@ -336,8 +334,6 @@ void MoeInitRoutingQuantV2TilingBase::Tiling4GatherQuant() {
     SetGatherTilingDataRows(tilingData, perCoreRows, lastCoreRows, basePerLoopMaxRows);
   }
 }
-
-
 
 void SetGatherTilingDatawithloop(InnerMoeV2GatherOutComputeTilingData* tilingData,
                                  int64_t perCorePerLoopRows, int64_t lastCorePerLoopRows, int64_t cols,

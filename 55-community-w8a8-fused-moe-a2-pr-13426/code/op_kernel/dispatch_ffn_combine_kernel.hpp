@@ -988,8 +988,6 @@ private:
             CombineV2(params, blockEpilogue3);
         }
 
-        
-        
         AscendC::SyncAll<true>();
 
         shmem.CrossRankSync();

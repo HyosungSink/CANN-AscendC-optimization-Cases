@@ -46,7 +46,7 @@ bool NeedCubeGoHF32(const op::DataType cubeTensorPromoteType, int8_t cubeMathTyp
 // 检查针对x芯片，cube算子是否支持FP32
 inline bool IsCubeSupportFp32() {
     auto npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
-    if ((npuArch != NpuArch::DAV_2201) && (npuArch != NpuArch::DAV_3510) && (npuArch != NpuArch::DAV_3002)) {
+    if (((npuArch != NpuArch::DAV_2201) && (npuArch != NpuArch::DAV_3002))) {
         return false;
     }
     return true;
@@ -55,7 +55,7 @@ inline bool IsCubeSupportFp32() {
 // 检查针对x芯片，cube算子是否支持HF32
 inline bool IsCubeSupportHf32() {
     auto npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
-    if ((npuArch != NpuArch::DAV_2201) && (npuArch != NpuArch::DAV_3510) && (npuArch != NpuArch::DAV_3002)) {
+    if (((npuArch != NpuArch::DAV_2201) && (npuArch != NpuArch::DAV_3002))) {
         return false;
     }
     return true;

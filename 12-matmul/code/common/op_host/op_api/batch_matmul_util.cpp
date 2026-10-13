@@ -70,7 +70,7 @@ static const std::initializer_list<op::DataType> DTYPE_LIST_HALF = {op::DataType
 static inline bool CheckNpuArchIsSupportBf16(void)
 {
     auto npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
-    return (npuArch == NpuArch::DAV_2201) || (npuArch == NpuArch::DAV_3510);
+    return npuArch == NpuArch::DAV_2201;
 }
 
 static const aclTensor* ProcessEmptyTensor(const aclTensor* self, const aclTensor* mat2, aclOpExecutor* executor)
@@ -220,9 +220,7 @@ static bool CheckAscendCScenario(
         return true;
     }
     auto npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
-    if (npuArch == NpuArch::DAV_3510) {
-        return true;
-    }
+
     if ((npuArch != NpuArch::DAV_2201) ||
         mmOpInfo.support_info.self_format != ge::FORMAT_ND || mmOpInfo.support_info.mat2_format != ge::FORMAT_ND) {
         OP_LOGI("Not batch_mat_mul_v3 case for unsupported npu arch or unsupported Format.");
@@ -323,51 +321,8 @@ bool CheckShapeEqualToMul(const uint64_t& mDim, const uint64_t& nDim, const uint
   return nDim % (BLOCK_SIZE_256 / dataSize) != 0;
 }
 
-bool CheckArchIfBatchMatMulToMulDav3510(const aclTensor* self, const aclTensor* mat2, bool adjX1, bool adjX2)
-{
-    // now only basic api iterbatch temp not need convert to mul
-    uint64_t aicoreNum = static_cast<uint64_t>(GetCurrentPlatformInfo().GetCubeCoreNum());
-    uint64_t dtypeSize = static_cast<uint64_t>(op::TypeSize(self->GetDataType()));
-    uint64_t c0 = static_cast<uint64_t>(BLOCK_BYTE_SIZE) / dtypeSize;
-    constexpr uint64_t floatSize = 4UL;
-    constexpr uint64_t pingPong = 2UL;
-    char val[SOC_SPEC_INFO_LEN];
-    CHECK_RET(rtGetSocSpec("AICoreSpec", "l0_a_size", val, SOC_SPEC_INFO_LEN) == 0, false);
-    uint64_t l0aSize = std::strtoul(val, nullptr, 10);
-    CHECK_RET(rtGetSocSpec("AICoreSpec", "l0_b_size", val, SOC_SPEC_INFO_LEN) == 0, false);
-    uint64_t l0bSize = std::strtoul(val, nullptr, 10);
-    CHECK_RET(rtGetSocSpec("AICoreSpec", "l0_c_size", val, SOC_SPEC_INFO_LEN) == 0, false);
-    uint64_t l0cSize = std::strtoul(val, nullptr, 10);
-    CHECK_RET(rtGetSocSpec("AICoreSpec", "l1_size", val, SOC_SPEC_INFO_LEN) == 0, false);
-    uint64_t l1Size = std::strtoul(val, nullptr, 10);
-
-    uint64_t mDim = adjX1 ? self->GetViewShape()[self->GetViewShape().GetDimNum() - 1] :
-                           self->GetViewShape()[self->GetViewShape().GetDimNum() - NUM_TWO];
-    uint64_t kDim = adjX1 ? self->GetViewShape()[self->GetViewShape().GetDimNum() - NUM_TWO] :
-                           self->GetViewShape()[self->GetViewShape().GetDimNum() - 1];
-    uint64_t nDim = adjX2 ? mat2->GetViewShape()[mat2->GetViewShape().GetDimNum() - NUM_TWO] :
-                           mat2->GetViewShape()[mat2->GetViewShape().GetDimNum() - 1];
-    uint64_t batchNum = GetBatchDimAll(self);
-    bool batchEqual = IsBatchEqual(GetBatchDim(self), GetBatchDim(mat2));
-    bool batchLargerThanAicNum = batchNum > aicoreNum;
-    uint64_t alignMValue = CeilAlign(mDim, BLOCK_CUBE);
-    uint64_t alignKaValue = adjX1 ? CeilAlign(kDim, BLOCK_CUBE) : CeilAlign(kDim, c0);
-    uint64_t alignKbValue = adjX2 ? CeilAlign(kDim, c0) : CeilAlign(kDim, BLOCK_CUBE);
-    uint64_t alignNValue = CeilAlign(nDim, BLOCK_CUBE);
-    bool lessThanL0a = (alignMValue * alignKaValue * dtypeSize * pingPong <= l0aSize);
-    bool lessThanL0b = (alignKbValue * alignNValue * dtypeSize * pingPong <= l0bSize);
-    bool lessThanL0c = (alignMValue * alignNValue * floatSize * pingPong <= l0cSize);
-    bool lessThanL1 = (alignMValue * alignKaValue + alignKbValue * alignNValue) * dtypeSize * pingPong <= l1Size;
-    OP_LOGI("Checking If IterBatch Template in this npu arch: %ld.", static_cast<int64_t>(batchEqual &&
-            batchLargerThanAicNum && lessThanL0a && lessThanL0b && lessThanL0c && lessThanL1));
-    bool fitIterBatch = batchEqual && batchLargerThanAicNum && lessThanL0a && lessThanL0b && lessThanL0c && lessThanL1;
-    bool fitBatchMatMulToMul = CheckShapeEqualToMul(mDim, nDim, batchNum, dtypeSize, c0);
-    return !(fitIterBatch || fitBatchMatMulToMul);
-}
-
 using CheckArchIfBatchMatMulToMulFunc = bool (*)(const aclTensor* self, const aclTensor* mat2, bool adjX1, bool adjX2);
 const static std::map<NpuArch, CheckArchIfBatchMatMulToMulFunc> CheckArchIfBatchMatMulToMulFuncMap = {
-    {NpuArch::DAV_3510, CheckArchIfBatchMatMulToMulDav3510},
     {NpuArch::DAV_2201, CheckArchIfBatchMatMulToMulDav2201},
 };
 
@@ -378,13 +333,7 @@ const aclTensor* GetBatchMatmulOp(
     auto bmmOpOut = selfTransdata;
     if (CheckAscendCScenario(selfTransdata, mat2Transdata, bias, matmulOpInfo, adjX1, adjX2)) {
         auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-        if ((npuArch == NpuArch::DAV_3510) && // 1.多维*2维(左非转置)2.多维*多维batch为1
-            (GetBatchDimAll(mat2Transdata) <= 1 &&
-             (!adjX1 || GetBatchDimAll(selfTransdata) <= 1))) {
-            int64_t opImplModeEnumV3 = matmulOpInfo.enableHf32 ? 0x40 : (matmulOpInfo.enableForceGrpAccForFp32 ? 0x4 : 0x1);
-            return TransBmm2Mm(
-                selfTransdata, mat2Transdata, bias, opImplModeEnumV3, adjX1, adjX2, offsetX, executor);
-        }
+
         OP_LOGI("Hit batch_mat_mul_v3 scenario.");
         if ((matmulOpInfo.support_info.self_dtype == op::DataType::DT_FLOAT16 ||
              matmulOpInfo.support_info.self_dtype == op::DataType::DT_BF16) &&
@@ -751,7 +700,7 @@ static aclnnStatus GetBatchMatmulOpInfo(
 bool CheckDtypeValidWeightNz(const aclTensor* self, const aclTensor* mat2, const aclTensor* out)
 {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    if ((npuArch != NpuArch::DAV_2201) && (npuArch != NpuArch::DAV_3510)) {
+    if (npuArch != NpuArch::DAV_2201) {
         OP_LOGE(
             ACLNN_ERR_PARAM_INVALID,
             "batchmatmulweightnz is unsupported in this npu arch");

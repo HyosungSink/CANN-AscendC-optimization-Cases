@@ -31,7 +31,7 @@ ge::graphStatus TilingPrepare4CompileInfo(gert::TilingParseContext* context, Lay
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     compileInfo->coreNum = ascendcPlatform.GetCoreNumAiv();
     auto npuArch = ascendcPlatform.GetCurNpuArch();
-    compileInfo->isAscend310P = npuArch == NpuArch::DAV_2002;
+    compileInfo->isAscend310P = false;
     OP_CHECK_IF(
         (compileInfo->coreNum <= 0),
         OP_LOGE(context, "Get core num failed, core num: %u", static_cast<uint32_t>(compileInfo->coreNum)),
@@ -45,8 +45,7 @@ ge::graphStatus TilingPrepare4CompileInfo(gert::TilingParseContext* context, Lay
         OP_LOGE(context, "Get ub size failed, ub size: %u", static_cast<uint32_t>(compileInfo->ubSizePlatForm)),
         return ge::GRAPH_FAILED);
     compileInfo->isRegBase =
-        (IsRegbaseSocVersion(context) ||
-         npuArch == NpuArch::DAV_5102) ? true : false;
+        false;
     compileInfo->blockSize = Ops::Base::GetUbBlockSize(context);
     compileInfo->vectorLength = Ops::Base::GetVRegSize(context);
     OP_LOGD(context, "TilingPrepare4LayerNormV4 exit.");

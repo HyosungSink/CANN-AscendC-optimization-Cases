@@ -109,18 +109,6 @@ enum class GroupNormSiluTilingKey : int64_t
     TILINGKEY_HW_ONE_B16 = 1071,            // H*W is 1 and dtype is b16
     TILINGKEY_HW_ONE_MIXTYPE = 1072,        // H*W is 1 and mixed dtype
     TILINGKEY_HW_ONE_B32 = 108,             // H*W is 1 and dtype is b32
-    TILINGKEY_SPECIAL_SHAPE_SD = 109,       // 310P and small shape and dtype is float16
-    TILINGKEY_EMPTY_TENSOR = 1000,          // arch3510 support empty tensor and mixed dtype
-    TILINGKEY_EMPTY_TENSOR_MIX_TYPE = 1001, // arch3510 support empty tensor and not mixed dtype
-    TILINGKEY_WELFORD_PERF = 1100,          // arch3510 use welford for mean/rstd, R is partial Load
-    TILINGKEY_WELFORD_PERF_MIX_TYPE = 1101,
-    TILINGKEY_TWOPASS_PERF = 1110, // arch3510 use twopass for mean/rstd, R is full Load
-    TILINGKEY_TWOPASS_PERF_MIX_TYPE = 1111,
-    TILINGKEY_WELFORD_GENERALIZED = 1120, // arch3510 basic template and use welford for mean/rstd, R is partial Load
-    TILINGKEY_WELFORD_GENERALIZED_MIX_TYPE = 1121,
-    TILINGKEY_TWOPASS_GENERALIZED = 1130, // arch3510 basic template and use twopass for mean/rstd, R is full Load
-    TILINGKEY_TWOPASS_GENERALIZED_MIX_TYPE = 1131
 };
-ge::graphStatus Tiling4GroupNormSiluRegBase(gert::TilingContext* context);
 } // namespace optiling
 #endif // AIR_CXX_RUNTIME_V2_OP_IMPL_GROUP_NORM_SILU_TILING_H_

@@ -21,10 +21,7 @@
 
 #include "matmul_reduce_scatter_tiling.h"
 #include "matmul_reduce_scatter_tiling_key.h"
-#if __CCE_AICORE__ == 310
-#else
     #include "matmul_reduce_scatter_full_mesh.h"
-#endif
 
 #define INVOKE_MATMUL_REDUCE_SCATTER_OP_IMPL(templateClass, ...)                         \
     do {                                                                                 \
@@ -49,7 +46,6 @@ __global__ __aicore__ void matmul_reduce_scatter(GM_ADDR aGM, GM_ADDR bGM, GM_AD
 {
     REGISTER_TILING_DEFAULT(MatmulReduceScatterTilingData);
     // matmulreducescatter算子kernel侧代码不支持A5
-    #if __CCE_AICORE__ != 310
         auto tiling = (__gm__ MatmulReduceScatterTilingData*)tilingGM;
         __gm__ void* mc2InitTiling = (__gm__ void*)(&(tiling->mc2InitTiling));
         __gm__ void* mc2CcTiling = (__gm__ void*)(&(tiling->mc2CcTiling));
@@ -80,6 +76,5 @@ __global__ __aicore__ void matmul_reduce_scatter(GM_ADDR aGM, GM_ADDR bGM, GM_AD
             using biasType = MatmulType<AscendC::TPosition::GM, CubeFormat::ND, float>;
             INVOKE_MATMUL_REDUCE_SCATTER_OP_IMPL(MatmulReduceScatterFullMesh, IsNd2Nz, IsBias);
         }
-    #endif
 }
 }

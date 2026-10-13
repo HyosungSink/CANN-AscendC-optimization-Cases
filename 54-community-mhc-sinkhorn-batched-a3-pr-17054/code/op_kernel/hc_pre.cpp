@@ -16,17 +16,10 @@
 #include "kernel_operator.h"
 #include "kernel_operator_intf.h"
 
-#if defined(__DAV_C310__)
-    #include "hc_pre_m_k_split_core_arch35.h"
-    #include "hc_pre_m_split_core_arch35.h"
-    #include "hc_pre_base_arch35.h"
-    using namespace HcPreNs;
-#else
     #include "lib/matmul_intf.h"
     #include "hc_pre_m_k_split_core.h"
     #include "hc_pre_base.h"
     using namespace HcPre;
-#endif
 
 using namespace AscendC;
 
@@ -46,28 +39,6 @@ extern "C" __global__ __aicore__ void hc_pre(GM_ADDR x, GM_ADDR hc_fn, GM_ADDR h
     TPipe pipe;
 
     // 950PR 950DT
-    #if defined(__DAV_C310__)
-        if (TILING_KEY_IS(1000)) {
-            GET_TILING_DATA_WITH_STRUCT(HcPreTilingData, tiling_data_in, tiling);
-            const HcPreTilingData *__restrict tilingData = &tiling_data_in;
-            HcPreNs::HcPreMKSplitCorePart1<DTYPE_X> op;
-            op.Init(x, hc_fn, userWs, tilingData, &pipe);
-            op.Process();
-            pipe.Destroy();
-
-            TPipe pipeStage2;
-            HcPreNs::HcPreMKSplitCorePart2<DTYPE_X> op2;
-            op2.Init(x, hc_scale, hc_base, y, post, comb_frag, userWs, tilingData, &pipeStage2);
-            op2.Process();
-            pipeStage2.Destroy();
-        } else if (TILING_KEY_IS(1001)) {
-            GET_TILING_DATA_WITH_STRUCT(HcPreTilingData, tiling_data_in, tiling);
-            const HcPreTilingData *__restrict tilingData = &tiling_data_in;
-            HcPreNs::HcPreMSplitCorePart1<DTYPE_X> op;
-            op.Init(x, hc_fn, hc_scale, hc_base, y, post, comb_frag, tilingData, &pipe);
-            op.Process();
-        }
-    #else
       // A3
         if (TILING_KEY_IS(0)) {
             GET_TILING_DATA_WITH_STRUCT(HcPreTilingData, tiling_data_in, tiling);
@@ -85,5 +56,4 @@ extern "C" __global__ __aicore__ void hc_pre(GM_ADDR x, GM_ADDR hc_fn, GM_ADDR h
 
             pipeStage2.Destroy();
         }
-    #endif
 }

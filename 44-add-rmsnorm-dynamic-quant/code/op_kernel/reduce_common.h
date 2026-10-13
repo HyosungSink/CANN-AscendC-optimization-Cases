@@ -123,13 +123,9 @@ __aicore__ inline void ReduceSumHalfInterval(
     } else {
         AscendCUtils::SetMask<float>(count);
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
     if (g_coreType == AIV) {
         WholeReduceSum<float, false>(dst_local, src_local3, MASK_PLACEHOLDER, 1, 0, 1, 0);
     }
-#else
-    WholeReduceSum<float, false>(dst_local, src_local3, MASK_PLACEHOLDER, 1, 1, 1, DEFAULT_REPEAT_STRIDE);
-#endif
     PipeBarrier<PIPE_V>();
 }
 
@@ -152,13 +148,9 @@ __aicore__ inline float ReduceSumHalfInterval(const LocalTensor<float>& src_loca
     } else {
         AscendCUtils::SetMask<float>(count);
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
     if (g_coreType == AIV) {
         WholeReduceSum<float, false>(src_local1, src_local1, MASK_PLACEHOLDER, 1, 0, 1, 0);
     }
-#else
-    WholeReduceSum<float, false>(src_local1, src_local1, MASK_PLACEHOLDER, 1, 1, 1, DEFAULT_REPEAT_STRIDE);
-#endif
     event_t event_v_s = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_S));
     SetFlag<HardEvent::V_S>(event_v_s);
     WaitFlag<HardEvent::V_S>(event_v_s);

@@ -82,17 +82,11 @@ struct DynamicQuantParams {
 
 static inline const std::initializer_list<op::DataType>& GetDtypeSupportListByNpuArch()
 {
-    if (Ops::NN::AclnnUtil::IsRegbase()) {
-        return INPUT_DTYPE_SUPPORT_LIST;
-    }
+
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
     switch (npuArch) {
         case NpuArch::DAV_2201: {
             return INPUT_DTYPE_SUPPORT_LIST;
-        }
-        case NpuArch::DAV_1001:
-        case NpuArch::DAV_2002: {
-            return INPUT_DTYPE_SUPPORT_LIST_FP16;
         }
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %u is not implemented", static_cast<uint32_t>(npuArch));
@@ -103,17 +97,11 @@ static inline const std::initializer_list<op::DataType>& GetDtypeSupportListByNp
 
 static inline const std::initializer_list<op::DataType>& GetOutputSupportListByNpuArch()
 {
-    if (Ops::NN::AclnnUtil::IsRegbase()) {
-        return OUTPUT_DTYPE_SUPPORT_LIST_INT_WITH_FP_QUANT;
-    }
+
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
     switch (npuArch) {
         case NpuArch::DAV_2201: {
             return OUTPUT_DTYPE_SUPPORT_LIST;
-        }
-        case NpuArch::DAV_1001:
-        case NpuArch::DAV_2002: {
-            return OUTPUT_DTYPE_SUPPORT_LIST_INT8;
         }
         default: {
             OP_LOGE(
@@ -411,21 +399,7 @@ aclnnStatus GetDynamicQuantResultByL0Api(
         OP_LOGD("op dynamicquant real output is int4.");
     }
 
-    if (Ops::NN::AclnnUtil::IsRegbase()) {
-        // DynamicQuantV2 consolidates and remains backward compatible with DynamicQuant in socVersion ASCEND950
-        auto dynamicQuantV2Result = l0op::DynamicQuantV2(
-            x, smoothScales, groupIndex, yDtype, dynamicQuantParams.isSymmetrical, dynamicQuantParams.quantMode,
-            uniqueExecutor.get());
-        y = std::get<0>(dynamicQuantV2Result);
-        outputTensor = std::get<0>(dynamicQuantV2Result);
-        scale = std::get<1>(dynamicQuantV2Result);
-        offset = std::get<2>(dynamicQuantV2Result); // 2 is offset index
-        CHECK_RET(y != nullptr && scale != nullptr && offset != nullptr, ACLNN_ERR_INNER_NULLPTR);
-        if (dynamicQuantParams.offset) {
-            auto viewCopyOffsetResult = l0op::ViewCopy(offset, dynamicQuantParams.offset, uniqueExecutor.get());
-            CHECK_RET(viewCopyOffsetResult != nullptr, ACLNN_ERR_INNER_NULLPTR);
-        }
-    } else {
+    {
         bool isSymmetrical = dynamicQuantParams.offset == nullptr ? true : false;
         if (isSymmetrical) {
             auto dynamicQuantResult = l0op::DynamicQuant(x, smoothScales, groupIndex, yDtype, uniqueExecutor.get());
@@ -515,33 +489,9 @@ aclnnStatus aclnnDynamicQuantV2(void* workspace, uint64_t workspaceSize, aclOpEx
     return ACLNN_SUCCESS;
 }
 
-aclnnStatus aclnnDynamicQuantV3GetWorkspaceSize(
-    const aclTensor* x, const aclTensor* smoothScalesOptional, const aclTensor* groupIndexOptional, int64_t dstType,
-    bool isSymmetrical, const char* quantMode, const aclTensor* yOut, const aclTensor* scaleOut,
-    const aclTensor* offsetOut, uint64_t* workspaceSize, aclOpExecutor** executor)
-{
-    L2_DFX_PHASE_1(
-        aclnnDynamicQuantV3, DFX_IN(x, smoothScalesOptional, groupIndexOptional, dstType, isSymmetrical, quantMode),
-        DFX_OUT(yOut, scaleOut, offsetOut));
-    if (!Ops::NN::AclnnUtil::IsRegbase()) {
-        OP_LOGE(ACLNN_ERR_INNER, "aclnnDynamicQuantV3 only support socVersion Ascend950");
-        return ACLNN_ERR_INNER;
-    }
-    DynamicQuantParams dynamicQuantParams{
-        x, smoothScalesOptional, groupIndexOptional, dstType, isSymmetrical, quantMode, yOut, scaleOut, offsetOut};
-    return GetDynamicQuantResultByL0Api(dynamicQuantParams, workspaceSize, executor);
-}
 
-aclnnStatus aclnnDynamicQuantV3(void* workspace, uint64_t workspaceSize, aclOpExecutor* executor, aclrtStream stream)
-{
-    L2_DFX_PHASE_2(aclnnDynamicQuantV3);
-    auto ret = CommonOpExecutorRun(workspace, workspaceSize, executor, stream);
-    if (ret != ACLNN_SUCCESS) {
-        OP_LOGE(ACLNN_ERR_INNER, "This is an error in DynamicQuant launch aicore");
-        return ACLNN_ERR_INNER;
-    }
-    return ACLNN_SUCCESS;
-}
+
+
 
 #ifdef __cplusplus
 }

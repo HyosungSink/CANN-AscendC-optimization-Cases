@@ -42,11 +42,5 @@ class BlockEpilogue {
 #include "block_epilogue_rescale_o_no_split_row.hpp"
 #include "block_epilogue_w4a4_per_token_per_channel_dequant.hpp"
 
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 3510)
-#include "block_epilogue_fa_softmax_ascend950.hpp"
-#include "block_epilogue_fa_rescale_o_ascend950.hpp"
-#include "block_epilogue_fixpipe.hpp"
-#include "block_epilogue_per_group_per_block.hpp"
-#endif
 
 #endif  // CATLASS_EPILOGUE_BLOCK_BLOCK_EPILOGUE_HPP

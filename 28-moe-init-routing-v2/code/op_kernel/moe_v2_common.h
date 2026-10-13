@@ -22,13 +22,7 @@ using namespace AscendC;
 constexpr int64_t SPLIT_N = 0;
 constexpr int64_t SPLIT_K = 1;
 constexpr float MIN_FP32 = -3.4e38f;
-#if __CCE_AICORE__ == 200
-constexpr int64_t ONE_REPEAT_SORT_NUM = 16;
-constexpr int64_t REGIONP_ROPOSAL_KV_RATIO = 4; // 8 / 2
-constexpr int64_t SYNC_LEN = 8 * 8 * 32;
-#else
 constexpr int64_t ONE_REPEAT_SORT_NUM = 32;
-#endif
 constexpr int64_t BLOCK_BYTES = 32;
 constexpr int64_t INT32_ONE_BLOCK_NUM = 8;
 constexpr int64_t FP32_ONE_REPEAT_NUM = 64;
@@ -105,24 +99,7 @@ __aicore__ inline void SetWaitFlag(HardEvent evt)
 template <typename T>
 __aicore__ inline void DataCopyPadCustom(LocalTensor<T> inLocal, GlobalTensor<T> srcGm, DataCopyExtParams tokenCopyParams, DataCopyPadExtParams<T> padParams) 
 {
-#if __CCE_AICORE__ == 220 
   DataCopyPad(inLocal, srcGm, tokenCopyParams, padParams);
-#else
-  int64_t elem =  tokenCopyParams.blockLen / sizeof(T);
-  int64_t numPerBlock = BLOCK_BYTES / sizeof(T);
-  int64_t alignElem = AlignUp(elem, numPerBlock);
-
-  if (likely(alignElem == elem)) {
-
-    DataCopyParams copyParams = {tokenCopyParams.blockCount, static_cast<uint16_t>(alignElem / numPerBlock) , 0, 0};
-    DataCopy(inLocal, srcGm, copyParams);
-  } else {
-    DataCopyParams copyParams = {1, static_cast<uint16_t>(alignElem / numPerBlock) , 0, 0};
-    for (uint32_t i = 0; i < tokenCopyParams.blockCount; i++) {
-        DataCopy(inLocal[i * alignElem], srcGm[i * elem], copyParams);
-    }
-  }
-#endif
 }
 
 template <typename T, bool needBack = false, bool isAtomic = false>

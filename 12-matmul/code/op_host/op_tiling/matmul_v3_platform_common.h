@@ -22,7 +22,6 @@
 #include "error_util.h"
 namespace optiling {
 const std::initializer_list<NpuArch> AdvancedNpuArch = {
-    NpuArch::DAV_3510,
     NpuArch::DAV_RESV};  // supportMmadS8S4平台
 
 template <typename T>

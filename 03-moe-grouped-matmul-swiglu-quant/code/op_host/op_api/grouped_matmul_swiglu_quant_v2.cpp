@@ -44,24 +44,7 @@ const std::tuple<aclTensor *, aclTensor *> GroupedMatmulSwigluQuantV2(const aclT
     gert::Shape scaleOutShape({m});
     auto out = executor->AllocTensor(outShape, DataType::DT_INT8, ge::FORMAT_ND);
     auto scaleOut = executor->AllocTensor(scaleOutShape, DataType::DT_FLOAT, ge::FORMAT_ND);
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        n = transposeWeight ? (*weightScale)[0]->GetViewShape().GetDim(1) : // 转置情况下weightScale的第1维是n
-                            (*weightScale)[0]->GetViewShape().GetDim(2); // 非转置情况下weightScale的第2维是n
-        nAfterHalve = static_cast<int64_t>(n / 2); // outShape需要为[M, N / 2]
-        gert::Shape outShapeV2({m, nAfterHalve});
-        gert::Shape scaleOutShapeV2;
-        // 当quantMode等于2时，out_scale 的形状为三维
-        if (quantMode == 2) {
-            int64_t nAfterSplit = static_cast<int64_t>(Ops::Base::CeilDiv(nAfterHalve, SWIGLU_SPLIT_SIZE));
-            scaleOutShapeV2 = gert::Shape({m, nAfterSplit, 2});
-        } else {
-            scaleOutShapeV2 = gert::Shape({m});
-        }
-        out = executor->AllocTensor(outShapeV2, static_cast<ge::DataType>(quantDtype), ge::FORMAT_ND);
-        // 当quantMode等于2时，outScale的DataType为FLOAT8_E8M0
-        scaleOut = quantMode == 2 ? executor->AllocTensor(scaleOutShapeV2, DataType::DT_FLOAT8_E8M0, ge::FORMAT_ND) :
-                                    executor->AllocTensor(scaleOutShapeV2, DataType::DT_FLOAT, ge::FORMAT_ND);
-    }
+
     auto ret = INFER_SHAPE(GroupedMatmulSwigluQuantV2,
                     OP_INPUT(x, xScale, groupList, weight, weightScale, weightAssistanceMatrix, bias, smoothScale),
                     OP_OUTPUT(out, scaleOut), OP_ATTR(dequantMode, dequantDtype, quantMode, quantDtype, transposeWeight,

@@ -33,13 +33,7 @@ const std::tuple<aclTensor*, aclTensor*, aclTensor*> GroupNormSilu(
     auto nNum = (x->GetViewShape())[0];
     auto dtypeOut1 = x->GetDataType();
     const static NpuArch SOC_VERSION = GetCurrentPlatformInfo().GetCurNpuArch();
-    if (Ops::NN::AclnnUtil::IsRegbase(SOC_VERSION)) {
-        if (gamma != nullptr) {
-            dtypeOut1 = gamma->GetDataType();
-        } else if (beta != nullptr) {
-            dtypeOut1 = beta->GetDataType();
-        }
-    }
+
     auto mean = executor->AllocTensor(op::Shape({nNum, numGroups}), dtypeOut1, op::Format::FORMAT_ND);
     auto rstd = executor->AllocTensor(op::Shape({nNum, numGroups}), dtypeOut1, op::Format::FORMAT_ND);
     if (y == nullptr || mean == nullptr || rstd == nullptr) {

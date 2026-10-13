@@ -57,16 +57,10 @@ constexpr int32_t ONE_BLOCK_SIZE = 32;
 constexpr uint16_t DATA_BLOCK = 32;
 const uint32_t FP32_OUTPUT_TIMES = 4;
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
 constexpr MatmulConfig MM_CFG_NO_PRELOAD_OPEN_UNIT_FLAG =
     GetMDLConfig(false, false, 0, false, false, false, true, true, false, false, false, true);
 constexpr MatmulConfig MM_DEFAULT_MDL_CFG =
     GetMDLConfig(false, false, 0, false, false, false, false, true, true, false, false, true);
-#else
-constexpr MatmulConfig MM_CFG_NO_PRELOAD_OPEN_UNIT_FLAG =
-    GetMDLConfig(false, false, 0, false, false, false, true, true, false, false, false);
-constexpr MatmulConfig MM_DEFAULT_MDL_CFG = GetMDLConfig();
-#endif
 
 struct L2CacheParam {
     uint32_t l2MCnt;
@@ -195,29 +189,9 @@ __aicore__ inline uint64_t CalcAL1Size(uint64_t mL1, uint64_t kL1)
  */
 __aicore__ inline constexpr uint32_t GetTaskRation()
 {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 310
-    return 2U; // aiv corenum is 2 in C310 platform
-#else
     return 1U;
-#endif
 }
 
-
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 310
-template <typename T>
-__aicore__ inline constexpr bool IsMxType()
-{
-    return AscendC::IsSameType<T, AscendC::fp8_e8m0_t>::value;
-}
-
-template <typename T>
-__aicore__ inline constexpr bool IsFp4()
-{
-    return (AscendC::IsSameType<T, fp4x2_e2m1_t>::value || AscendC::IsSameType<T, fp4x2_e1m2_t>::value);
-}
-#endif
-
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
 __aicore__ inline void CalcDequantParams(uint32_t curAivM, uint32_t curAivN, AscendC::DequantParams &dequantParams,
                                          bool needUpdate = true)
 {
@@ -282,7 +256,6 @@ __aicore__ inline void Bf16ScaleGm2Ub(AscendC::LocalTensor<scaleType> &scaleLoca
     AscendC::SetFlag<AscendC::HardEvent::MTE2_V>(EVENT_ID1);
     AscendC::WaitFlag<AscendC::HardEvent::MTE2_V>(EVENT_ID1);
 }
-#endif
 }  // namespace DequantBmm
 
 #endif  // QUANT_BATCH_MATMUL_V3_BASE_H

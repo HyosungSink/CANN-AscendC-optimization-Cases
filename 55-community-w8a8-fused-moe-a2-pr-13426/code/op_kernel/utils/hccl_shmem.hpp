@@ -150,8 +150,6 @@ public:
         #endif
     }
 
-
-
     FORCE_INLINE_AICORE
     size_t SegmentSize() const {
         return m_segmentSize;
@@ -326,8 +324,5 @@ private:
     float sumTarget_{0.0};
     int32_t epStateValue_;
 };
-
-
-
 
 #endif

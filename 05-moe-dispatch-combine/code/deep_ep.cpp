@@ -22,10 +22,8 @@ constexpr int64_t MXFP4_SCALES = 4;
 constexpr int64_t PER_TOKEN_FP8_SCALES = 5;
 constexpr int64_t FUSED_DEEP_MOE_ACTIVATION_SWIGLU = 0;
 constexpr int64_t FUSED_DEEP_MOE_ACTIVATION_SITU = 1;
-#if !defined(__DAV_C310__)
 constexpr int FUSED_DEEP_MOE_NO_QUANT = 0;
 constexpr int FUSED_DEEP_MOE_INT8_QUANT = 1;
-#endif
 constexpr uint32_t MX_BLOCK_SIZE = 32;
 constexpr uint32_t MXFP4_HALF = 2;
 constexpr int LOCAL_RANK_SIZE = 8;
@@ -346,33 +344,12 @@ Buffer::intranode_dispatch(const at::Tensor &x, const std::optional<at::Tensor> 
                    ? MXFP8_SCALES
                    : (is_mxfp4_quant ? MXFP4_SCALES : (is_pertoken_fp8_quant ? PER_TOKEN_FP8_SCALES : DYNAMIC_SCALES)))
             : NO_SCALES;
-#ifndef __DAV_C310__
     const bool is_a5_only_quant = is_mxfp8_quant || is_mxfp4_quant || is_pertoken_fp8_quant;
     if (is_a5_only_quant) {
         EP_HOST_ASSERT_S(false, quant_type, " is not supported on this device, please use int8 or bf16 instead.");
     }
-#endif
     at::Tensor expandx_out;
     at::Tensor dynamic_scales_out;
-#ifdef __DAV_C310__
-    if (quant_mode == MXFP8_SCALES) {
-        if (quant_type == "mx_fp8_e5m2") {
-            expandx_out = torch::empty({num_recv_tokens, hidden}, at::dtype(at::kFloat8_e5m2).device(x.device()));
-        } else {
-            expandx_out = torch::empty({num_recv_tokens, hidden}, at::dtype(at::kFloat8_e4m3fn).device(x.device()));
-        }
-        dynamic_scales_out =
-            torch::empty({num_recv_tokens * hidden / MX_BLOCK_SIZE}, at::dtype(at::kFloat8_e8m0fnu).device(x.device()));
-    } else if (quant_mode == PER_TOKEN_FP8_SCALES) {
-        expandx_out = torch::empty({num_recv_tokens, hidden}, at::dtype(at::kFloat8_e4m3fn).device(x.device()));
-        dynamic_scales_out = torch::empty({num_recv_tokens}, at::dtype(at::kFloat).device(x.device()));
-    } else if (quant_mode == MXFP4_SCALES) {
-        expandx_out =
-            torch::empty({num_recv_tokens, hidden / MXFP4_HALF}, at::dtype(at::kFloat4_e2m1fn_x2).device(x.device()));
-        dynamic_scales_out =
-            torch::empty({num_recv_tokens * hidden / MX_BLOCK_SIZE}, at::dtype(at::kFloat8_e8m0fnu).device(x.device()));
-    } else
-#endif
     {
         expandx_out = use_quant ? torch::empty({num_recv_tokens, hidden}, at::dtype(at::kChar).device(x.device()))
                                 : torch::empty({num_recv_tokens, hidden}, x.options());
@@ -888,26 +865,15 @@ Buffer::low_latency_dispatch(const at::Tensor &x, const at::Tensor &topk_idx,
     const bool is_mxfp4_quant = quant_mode_name == "mx_fp4_e2m1";
     const bool is_pertoken_fp8_quant = quant_mode_name == "pertoken_fp8_e4m3";
 
-#ifndef __DAV_C310__
     const bool is_a5_only_quant = is_mxfp8_quant || is_mxfp4_quant || is_pertoken_fp8_quant;
     if (is_a5_only_quant) {
         EP_HOST_ASSERT_S(false, quant_mode_name, " is not supported on this device, please use int8 or bf16 instead.");
     }
-#endif
 
     int64_t quant_mode = NO_SCALES;
     if (quant_mode_name == "int8") {
         quant_mode = DYNAMIC_SCALES;
     }
-#ifdef __DAV_C310__
-    else if (is_mxfp8_quant) {
-        quant_mode = MXFP8_SCALES;
-    } else if (is_mxfp4_quant) {
-        quant_mode = MXFP4_SCALES;
-    } else if (is_pertoken_fp8_quant) {
-        quant_mode = PER_TOKEN_FP8_SCALES;
-    }
-#endif
     else {
         EP_HOST_ASSERT(quant_mode_name == "none");
     }
@@ -921,23 +887,6 @@ Buffer::low_latency_dispatch(const at::Tensor &x, const at::Tensor &topk_idx,
         packed_recv_x = at::empty({num_max_tokens, hidden}, at::dtype(at::kChar).device(device));
         packed_recv_x_scales = at::empty({num_max_tokens}, at::dtype(at::kFloat).device(device));
     }
-#ifdef __DAV_C310__
-    else if (quant_mode == PER_TOKEN_FP8_SCALES) {  // per-token fp8_e4m3
-        packed_recv_x = at::empty({num_max_tokens, hidden}, at::dtype(at::kFloat8_e4m3fn).device(device));
-        packed_recv_x_scales = at::empty({num_max_tokens}, at::dtype(at::kFloat).device(device));
-    } else if (quant_mode == 3) {  // MXFP8
-        packed_recv_x = quant_mode_name == "mx_fp8_e5m2"
-                            ? at::empty({num_max_tokens, hidden}, at::dtype(at::kFloat8_e5m2).device(device))
-                            : at::empty({num_max_tokens, hidden}, at::dtype(at::kFloat8_e4m3fn).device(device));
-        packed_recv_x_scales =
-            at::empty({num_max_tokens * hidden / MX_BLOCK_SIZE}, at::dtype(at::kFloat8_e8m0fnu).device(device));
-    } else if (quant_mode == 4) {  // fp4_e2m1
-        packed_recv_x =
-            at::empty({num_max_tokens, hidden / MXFP4_HALF}, at::dtype(at::kFloat4_e2m1fn_x2).device(device));
-        packed_recv_x_scales =
-            at::empty({num_max_tokens * hidden / MX_BLOCK_SIZE}, at::dtype(at::kFloat8_e8m0fnu).device(device));
-    }
-#endif
 
     auto expandIdx = at::empty({max_size}, at::dtype(at::kInt).device(device));
     int32_t server_num = num_ranks / LOCAL_RANK_SIZE;
@@ -1109,10 +1058,8 @@ std::vector<at::Tensor> Buffer::fused_deep_moe(
     EP_HOST_ASSERT(expert_scales_optional.dim() == 2);
     EP_HOST_ASSERT(x.size(0) == expert_ids.size(0));
     EP_HOST_ASSERT(expert_ids.sizes() == expert_scales_optional.sizes());
-#if !defined(__DAV_C310__)
     EP_HOST_ASSERT_S(quant_mode == FUSED_DEEP_MOE_NO_QUANT || quant_mode == FUSED_DEEP_MOE_INT8_QUANT,
                      "fused_deep_moe only supports quant_mode 0 (BF16) or 1 (INT8), got ", quant_mode);
-#endif
     const int64_t quant_mode_i64 = static_cast<int64_t>(quant_mode);
     TORCH_CHECK(activation == "swiglu" || activation == "situ", "activation must be 'swiglu' or 'situ', got '",
                 activation.value_or("None"), "'");
@@ -1126,11 +1073,9 @@ std::vector<at::Tensor> Buffer::fused_deep_moe(
                     linear_beta.has_value() ? *linear_beta : 0.0);
     }
     const double linear_beta_value = linear_beta.value_or(0.0);
-#if !defined(__DAV_C310__)
     TORCH_CHECK(activation_type_i64 != FUSED_DEEP_MOE_ACTIVATION_SITU,
                 "SiTU requires the Ascend 950 fused_deep_moe kernel; the current fused_deep_moe kernel only supports "
                 "SwiGLU");
-#endif
 
     char hcom_ep_name[128];
     if (!moe_all_to_all_group_name.empty()) {
@@ -1143,104 +1088,6 @@ std::vector<at::Tensor> Buffer::fused_deep_moe(
     int64_t h = x_shape[1];
     int64_t bs = expert_ids.size(0);
 
-#if defined(__DAV_C310__)
-    const int64_t capacity = num_max_dispatch_tokens_per_rank;
-    TORCH_CHECK(capacity >= bs,
-                "num_max_dispatch_tokens_per_rank must be greater than or equal to the local token count, got ",
-                capacity, " < ", bs);
-    const int64_t global_bs = capacity * num_ranks;
-
-    at::Tensor x_padded = x;
-    at::Tensor expert_ids_padded = expert_ids;
-    at::Tensor expert_scales_padded = expert_scales_optional;
-    const bool use_x_active_mask = capacity > bs;
-    at::Tensor x_active_mask;
-    if (use_x_active_mask) {
-        x_padded = at::zeros({capacity, h}, x.options());
-        x_padded.narrow(0, 0, bs).copy_(x);
-
-        expert_ids_padded = at::zeros({capacity, expert_ids.size(1)}, expert_ids.options());
-        expert_ids_padded.narrow(0, 0, bs).copy_(expert_ids);
-
-        expert_scales_padded = at::zeros({capacity, expert_scales_optional.size(1)}, expert_scales_optional.options());
-        expert_scales_padded.narrow(0, 0, bs).copy_(expert_scales_optional);
-
-        x_active_mask = at::zeros({capacity}, x.options().dtype(at::kBool));
-        x_active_mask.narrow(0, 0, bs).fill_(true);
-    }
-
-    std::vector<at::Tensor> gmm1_weight_storage{gmm1_permuted_weight};
-    std::vector<at::Tensor> gmm1_scale_storage{gmm1_permuted_weight_scale};
-    std::vector<at::Tensor> gmm2_weight_storage{gmm2_weight};
-    std::vector<at::Tensor> gmm2_scale_storage{gmm2_weight_scale};
-    at::TensorList gmm1_weight_list(gmm1_weight_storage);
-    at::TensorList gmm1_scale_list(gmm1_scale_storage);
-    at::TensorList gmm2_weight_list(gmm2_weight_storage);
-    at::TensorList gmm2_scale_list(gmm2_scale_storage);
-    at::Tensor output = at::empty({capacity, h}, x.options());
-    at::Tensor share_output = at::empty({capacity, h}, x.options());
-    int64_t num_local_experts = num_experts / num_ranks;
-    at::Tensor expert_token_nums = at::empty({num_local_experts}, x.options().dtype(at::kLong));
-    auto profile_ctx = profiling::fused_deep_moe_a5::PrepareLaunch(num_experts, num_ranks, profile_enable);
-    bool use_profile = profile_ctx.enabled;
-    int64_t profile_enable_i64 = static_cast<int64_t>(use_profile);
-    const at::Tensor *profile_buffer_ptr = profile_ctx.profileBuffer;
-    int64_t profile_buffer_bytes_i64 = profile_ctx.profileBufferBytes;
-    int64_t profile_launch_id_i64 = profile_ctx.launchId;
-
-    if (use_profile) {
-        TORCH_CHECK(profile_buffer_ptr != nullptr, "FusedDeepMoe profiling requires a valid profile buffer.");
-        if (use_x_active_mask) {
-            EXEC_NPU_CMD(aclnnFusedDeepMoe, x_padded, expert_ids_padded, gmm1_weight_list, gmm1_scale_list,
-                         gmm2_weight_list, gmm2_scale_list, expert_scales_padded,
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         x_active_mask, *profile_buffer_ptr, hcom_ep_name, num_ranks, rank, num_experts, quant_mode_i64,
-                         global_bs, activation_type_i64, beta_value, linear_beta_value, profile_enable_i64,
-                         profile_buffer_bytes_i64, profile_launch_id_i64, output, share_output, expert_token_nums);
-        } else {
-            EXEC_NPU_CMD(aclnnFusedDeepMoe, x_padded, expert_ids_padded, gmm1_weight_list, gmm1_scale_list,
-                         gmm2_weight_list, gmm2_scale_list, expert_scales_padded,
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), *profile_buffer_ptr, hcom_ep_name, num_ranks,
-                         rank, num_experts, quant_mode_i64, global_bs, activation_type_i64, beta_value,
-                         linear_beta_value, profile_enable_i64, profile_buffer_bytes_i64, profile_launch_id_i64, output,
-                         share_output, expert_token_nums);
-        }
-        profiling::fused_deep_moe_a5::CompleteLaunch(profile_ctx, rank);
-    } else {
-        if (use_x_active_mask) {
-            EXEC_NPU_CMD(aclnnFusedDeepMoe, x_padded, expert_ids_padded, gmm1_weight_list, gmm1_scale_list,
-                         gmm2_weight_list, gmm2_scale_list, expert_scales_padded,
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         x_active_mask, static_cast<const std::nullptr_t &>(nullptr), hcom_ep_name, num_ranks, rank,
-                         num_experts, quant_mode_i64, global_bs, activation_type_i64, beta_value, linear_beta_value,
-                         profile_enable_i64, profile_buffer_bytes_i64, profile_launch_id_i64, output, share_output,
-                         expert_token_nums);
-        } else {
-            EXEC_NPU_CMD(aclnnFusedDeepMoe, x_padded, expert_ids_padded, gmm1_weight_list, gmm1_scale_list,
-                         gmm2_weight_list, gmm2_scale_list, expert_scales_padded,
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         static_cast<const std::nullptr_t &>(nullptr), static_cast<const std::nullptr_t &>(nullptr),
-                         hcom_ep_name, num_ranks, rank, num_experts, quant_mode_i64, global_bs, activation_type_i64,
-                         beta_value, linear_beta_value, profile_enable_i64, profile_buffer_bytes_i64,
-                         profile_launch_id_i64, output, share_output, expert_token_nums);
-        }
-    }
-
-    if (use_x_active_mask) {
-        output = output.narrow(0, 0, bs);
-    }
-
-    return {output, expert_token_nums.to(expert_ids.scalar_type())};
-#else
     int64_t global_bs = std::max(expert_ids.size(0), num_max_dispatch_tokens_per_rank) * num_ranks;
     at::Tensor output = at::empty({bs, h}, x.options());
     auto gmm1_permuted_weight_scale_f32 = gmm1_permuted_weight_scale.to(at::kFloat);
@@ -1261,7 +1108,6 @@ std::vector<at::Tensor> Buffer::fused_deep_moe(
                  output, ep_recv_count);
 
     return {output, ep_recv_count};
-#endif
 }
 
 void Buffer::begin_profile(int64_t num_profile_skip_launches, int64_t num_profile_active_launches,

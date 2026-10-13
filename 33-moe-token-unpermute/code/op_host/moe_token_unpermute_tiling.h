@@ -36,7 +36,6 @@ constexpr int64_t TILINGKEY_MIX_BF16 = 8;
 constexpr int64_t TILINGKEY_MIX_FP16 = 16;
 constexpr int64_t TILINGKEY_MIX_FP32 = 24;
 constexpr int64_t TILINGKEY_DROPPAD = 1000;
-constexpr int64_t MAX_HIDDEN_SIZE_310P = 10240;
 constexpr int64_t ALIGN_128 = 128;
 struct CoreParam {
     int64_t maxCoreMemery = 0;

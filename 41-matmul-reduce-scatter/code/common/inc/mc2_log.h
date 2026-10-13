@@ -32,8 +32,6 @@
 #else
 #include "err_mgr.h"
 #endif
-#include "quant_batch_matmul_v3/op_kernel/arch35/quant_batch_matmul_v3_tiling_data.h"
-#include "mat_mul_v3/op_kernel/arch35/mat_mul_tiling_data.h"
 
 template <typename T>
 std::string ConcatString(const T &arg) {
@@ -76,10 +74,6 @@ void PrintRCSTilingData(const std::string &opName, Mc2Tiling::RCSTiling& rcsTili
 void PrintTileL2TilingData(const std::string &opName, Mc2Tiling::TileL2Tiling& tileL2Tiling);
 void PrintMc2MsgData(const std::string &opName, Mc2Tiling::Mc2Msg& msg);
 void PrintTCubeTilingData(const std::string &opName, ::TCubeTiling &tiling);
-void PrintTCubeTilingWindowParam(const std::string &opName, DequantBmm::Mc2SlidingWindowParams &tiling);
-void PrintTCubeTilingL2cache(const std::string &opName, DequantBmm::Mc2L2cacheTileParams &tiling);
-void PrintTCubeTilingParams(const std::string &opName, DequantBmm::Mc2QuantBatchMatmulV3DataParams &tiling);
-void PrintMMV3TilingData(const std::string &opName, Mc2MatMulV3TilingData &tiling);
 }  // namespace Mc2Log
 
 struct ErrorResult {

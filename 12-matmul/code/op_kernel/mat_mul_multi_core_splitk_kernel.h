@@ -16,9 +16,6 @@
 
 #include "mat_mul_deterministic_splitk_kernel.h"
 
-#if (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
-constexpr uint16_t SYNC_AIC_FLAG = 1;
-#endif
 
 namespace MatmulV3 {
 

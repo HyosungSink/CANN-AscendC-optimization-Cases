@@ -20,21 +20,11 @@
 #include "quant_batch_matmul_v3_base.h"
 
 namespace AscendC {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-constexpr MatmulConfig BMM_DEQUANT_MDL_CFG = GetMDLConfig(false, false, 0, true);
-#elif (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 constexpr MatmulConfig BMM_DEQUANT_MDL_CFG =
     GetMDLConfig(false, false, 0, false, false, false, true, true, true, false, false, true);
-#else
-constexpr MatmulConfig BMM_DEQUANT_MDL_CFG = GetMDLConfig(false, false, 0, false, false, false, true);
-#endif
 
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 constexpr MatmulConfig BMM_DEQUANT_PRELOAD_CFG =
     GetMDLConfig(false, false, 2, false, false, false, false, true, true, false, false, true);
-#else
-constexpr MatmulConfig BMM_DEQUANT_PRELOAD_CFG = GetMDLConfig(false, false, 2);
-#endif
 
 template <typename xType, typename wType, int32_t fFormat, int32_t wFormat, typename biasType, typename scaleType, typename yType,
           bool aTrans, bool bTrans, const MatmulConfig &BMM_DEQUANT_CFG = BMM_DEQUANT_MDL_CFG>
@@ -43,9 +33,6 @@ public:
     __aicore__ inline BmmDequant(){};
 
     __aicore__ inline void InitTbuf(TBuf<TPosition::VECCALC> tbuf) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-	mmLocalWorkSpace_ = tbuf;
-#endif
     }
 
     __aicore__ inline void Init(GM_ADDR x1, GM_ADDR x2, GM_ADDR bias,
@@ -59,13 +46,6 @@ public:
         mm_.SetSubBlockIdx(0);
         mm_.Init(&(tilingData->matmulTiling), tPipe);
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        if (tilingData->params.ubSize > 0) {
-            tPipe->InitBuffer(mmLocalWorkSpace_, tilingData->params.ubSize);
-            LocalTensor<uint8_t> tmpUb = mmLocalWorkSpace_.template Get<uint8_t>();
-            mm_.SetLocalWorkspace(tmpUb);
-        }
-#endif
     }
 
     __aicore__ inline void UpdateGlobalAddr(GM_ADDR x1, GM_ADDR x2, GM_ADDR bias,
@@ -146,9 +126,6 @@ protected:
 
     GlobalTensor<scaleType> scaleGm_;
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    TBuf<> mmLocalWorkSpace_;
-#endif
 
     uint32_t hasBias_;
     uint64_t scaleScalar_;

@@ -412,9 +412,7 @@ void SFAMlaTiling::NormalCalcFDWorkSpace(const uint32_t actCoreNum)
         accumOutSize = FDParamNums * headDimAlign_;
         logSumExpSize = 2 * FDParamNums * (BYTE_BLOCK / sfaInfo_->blockTypeSize);  // log和sum的存储空间一致，共需要2份内存
         workspaceSize_ += (accumOutSize + logSumExpSize) * sfaInfo_->blockTypeSize;
-        if (sfaInfo_->socVersion == platform_ascendc::SocVersion::ASCEND310P) {
-            workspaceSize_ += static_cast<size_t>(actCoreNum) * 32; // 每个核SyncAll软同步需要32Byte记录状态
-        }
+
     }
 }
 

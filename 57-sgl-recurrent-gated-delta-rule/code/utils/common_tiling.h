@@ -107,9 +107,7 @@ inline __attribute__((always_inline)) uint32_t GetN0TilingLimit(bool compressFla
     if (compressFlag) {
         return std::min(tilingN * BLOCK_SIZE, AXES_ALIGN_SIZE_INT8);
     } else {
-        return (platformType == PlatformType::ASCEND_310P || platformType == PlatformType::ASCEND_910A)
-                   ? AXES_ALIGN_SIZE
-                   : AXES_ALIGN_SIZE_INT8;
+        return AXES_ALIGN_SIZE_INT8;
     }
 }
 
@@ -128,8 +126,7 @@ inline __attribute__((always_inline)) bool IsExceedTilingLimit(uint32_t axes0, u
                                                                uint32_t n0TilingLimit, PlatformType platformType,
                                                                uint32_t basicBlockSize)
 {
-    return (PRI_FLAG && axes0 > n0TilingLimit) || (!PRI_FLAG && priAxes0 > n0TilingLimit) ||
-           (platformType == PlatformType::ASCEND_910A && basicBlockSize > UB_LIMIT_SIZE_910A);
+    return ((((PRI_FLAG) && (axes0 > n0TilingLimit))) || (((!(PRI_FLAG)) && (priAxes0 > n0TilingLimit))));
 }
 
 template <bool PRI_FLAG, typename OpShareType>
@@ -176,9 +173,7 @@ void TilingFunc(OpShareType &opShape, TilingType &tilingParam, const HardwareTyp
     uint32_t axes = RoundUp<uint32_t>(PRI_FLAG ? opShape.n : opShape.m, roundBase);
     float axes0Max = static_cast<float>(AXES_ALIGN_SIZE) / mmInfo.inDtype;
     auto platformType = PlatformInfo::Instance().socType;
-    if (mmInfo.isInt8 && (platformType == PlatformType::ASCEND_310P || platformType == PlatformType::ASCEND_910A)) {
-        axes0Max /= CONST_2;
-    }
+
 
     uint32_t n0TilingInit = GetN0TilingInit(opShape, compressFlag, tilingN);
     uint32_t n0TilingLimit = GetN0TilingLimit(compressFlag, tilingN, platformType);

@@ -51,10 +51,6 @@ private:
     GlobalTensor<int32_t> expandedExpertIdxGm;
     GlobalTensor<int32_t> expertIdxValueGm;
     GlobalTensor<int32_t> expandedRowIdxGm;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    GlobalTensor<int32_t> syncTmpSpaceGm_;
-    TBuf<TPosition::VECCALC> workBuffer;
-#endif
     LocalTensor<int32_t> expertTokenIdxOutLocal;
 
     const MoeV2GatherOutComputeTilingData *srcToDstTilingData;
@@ -102,14 +98,8 @@ __aicore__ inline void MoeV2ExpertTokenOut::InitLocal()
         }
         DataCopyExtParams copyParams{static_cast<uint16_t>(1), static_cast<uint32_t>(copyLength * sizeof(int32_t)), 0,
                                      0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        DataCopyCustom<int32_t, false, false>(
-            expandedRowIdxGm[this->blockIdx * this->srcToDstTilingData->perCoreRows + loop * perLoopRows], outLocal,
-            copyParams.blockCount, copyParams.blockLen);
-#else
         DataCopyPad(expandedRowIdxGm[this->blockIdx * this->srcToDstTilingData->perCoreRows + loop * perLoopRows],
                     outLocal, copyParams);
-#endif
     }
     SetWaitFlag<HardEvent::MTE3_MTE2>(HardEvent::MTE3_MTE2);
     copyInQueue.FreeTensor(outLocal);
@@ -192,13 +182,7 @@ __aicore__ inline void MoeV2ExpertTokenOut::CopyOutExpertTokensCumsum(bool isTai
     DataCopyExtParams copyParams{static_cast<uint16_t>(1), static_cast<uint32_t>(copyLength * sizeof(int32_t)), 0, 0,
                                  0};
     SetAtomicAdd<int32_t>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyCustom<int32_t,false,false>(
-        expertTokensCountOrCumsumGm[this->firstExpertId], this->expertTokenIdxOutLocal,
-        copyParams.blockCount, copyParams.blockLen);
-#else
     DataCopyPad(expertTokensCountOrCumsumGm[this->firstExpertId], this->expertTokenIdxOutLocal, copyParams);
-#endif
     SetAtomicNone();
     if (isTail && end > this->expertNumUbAlign) {
         int64_t remainderLength = end - copyLength;
@@ -212,16 +196,8 @@ __aicore__ inline void MoeV2ExpertTokenOut::CopyOutExpertTokensCumsum(bool isTai
                                      0, 0};
             SetAtomicAdd<int32_t>();
             
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            DataCopyCustom<int32_t,false,false>(
-                expertTokensCountOrCumsumGm[this->lastExpertId + 1 + this->expertNumUbAlign * i],
-                this->expertTokenIdxOutLocal,
-                params.blockCount, params.blockLen);
-
-#else
             DataCopyPad(expertTokensCountOrCumsumGm[this->lastExpertId + 1 + this->expertNumUbAlign * i],
                         this->expertTokenIdxOutLocal, params);
-#endif
             SetAtomicNone();
         }
     }
@@ -238,20 +214,10 @@ __aicore__ inline void MoeV2ExpertTokenOut::CopyOutExpertTokensCount(bool isTail
 #endif
     SetAtomicAdd<int32_t>();
     if (this->dropPadMode == DROP_PAD_MODE && expertTokensBeforeCapacityFlag > EXERPT_TOKENS_NONE) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        DataCopyCustom<int32_t,false,false>(expertTokensBeforeCapacityGm[this->firstExpertId],
-            this->expertTokenIdxOutLocal, copyParams.blockCount, copyParams.blockLen);
- #else
         DataCopyPad(expertTokensBeforeCapacityGm[this->firstExpertId], this->expertTokenIdxOutLocal, copyParams);
-#endif
     }
     if (this->dropPadMode == DROPLESS_MODE && expertTokensCountOrCumsumFlag == EXERPT_TOKENS_COUNT) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        DataCopyCustom<int32_t,false,false>(expertTokensCountOrCumsumGm[this->firstExpertId], this->expertTokenIdxOutLocal,
-            copyParams.blockCount, copyParams.blockLen);
-#else
         DataCopyPad(expertTokensCountOrCumsumGm[this->firstExpertId], this->expertTokenIdxOutLocal, copyParams);
-#endif
     }
     SetAtomicNone();
 }
@@ -269,13 +235,8 @@ __aicore__ inline void MoeV2ExpertTokenOut::CopyOutTokenGm()
     DataCopyExtParams copyParams{static_cast<uint16_t>(1), static_cast<uint32_t>(EXPERT_ID_VALUE_NUM * sizeof(int32_t)),
                                  0, 0, 0};
     SetWaitFlag<HardEvent::S_MTE3>(HardEvent::S_MTE3);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyCustom<int32_t,false,false>(expertIdxValueGm[this->blockIdx * BLOCK_BYTES / sizeof(int32_t)],
-             this->expertTokenIdxOutLocal[this->expertNumUbAlign], copyParams.blockCount, copyParams.blockLen);
-#else
     DataCopyPad(expertIdxValueGm[this->blockIdx * EXPERT_ID_VALUE_NUM],
                 this->expertTokenIdxOutLocal[this->expertNumUbAlign], copyParams);
-#endif
     CopyOutExpertTokensCount(true);
 }
 
@@ -285,12 +246,7 @@ __aicore__ inline void MoeV2ExpertTokenOut::SyncAll()
         return;
     }
 #ifndef __CCE_KT_TEST__
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<int32_t> syncLocal = workBuffer.Get<int32_t>();
-    AscendC::SyncAll(syncTmpSpaceGm_, syncLocal, GetBlockNum());
-#else
     AscendC::SyncAll();
-#endif
 #endif
 }
 
@@ -332,22 +288,8 @@ __aicore__ inline void MoeV2ExpertTokenOut::Init(GM_ADDR expertTokensCountOrCums
     expandedExpertIdxGm.SetGlobalBuffer((__gm__ int32_t *)workspace +
                                             this->blockIdx * this->srcToDstTilingData->perCoreRows,
                                         Align(this->coreRows, sizeof(int32_t)));
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    syncTmpSpaceGm_.SetGlobalBuffer((__gm__ int32_t *)workspace +
-                                        Align(this->totalLength, sizeof(int32_t)) * EXERPT_TOKENS_COUNT +
-                                        this->coreNum * BLOCK_BYTES / sizeof(int32_t),
-                                    INT32_ONE_BLOCK_NUM * GetBlockNum() * BLOCK_BYTES);
-    pipe->InitBuffer(workBuffer, INT32_ONE_BLOCK_NUM * GetBlockNum() * BLOCK_BYTES);
-    LocalTensor<int32_t> syncLocal = workBuffer.Get<int32_t>();
-    Duplicate<int32_t>(syncLocal, 0, SYNC_LEN);
-    SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-    DataCopy(syncTmpSpaceGm_, syncLocal, SYNC_LEN);
-    expertIdxValueGm.SetGlobalBuffer((__gm__ int32_t *)workspace + Align(this->totalLength, sizeof(int32_t)) * 2,
-                                     this->coreNum * BLOCK_BYTES / sizeof(int32_t));
-#else
     expertIdxValueGm.SetGlobalBuffer((__gm__ int32_t *)workspace + Align(this->totalLength, sizeof(int32_t)) * 2,
                                      this->coreNum * 2);
-#endif
     this->expertNumUbAlign = Min(Align(this->expertNum, sizeof(int32_t)), MAX_EXPERT_NUM);
     pipe->InitBuffer(copyInQueue, 1, this->perLoopRows * BLOCK_BYTES);
     pipe->InitBuffer(expertTokenIdxCopyInQueue, 1, this->expertNumUbAlign * sizeof(int32_t));

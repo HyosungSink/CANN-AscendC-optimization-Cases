@@ -79,11 +79,7 @@ __aicore__ inline void MoeV2FullLoad<T>::CopyIn()
     DataCopyExtParams dataCopyParams{static_cast<uint16_t>(1),
                                      static_cast<uint32_t>(this->totalLength * sizeof(int32_t)), 0, 0, 0};
     DataCopyPadExtParams<int32_t> dataCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyPadCustom(inLocal[0], expertIdxGm_, dataCopyParams, dataCopyPadParams);
-#else
     DataCopyPad(inLocal[0], expertIdxGm_, dataCopyParams, dataCopyPadParams);
-#endif
     ArithProgression<int32_t>(inLocal[this->sortNum_], 0, 1, this->totalLength);
     sortDataCopyInQueue.EnQue(inLocal);
 }
@@ -94,11 +90,7 @@ __aicore__ inline void MoeV2FullLoad<T>::SortCompute()
     LocalTensor<int32_t> inLocal = sortDataCopyInQueue.DeQue<int32_t>();
     LocalTensor<int32_t> expertIdxLocal = inLocal[0];
     LocalTensor<float> expertIdxLocalFp32 = expertIdxLocal.ReinterpretCast<float>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    Cast(expertIdxLocalFp32, expertIdxLocal, RoundMode::CAST_NONE, this->totalLength);
-#else
     Cast(expertIdxLocalFp32, expertIdxLocal, RoundMode::CAST_ROUND, this->totalLength);
-#endif
     PipeBarrier<PIPE_V>();
     Muls(expertIdxLocalFp32, expertIdxLocalFp32, (float)-1, this->totalLength);
     PipeBarrier<PIPE_V>();
@@ -112,11 +104,7 @@ __aicore__ inline void MoeV2FullLoad<T>::SortCompute()
         Duplicate(expertIdxLocalFp32[duplicateIndex], MIN_FP32, mask, 1, DST_BLK_STRIDE, DST_REP_STRIDE);
         PipeBarrier<PIPE_V>();
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<float> concatLocal;
-#else
     LocalTensor<float> concatLocal = expertIdxLocalFp32;
-#endif
     LocalTensor<float> tempTensor = tempBuffer.Get<float>(GetSortLen<float>(this->sortNum_));
     Concat(concatLocal, expertIdxLocalFp32, tempTensor, this->sortNum_ / ONE_REPEAT_SORT_NUM);
     PipeBarrier<PIPE_V>();
@@ -129,13 +117,8 @@ __aicore__ inline void MoeV2FullLoad<T>::SortCompute()
     LocalTensor<float> expandDstToSrcRowLocalFp32 = expandDstToSrcRowLocal.ReinterpretCast<float>();
     Extract(expandedExpertIdxLocal, expandDstToSrcRowLocal, sortedLocal, this->sortNum_ / ONE_REPEAT_SORT_NUM);
     PipeBarrier<PIPE_V>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    Cast(expandDstToSrcRowLocalFp32, expandDstToSrcRowLocal.ReinterpretCast<int32_t>(), RoundMode::CAST_NONE,
-         this->totalLength);
-#else
     Cast(expandDstToSrcRowLocalFp32, expandDstToSrcRowLocal.ReinterpretCast<int32_t>(), RoundMode::CAST_ROUND,
          this->totalLength);
-#endif
     PipeBarrier<PIPE_V>();
     Muls(expandedExpertIdxLocal, expandedExpertIdxLocal, (float)-1, this->totalLength);
     PipeBarrier<PIPE_V>();
@@ -176,18 +159,10 @@ template <typename T>
 __aicore__ inline void MoeV2FullLoad<T>::CopyOutIdx()
 {
     LocalTensor<int32_t> expandedRowIdx = expandedRowIdxCopyOutQueue_.DeQue<int32_t>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyExtParams intriParams;
-#else
     DataCopyParams intriParams;
-#endif
     intriParams.blockCount = 1;
     intriParams.blockLen = this->totalLength * sizeof(int32_t);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyCustom(expandedRowIdxGm_, expandedRowIdx, intriParams.blockCount, intriParams.blockLen);
-#else
     DataCopyPad(expandedRowIdxGm_, expandedRowIdx, intriParams);
-#endif
     expandedRowIdxCopyOutQueue_.EnQue(expandedRowIdx);
 }
 
@@ -232,11 +207,7 @@ __aicore__ inline void MoeV2FullLoad<T>::ComputeExpertTokenCountOrCumsum()
     DataCopyExtParams copyParams{static_cast<uint16_t>(1), static_cast<uint32_t>(this->expertNum * sizeof(int32_t)), 0,
                                  0, 0};
     if (this->expertTokensCountOrCumsumFlag > 0) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        DataCopyCustom(expertTokensCountOrCumsumGm, expertTokensCount, copyParams.blockCount, copyParams.blockLen);
-#else
         DataCopyPad(expertTokensCountOrCumsumGm, expertTokensCount, copyParams);
-#endif
     }
     expertTokensCopyOutQueue_.FreeTensor(expertTokensCount);
     expandedExpertIdxCopyOutQueue_.FreeTensor(expandedExpertIdx);
@@ -258,11 +229,7 @@ __aicore__ inline void MoeV2FullLoad<T>::CopyOutX()
     DataCopyExtParams dataXCopyParams{static_cast<uint16_t>(endXRow - startXRow + 1),
                                       static_cast<uint32_t>(this->cols_ * sizeof(T)), 0, 0, 0};
     DataCopyPadExtParams<T> dataXCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyPadCustom(xLocal, xGm_[startXRow * this->cols_], dataXCopyParams, dataXCopyPadParams);
-#else
     DataCopyPad(xLocal, xGm_[startXRow * this->cols_], dataXCopyParams, dataXCopyPadParams);
-#endif
     SetWaitFlag<HardEvent::MTE2_S>(HardEvent::MTE2_S);
 
     int64_t k = 0;
@@ -270,12 +237,7 @@ __aicore__ inline void MoeV2FullLoad<T>::CopyOutX()
         for (; k < this->perCoreRows_ && curRowsStart / this->k_ == i; curRowsStart++, k++) {
             int32_t outIndex = expandedRowIdx.GetValue(curRowsStart);
             if (outIndex < this->activateRows_) {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-                DataCopyCustom(expandedXGm_[outIndex * this->cols_], xLocal[(i - startXRow) * inFactor],
-                               intriParams.blockCount, intriParams.blockLen);
-#else
                 DataCopyPad(expandedXGm_[outIndex * this->cols_], xLocal[(i - startXRow) * inFactor], intriParams);
-#endif
             }
         }
     }
@@ -346,13 +308,8 @@ __aicore__ inline void MoeV2FullLoad<T>::Init(GM_ADDR x, GM_ADDR expertIdx, GM_A
     pipe->InitBuffer(sortDataCopyInQueue, bufferNum, buffSize * kvFactor);
 
 // sort310p
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    pipe->InitBuffer(tempBuffer, buffSize * REGIONP_ROPOSAL_KV_RATIO * kvFactor);
-    pipe->InitBuffer(sortedBuffer, buffSize * REGIONP_ROPOSAL_KV_RATIO * kvFactor);
-#else
     pipe->InitBuffer(tempBuffer, buffSize * kvFactor);
     pipe->InitBuffer(sortedBuffer, buffSize * kvFactor);
-#endif
 }
 
 template <typename T>

@@ -22,25 +22,17 @@ static const std::initializer_list<DataType> V100_DTYPE_SUPPORT_LIST = {DataType
 static const std::initializer_list<DataType> V200_DTYPE_SUPPORT_LIST = {DataType::DT_FLOAT,
     DataType::DT_FLOAT16, DataType::DT_BF16};
 namespace {
-static const std::initializer_list<DataType> NPUARCH3510_DTYPE_SUPPORT_LIST = {DataType::DT_FLOAT,
-            DataType::DT_FLOAT16, DataType::DT_BF16, DataType::DT_HIFLOAT8};
-static const std::initializer_list<DataType> NPUARCH3510_CONVBP_DTYPE_SUPPORT_LIST = {DataType::DT_FLOAT,
-    DataType::DT_FLOAT16, DataType::DT_BF16, DataType::DT_HIFLOAT8, DataType::DT_FLOAT8_E4M3FN};
 }
 // 根据dtype进行初步拦截，后续需要再和cubemathtype + 芯片再进行一次拦截
 const std::initializer_list<DataType>& GetDtypeSupportListBySocVersion() {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    if (npuArch == NpuArch::DAV_3510) {
-        return NPUARCH3510_DTYPE_SUPPORT_LIST;
-    }
+
     return (IsCubeSupportFp32()) ? V200_DTYPE_SUPPORT_LIST : V100_DTYPE_SUPPORT_LIST;
 }
 
 const std::initializer_list<DataType>& GetDtypeSupportListBySocVersion4ConvBackward(bool transposed) {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    if (npuArch == NpuArch::DAV_3510) {
-		return transposed ? NPUARCH3510_DTYPE_SUPPORT_LIST : NPUARCH3510_CONVBP_DTYPE_SUPPORT_LIST;
-    }
+
     return (IsCubeSupportFp32()) ? V200_DTYPE_SUPPORT_LIST : V100_DTYPE_SUPPORT_LIST;
 }
 

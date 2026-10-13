@@ -74,10 +74,7 @@ static aclTensor* CreateWinTensor(const int64_t* dims, uint64_t dimNum, aclDataT
     return aclCreateTensor(dims, dimNum, dataType, nullptr, 0, format, dims, dimNum, dataAddr);
 }
 
-static inline bool IsAscend950(void)
-{
-    return op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510;
-}
+
 
 // 检查入参是否为nullptr
 static bool CheckNotNull(const aclTensor* x1, const aclTensor* x2, const aclTensor* output)
@@ -442,10 +439,7 @@ aclnnStatus aclnnMatmulReduceScatterV2GetWorkspaceSize(const aclTensor* x1, cons
                                                        aclOpExecutor** executor)
 {
     aclnnStatus ret = ACLNN_SUCCESS;
-    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        ret = matmulReduceScatterV2GetWorkSpaceSizeCcuMode(x1, x2, bias, x1Scale, x2Scale, quantScale, blockSize, group, reduceOp, commTurn,
-                                                       streamMode, groupSize, commMode, output, amaxOutOptional, workspaceSize, executor);
-    } else if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
+    if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
         ret = matmulReduceScatterV2GetWorkSpaceSizeAivMode(x1, x2, bias, x1Scale, x2Scale, quantScale, blockSize, group, reduceOp, commTurn,
                                                        streamMode, groupSize, commMode, output, amaxOutOptional, workspaceSize, executor);
     }
@@ -463,8 +457,6 @@ aclnnStatus aclnnMatmulReduceScatterV2(void* workspace, uint64_t workspaceSize, 
     if (NnopbaseSetHcclServerType) {
         if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_2201) {
             NnopbaseSetHcclServerType(executor, NnopbaseHcclServerType::NNOPBASE_HCCL_SERVER_TYPE_MTE);
-        } else if (GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-            NnopbaseSetHcclServerType(executor, NnopbaseHcclServerType::NNOPBASE_HCCL_SERVER_TYPE_CCU);
         }
     }
 

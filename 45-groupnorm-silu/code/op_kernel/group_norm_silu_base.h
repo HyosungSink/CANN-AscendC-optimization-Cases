@@ -21,11 +21,7 @@
 namespace platform {
 __aicore__ inline constexpr bool IsDataCopyPadSupport()
 {
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     return true;
-#else
-    return false;
-#endif
 }
 }
 
@@ -52,11 +48,7 @@ protected:
 
     __aicore__ inline RoundMode GetRoundMode()
     {
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         return RoundMode::CAST_ROUND;
-#else
-        return RoundMode::CAST_NONE;
-#endif
     };
 
     template <typename T1, bool isAlign = true>

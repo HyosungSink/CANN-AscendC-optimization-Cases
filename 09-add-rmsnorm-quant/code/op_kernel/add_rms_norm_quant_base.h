@@ -23,16 +23,9 @@ using namespace AscendC;
 
 __aicore__ inline constexpr uint32_t GetVRegSize()
 {
-#if __CCE_AICORE__ == 310
-    return AscendC::VECTOR_REG_WIDTH;
-#else
     return 256U;
-#endif
 }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ != 220 && __CCE_AICORE__ != 310 && __CCE_AICORE__ != 220
-#define bfloat16_t int16_t
-#endif
 constexpr int32_t NUM_PER_BLK_FP32 = 8;
 constexpr int32_t BUFFER_NUM = 1;        // tensor num for each queue
 constexpr int32_t NUM_PER_REP_FP32 = 64; // ONE_REPEAT_BYTE_SIZE / sizeof(float);
@@ -92,13 +85,9 @@ __aicore__ inline void ReduceSumFP32(
         PipeBarrier<PIPE_V>();
     }
     AscendCUtils::SetMask<float>(NUM_PER_REP_FP32);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
     if (g_coreType == AIV) {
         WholeReduceSum<float, false>(dst_local, work_local, NUM_PER_REP_FP32, 1, 0, 1, 0);
     }
-#else
-    WholeReduceSum<float, false>(dst_local, work_local, NUM_PER_REP_FP32, 1, 1, 1, DEFAULT_REPEAT_STRIDE);
-#endif
     PipeBarrier<PIPE_V>();
 }
 
@@ -184,7 +173,6 @@ __aicore__ inline void doZeroPoints(
 template <typename T, typename U, typename R>
 __aicore__ inline void DataCopyCustom(const U& dstTensor, const R& srcTensor, const uint32_t count)
 {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     DataCopyParams copyParams;
     copyParams.blockLen = count * sizeof(T);
     copyParams.blockCount = 1;
@@ -194,34 +182,6 @@ __aicore__ inline void DataCopyCustom(const U& dstTensor, const R& srcTensor, co
     } else {
         DataCopyPad(dstTensor, srcTensor, copyParams);
     }
-#else
-    // only support count greater than 32byte
-    int32_t numPerBlock = ONE_BLK_SIZE / sizeof(T);
-    if (count % numPerBlock == 0) {
-        DataCopy(dstTensor, srcTensor, count);
-    } else {
-        if constexpr (is_same<U, AscendC::LocalTensor<T>>::value) {
-            int32_t num = AlignUp(count, numPerBlock);
-            DataCopy(dstTensor, srcTensor, num);
-        } else {
-            if (count < numPerBlock) {
-                DataCopy(dstTensor, srcTensor, numPerBlock);
-            } else {
-                int32_t num = count / numPerBlock * numPerBlock;
-                DataCopy(dstTensor, srcTensor, num);
-                SetFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                for (int32_t i = 0; i < numPerBlock; i++) {
-                    T tensorValue = srcTensor.GetValue(count - numPerBlock + i);
-                    srcTensor.SetValue(i, tensorValue);
-                }
-                SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
-                WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
-                DataCopy(dstTensor[count - numPerBlock], srcTensor, numPerBlock);
-            }
-        }
-    }
-#endif
 }
 
 __aicore__ inline void RoundFloat2Int8(LocalTensor<int8_t>& dstTensor, LocalTensor<float>& srcTensor, int32_t size)

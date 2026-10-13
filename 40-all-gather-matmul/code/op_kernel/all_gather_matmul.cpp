@@ -20,10 +20,7 @@
 #include "lib/matmul_intf.h"
 #include "all_gather_matmul_tiling.h"
 #include "all_gather_matmul_tiling_key.h"
-#if __CCE_AICORE__ == 310
-#else
     #include "all_gather_matmul_full_mesh.h"
-#endif
 
 using namespace AscendC;
 #define INVOKE_ALL_GATHER_MATMUL_OP_IMPL(templateClass, ...)                                   \
@@ -47,7 +44,6 @@ __global__ __aicore__ void all_gather_matmul(GM_ADDR aGM, GM_ADDR bGM, GM_ADDR b
 {
     REGISTER_TILING_DEFAULT(Mc2Tiling::AllGatherMatmulTilingData);
     // allgathermatmul算子kernel侧代码不支持A5
-    #if __CCE_AICORE__ != 310
         auto tiling = (__gm__ Mc2Tiling::AllGatherMatmulTilingData*)tilingGM;
         __gm__ void* mc2InitTiling = (__gm__ void*)(&(tiling->mc2InitTiling));
         __gm__ void* mc2CcTiling = (__gm__ void*)(&(tiling->mc2CcTiling));
@@ -78,5 +74,4 @@ __global__ __aicore__ void all_gather_matmul(GM_ADDR aGM, GM_ADDR bGM, GM_ADDR b
             using biasType = MatmulType<AscendC::TPosition::GM, CubeFormat::ND, float>;
             INVOKE_ALL_GATHER_MATMUL_OP_IMPL(AllGatherMatmulFullMesh, IsNd2Nz, IsBias);
         }
-    #endif
 }

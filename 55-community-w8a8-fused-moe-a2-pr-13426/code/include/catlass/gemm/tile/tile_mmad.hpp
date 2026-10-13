@@ -52,20 +52,11 @@ struct TileMmad {
         mmadParams.k = k;
         mmadParams.unitFlag = unitFlag;
         mmadParams.cmatrixInitVal = initC;
-#if (defined(__NPU_ARCH__) && __NPU_ARCH__ == 2201)
         if constexpr (std::is_same_v<ElementA, float> &&
                       (std::is_same_v<typename AType_::Layout, layout::ColumnMajor> ||
                           std::is_same_v<typename AType_::Layout, layout::nZ>)) {
             mmadParams.kDirectionAlign = true;
         }
-#endif
-#if (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        if constexpr(std::is_same_v<typename AType_::Layout, layout::VectorLayout>) {
-            mmadParams.disableGemv = false;
-        } else {
-            mmadParams.disableGemv = true;
-        }
-#endif
 
         AscendC::Mmad(l0CTensor,
                       l0ATensor,
@@ -92,15 +83,10 @@ struct TileMmad {
         mmadParams.k = k;
         mmadParams.unitFlag = unitFlag;
         mmadParams.cmatrixInitVal = false;
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 2201)
         using LayoutL1A = typename helper::L1ATypeSelector<AType_>::L1AType::Layout;
         if constexpr (std::is_same_v<ElementA, float> && std::is_same_v<LayoutL1A, layout::nZ>) {
             mmadParams.kDirectionAlign = true;
         }
-#endif
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        mmadParams.disableGemv = true;
-#endif
 
         AscendC::Mmad(l0CTensor,
                       l0ATensor,
@@ -145,18 +131,9 @@ struct TileMmadTla {
         mmadParams.k = k;
         mmadParams.unitFlag = unitFlag;
         mmadParams.cmatrixInitVal = initC;
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 2201)
         if constexpr (std::is_same_v<ElementA, float> && std::is_same_v<LayoutTagL1A, layout::nZ>) {
             mmadParams.kDirectionAlign = true;
         }
-#endif
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        if constexpr(std::is_same_v<LayoutTagL1A, layout::VectorLayout>) {
-            mmadParams.disableGemv = false;
-        } else {
-            mmadParams.disableGemv = true;
-        }
-#endif
 
         AscendC::Mmad(l0CTensor.data(),
                       l0ATensor.data(),
@@ -184,14 +161,9 @@ struct TileMmadTla {
         mmadParams.k = k;
         mmadParams.unitFlag = unitFlag;
         mmadParams.cmatrixInitVal = false;
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 2201)
         if constexpr (std::is_same_v<ElementA, float> && std::is_same_v<LayoutTagL1A, layout::nZ>) {
             mmadParams.kDirectionAlign = true;
         }
-#endif
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        mmadParams.disableGemv = true;
-#endif
 
         AscendC::Mmad(l0CTensor.data(),
                       l0ATensor.data(),
@@ -226,9 +198,6 @@ struct TileMmadTla {
         mmadParams.k = k;
         mmadParams.unitFlag = 0;
         mmadParams.cmatrixInitVal = true;
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        mmadParams.disableGemv = true;
-#endif
         for (uint32_t l0BatchIdx = 0; l0BatchIdx < l0Batch; l0BatchIdx++) {
             AscendC::Mmad(l0CTensor.data()[l0BatchIdx * L0CM * L0CN],
                 l0ATensor.data()[l0BatchIdx * L0AM * L0AK],
@@ -250,21 +219,12 @@ struct TileMmadTla {
         uint32_t n = tla::get<1>(l0CTensor.layout().originShape());
         uint32_t k = tla::get<1>(l0ATensor.layout().originShape());
         AscendC::MmadParams mmadParams;
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 2201)
         if constexpr (std::is_same_v<ElementA, float> && std::is_same_v<LayoutTagL1A, layout::nZ>) {
             mmadParams.kDirectionAlign = true;
         }
         if constexpr (!std::is_same_v<LayoutTagL1A, layout::VectorLayout>) {
             if (m == 1) m = 16; // avoid gemv mode
         }
-#endif
-#if (defined (__NPU_ARCH__) && __NPU_ARCH__ == 3510)
-        if constexpr(std::is_same_v<LayoutTagL1A, layout::VectorLayout>) {
-            mmadParams.disableGemv = false;
-        } else {
-            mmadParams.disableGemv = true;
-        }
-#endif
         mmadParams.m = m;
         mmadParams.n = n;
         mmadParams.k = k;

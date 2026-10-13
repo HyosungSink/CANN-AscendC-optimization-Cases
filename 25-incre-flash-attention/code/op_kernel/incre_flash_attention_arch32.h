@@ -14,10 +14,6 @@
  */
 #include "incre_flash_attention_tilingkey.h"
 #include "incre_flash_attention_allvec_new.h"
-#if (__CCE_AICORE__ == 200)
-#include "./arch20/incre_flash_attention_cube_310P_kvquant.h"
-#endif
-#if (__CCE_AICORE__ > 200)
 #include "arch32/incre_flash_attention_split_Bbn2s2_Us2.h"
 #include "arch32/incre_flash_attention_preload.h"
 #include "arch32/incre_flash_attention_preload_dd.h"
@@ -31,9 +27,6 @@
 #endif
 #endif // FIA_ENABLE_MLA
 
-#else
-#include "./arch20/unpad_paged_attention_decoder.h"
-#endif
 
 #define NEED_CUBE_TILING (true)
 #define NOT_NEED_CUBE_TILING (false)
@@ -179,7 +172,6 @@
 #define COPY_TILING_DATA_NO_CUBE(tiling) COPY_TILING_DATA(tiling, NOT_NEED_CUBE_TILING)
 
 #else
-#if (__CCE_AICORE__ != 310) && (!defined (__DAV_310R6__))
 #define COPY_TILING_DATA(tiling, need_cube)                                                                            \
     GET_TILING_DATA_MEMBER(IncreFlashAttentionTilingDataV2, tilingBase, tiling_data_in, tiling);                       \
     const IncreFlashAttentionTilingData *__restrict tiling_data = &tiling_data_in;                                     \
@@ -197,7 +189,6 @@
 #define COPY_TILING_DATA_NO_CUBE(tiling)                                                                               \
     GET_TILING_DATA_MEMBER(IncreFlashAttentionTilingDataV2, tilingBase, tiling_data_in, tiling);                       \
     const IncreFlashAttentionTilingData *__restrict tiling_data = &tiling_data_in
-#endif
 #endif
 
 inline __aicore__ void incre_flash_attention_FIAS_arch32(
@@ -220,9 +211,7 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
     获取Op可用WorkSpace空间
     **/
     __gm__ uint8_t *user = GetUserWorkspace(workspace);
-#if (__CCE_AICORE__ > 200)
     KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_MIX_AIC_1_2);
-#endif
 
 #if (ORIG_DTYPE_QUERY == DT_FLOAT16) && (ORIG_DTYPE_ATTENTION_OUT == DT_FLOAT16) && (ORIG_DTYPE_KEY == DT_FLOAT16)
     TILING_KEY_IS(QF16_KVF16_OUTF16_ANTIPERCHANNEL_VALL_TILING);
@@ -268,7 +257,6 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
     #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_BSH_FLASHDECODING_VALL_TILING
         INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, false, true, LAYOUT::BSH);
     #endif
-#if (__CCE_AICORE__ > 200)
     #if TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_VALL_TILING
         INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, false, false, 
                                    LAYOUT::BNSD);
@@ -349,36 +337,6 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
         INVOKE_IFA_GENERAL_OP_IMPL_PREFIX(IncreFlashAttentionAttenSplitBbn2s2Us2, half, half, half, half, false, true,
                                    LAYOUT::BSH, 0, true);
     #endif
-#else
-    #if TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, false, false, 
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_CALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionMulAttenCube310P, half, half, half, half, false, false, 
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, true, false,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, true, true,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, true, false,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_CALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionMulAttenCube310P, half, half, half, half, true, false,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, half, half, half, true, true,
-                                   LAYOUT::BSH);
-	#elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_ATB_C1V2_TILING
-		INVOKE_IFA_NEW_GQA_OP_IMPL(PagedAttentionDecoderMask, half, half, half, half, true, false, LAYOUT::BNSD,
-                                    false, false, LAYOUT::BNSD, AMLAMODE::NORMAL, false, IncreFlashAttentionTilingAtbDataV2);
-	#elif TILING_KEY_VAR == QF16_KVF16_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_ATB_C1V2_TILING
-		INVOKE_IFA_NEW_GQA_OP_IMPL(PagedAttentionDecoderMask, half, half, half, half, true, false, LAYOUT::BSND,
-                                    false, false, LAYOUT::BSND, AMLAMODE::NORMAL, false, IncreFlashAttentionTilingAtbDataV2);
-    #endif
-#endif
 #endif
 
 #if (ORIG_DTYPE_QUERY == DT_FLOAT16) && (ORIG_DTYPE_ATTENTION_OUT == DT_FLOAT16) && (ORIG_DTYPE_KEY == DT_INT8)
@@ -458,7 +416,6 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
     TILING_KEY_IS(QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_VALL_TILING);
     TILING_KEY_IS(QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_FLASHDECODING_VALL_TILING);
     TILING_KEY_IS(QF16_KVINT8_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_ATB_C1V2_TILING);
-#if (__CCE_AICORE__ > 200)
     #if TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_C1V2_TILING
         INVOKE_IFA_GENERAL_OP_IMPL(IncreFlashAttentionAttenSplitBbn2s2Us2, half, int8_t, half, half, false, false,
                                    LAYOUT::BNSD);
@@ -676,39 +633,6 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
         INVOKE_IFA_ANTIQUANT_OP_IMPL(PagedAttentionAntiquant, half, int8_t, half, half, true, false, LAYOUT::TND, false,
                                      false, LAYOUT::BSND, AMLAMODE::NORMAL, false, IncreFlashAttentionTilingAtbDataV2);
     #endif
-#else
-    #if TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_VALL_TILING // kvDeq
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, false, false,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_CALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionMulAttenCube310P, half, int8_t, half, half, false, false,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, false, true,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, false, false,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, false, true,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_VALL_TILING // pageAttention + kvDeq
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, true, false,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_PAGEDCACHE_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, true, true,
-                                   LAYOUT::BNSD);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, true, false,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_CALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionMulAttenCube310P, half, int8_t, half, half, true, false,
-                                   LAYOUT::BSH);
-    #elif TILING_KEY_VAR == QF16_KVINT8_OUTF16_ANTIPERCHANNEL_BSH_PAGEDCACHE_FLASHDECODING_VALL_TILING
-        INVOKE_IFA_ALL_VEC_OP_IMPL(IncreFlashAttentionAttenAllVecNew, half, int8_t, half, half, true, true,
-                                   LAYOUT::BSH);
-    #endif
-#endif
 #endif
 
 #if (ORIG_DTYPE_QUERY == DT_FLOAT16) && (ORIG_DTYPE_ATTENTION_OUT == DT_FLOAT16) && (ORIG_DTYPE_KEY == DT_INT4)
@@ -755,7 +679,6 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
     TILING_KEY_IS(QF16_KVINT4_OUTF16_KVDEPART_FLASHDECODING_SHAPREFIX_C1V2_TILING);
     TILING_KEY_IS(QF16_KVINT4_OUTF16_KVDEPART_BSH_SHAPREFIX_C1V2_TILING);
     TILING_KEY_IS(QF16_KVINT4_OUTF16_KVDEPART_BSH_FLASHDECODING_SHAPREFIX_C1V2_TILING);
-#if (__CCE_AICORE__ > 200)
     #if TILING_KEY_VAR == QF16_KVINT4_OUTF16_ANTIPERCHANNEL_C1V2_TILING
         INVOKE_IFA_GENERAL_OP_IMPL(IncreFlashAttentionAttenSplitBbn2s2Us2, half, int4b_t, half, half, false, false,
                                    LAYOUT::BNSD);
@@ -893,9 +816,7 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
                                           true, LAYOUT::BSH, 2, true);
     #endif
 #endif
-#endif
 
-#if (__CCE_AICORE__ > 200) // new template
 
 #if (ORIG_DTYPE_QUERY == DT_FLOAT16) && (ORIG_DTYPE_ATTENTION_OUT == DT_INT8) && (ORIG_DTYPE_KEY == DT_FLOAT16)
     TILING_KEY_IS(QF16_KVF16_OUTINT8_ANTIPERCHANNEL_C1V2_TILING);
@@ -2092,5 +2013,4 @@ inline __aicore__ void incre_flash_attention_FIAS_arch32(
     #endif
 #endif
 
-#endif // new template
 }

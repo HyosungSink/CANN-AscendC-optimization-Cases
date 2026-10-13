@@ -84,11 +84,7 @@ __aicore__ inline void SwigluVectorBF16<inType, calcType, outType, bufferNum>::C
     Mul(cLocal, cLocal, bLocal, curTileLen);
     PipeBarrier<PIPE_V>();
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
     Cast(cLocal_, cLocal, RoundMode::CAST_RINT, curTileLen);
-#else
-    Cast(cLocal_, cLocal, RoundMode::CAST_NONE, curTileLen);
-#endif
     PipeBarrier<PIPE_V>();
     // enque the output tensor to VECOUT queue
     outQueueC.template EnQue<outType>(cLocal_);

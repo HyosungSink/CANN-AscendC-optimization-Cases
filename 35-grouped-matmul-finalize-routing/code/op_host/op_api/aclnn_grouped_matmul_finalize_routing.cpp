@@ -26,8 +26,6 @@
 #include "aclnn_kernels/transpose.h"
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/reshape.h"
-#include "grouped_matmul_finalize_routing_MX_checker.h"
-#include "../../../grouped_matmul/op_host/op_api/grouped_matmul_950_checker.h"
 
 using namespace op;
 using namespace GmmFinalizeRouting;
@@ -515,11 +513,7 @@ static inline bool CheckTuningConfig(const GroupedMatmulParams &params)
 
 static aclnnStatus CheckParams(GroupedMatmulParams &params)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        GmmFinalizeRouting::AclnnGroupedMatmulFinalizeRoutingDAV3510Checker checker;
-        aclnnStatus status = checker.CheckParams(params);
-        CHECK_RET(status == ACLNN_SUCCESS, status);
-    } else {
+    {
         // 1. 检查输入的数据类型是否在API支持的数据类型范围之内，需要根据api定义校验
         CHECK_RET(CheckDtypeValid(params), ACLNN_ERR_PARAM_INVALID);
         // 2. 检查shape是否符合要求
@@ -734,17 +728,9 @@ static aclnnStatus WeightNZCaseProcess(const aclTensor *&x2, bool &transposeX2, 
 {
     // if weight is already in nz format, no need to set contiguous
     if (ge::GetPrimaryFormat(x2->GetStorageFormat()) == op::Format::FORMAT_FRACTAL_NZ) {
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-            if (transposeX2 == false) {
-                CHECK_RET(TransposeTensorContiguousProcessForMx(x2, transposeX2, executor), ACLNN_ERR_INNER_NULLPTR);
-            }
-        } 
+
     } else {
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-            if (transposeX2 == false) {
-                CHECK_RET(TransposeTensorContiguousProcessForMx(x2, transposeX2, executor), ACLNN_ERR_INNER_NULLPTR);
-            }
-        } else {
+        {
             CHECK_RET(TransposeTensorContiguousProcess(x2, transposeX2, executor), ACLNN_ERR_INNER_NULLPTR);
         }
     }
@@ -812,7 +798,7 @@ static aclnnStatus PreMatmulCalcProcess(GroupedMatmulParams &params, aclOpExecut
     }
 
     CHECK_RET(ret == ACLNN_SUCCESS, ret);
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    {
         CHECK_RET(CheckDimRange(params), ACLNN_ERR_PARAM_INVALID);
     }
     return ACLNN_SUCCESS;
@@ -820,14 +806,7 @@ static aclnnStatus PreMatmulCalcProcess(GroupedMatmulParams &params, aclOpExecut
 
 static aclnnStatus aclnnGroupedMatmulFinalizeRoutingGetWorkspaceSizeCommonProcess(GroupedMatmulParams &params, aclOpExecutor *executor)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        auto x1MDim = params.x1->GetViewShape().GetDim(0);
-        auto x2NIndex = params.x2->GetViewShape().GetDimNum() - (params.transposeX2 ? PENULTIMATE_DIM : 1);
-        auto x2NDim = params.x2->GetViewShape().GetDim(x2NIndex);
-        if (x1MDim == 0 || x2NDim == 0) {
-            return ACLNN_SUCCESS;
-        }
-    }
+
     auto ret = PreMatmulCalcProcess(params, executor);
     CHECK_RET(ret == ACLNN_SUCCESS, ret);
     // shareInput格式转换
@@ -1054,7 +1033,7 @@ aclnnStatus aclnnGroupedMatmulFinalizeRoutingWeightNzV2GetWorkspaceSize(const ac
     auto uniqueExecutor = CREATE_EXECUTOR();
     // unpack int32 to int4
     auto tmpWeight = uniqueExecutor.get()->CreateView(x2, viewShape, x2->GetViewOffset());
-    if(op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510){
+    {
         auto storageShape = x2->GetStorageShape();
         if (tmpWeight->GetDataType() == DataType::DT_INT32) {
             tmpWeight->SetStorageFormat(op::Format::FORMAT_FRACTAL_NZ);
@@ -1336,9 +1315,7 @@ aclnnStatus aclnnGroupedMatmulFinalizeRoutingV3GetWorkspaceSize(const aclTensor 
     } else if (viewDimNum < MIN_DIM_NUM_ND) {
         OP_LOGE(ACLNN_ERR_PARAM_INVALID, "aclnnGroupedMatmulFinalizeRoutingV3 weightNd x2's view dimNum should greater than 1, but is %lld.", viewDimNum);
         return ACLNN_ERR_PARAM_INVALID;
-    } else if (!((transposeX1 == false && transposeX2 == false) ||
-                 (transposeX1 == false && transposeX2 == true &&
-                  op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510))) {
+    } else if (!(((transposeX1 == false) && (transposeX2 == false)))) {
         OP_LOGE(ACLNN_ERR_PARAM_INVALID,
                 "aclnnGroupedMatmulFinalizeRoutingV3: valid transpose config: transposeX1=%s,transposeX2=%s",
                 transposeX1 ? "true" : "false", transposeX2 ? "true" : "false");
@@ -1346,7 +1323,7 @@ aclnnStatus aclnnGroupedMatmulFinalizeRoutingV3GetWorkspaceSize(const aclTensor 
     }
     // unpack int32 to int4
     auto tmpWeightV3 = x2;
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    {
         if (tmpWeightV3->GetDataType() == DataType::DT_INT32) {
             op::Shape weightShapeV3 = tmpWeightV3->GetViewShape();
             auto viewShapeDimV2 = weightShapeV3.GetDimNum();
@@ -1363,15 +1340,7 @@ aclnnStatus aclnnGroupedMatmulFinalizeRoutingV3GetWorkspaceSize(const aclTensor 
     }
     bool isMXValid = CheckType(x1->GetDataType(), X_WEIGHT_TYPE_SUPPORT_LIST_MX) &&
                      CheckType(tmpWeightV3->GetDataType(), X_WEIGHT_TYPE_SUPPORT_LIST_MX);
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510 && !isMXValid) {
-        OP_LOGE(ACLNN_ERR_PARAM_INVALID,
-                "aclnnGroupedMatmulFinalizeRoutingV3 weightNd: Invalid dtype combination."
-                "Expected: x1 and x2 both in [FLOAT8_E5M2, FLOAT8_E4M3FN, "
-                "FLOAT4_E2M1] for mx."
-                "But got x1=%s, x2=%s",
-                op::ToString(x1->GetDataType()).GetString(), op::ToString(tmpWeightV3->GetDataType()).GetString());
-        return ACLNN_ERR_PARAM_INVALID;
-    }
+
         auto uniqueExecutor = CREATE_EXECUTOR();
     GroupedMatmulParams params = GroupedMatmulParamsBuilder::Create(x1, x2, out)
         .SetScale(scaleOptional).SetBias(biasOptional)

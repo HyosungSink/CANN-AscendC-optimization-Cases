@@ -73,10 +73,7 @@ aclnnStatus aclnnMlaPrologGetWorkspaceSize(
     uint64_t *workspaceSize,
     aclOpExecutor **executor)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "Interface aclnnMlaPrologGetWorkspaceSize are no longer supported on Ascend950.");
-        return ACLNN_ERR_RUNTIME_ERROR;
-    }
+
     static bool isFirstCall = true;
     if (isFirstCall) {
         OP_LOGW("aclnnMlaPrologGetWorkspaceSize is scheduled to be deprecated in December 2026, "
@@ -95,10 +92,7 @@ aclnnStatus aclnnMlaPrologGetWorkspaceSize(
 aclnnStatus aclnnMlaProlog(void *workspace, uint64_t workspaceSize, aclOpExecutor *executor,
                                      aclrtStream stream)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "Interface aclnnMlaProlog are no longer supported on Ascend950.");
-        return ACLNN_ERR_RUNTIME_ERROR;
-    }
+
     static bool isFirstCall = true;
     if (isFirstCall) {
         OP_LOGW("aclnnMlaProlog is scheduled to be deprecated in December 2026, "

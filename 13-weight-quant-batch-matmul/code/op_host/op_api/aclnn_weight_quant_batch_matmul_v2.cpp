@@ -70,20 +70,10 @@ static const std::initializer_list<DataType> ASCEND910B_AQSCALE_DTYPE_SUPPORT_LI
     DataType::DT_FLOAT16, DataType::DT_BF16, DataType::DT_UINT64, DataType::DT_INT64};
 static const std::initializer_list<DataType> ASCEND910B_X_DTYPE_SUPPORT_LIST = {
     DataType::DT_FLOAT16, DataType::DT_BF16};
-static const std::initializer_list<DataType> ASCEND310P_X_DTYPE_SUPPORT_LIST = {DataType::DT_FLOAT16};
 static const std::initializer_list<DataType> ASCEND910B_WEIGHT_DTYPE_SUPPORT_LIST = {
     DataType::DT_INT8, DataType::DT_INT4};
-static const std::initializer_list<DataType> DAV3510_WEIGHT_DTYPE_SUPPORT_LIST = {
-    DataType::DT_INT8,          DataType::DT_INT4,
-    DataType::DT_FLOAT8_E4M3FN, DataType::DT_HIFLOAT8, DataType::DT_FLOAT4_E2M1};
-static const std::initializer_list<DataType> DAV3510_ANTIQUANT_SCALE_DTYPE_SUPPORT_LIST = {
-    DataType::DT_FLOAT16, DataType::DT_BF16, DataType::DT_FLOAT8_E8M0};
-static const std::initializer_list<DataType> ASCEND310P_WEIGHT_DTYPE_SUPPORT_LIST = {DataType::DT_INT8};
 static const std::initializer_list<DataType> ASCEND910B_Y_DTYPE_SUPPORT_LIST = {
     DataType::DT_FLOAT16, DataType::DT_BF16, DataType::DT_INT8};
-static const std::initializer_list<DataType> DAV3510_Y_DTYPE_SUPPORT_LIST = {
-    DataType::DT_FLOAT16, DataType::DT_BF16};
-static const std::initializer_list<DataType> ASCEND310P_Y_DTYPE_SUPPORT_LIST = {DataType::DT_FLOAT16};
 static const std::initializer_list<DataType> EMPTY_LIST = {};
 static const std::vector<uint64_t> DIM_RANGE_WITHOUT_BATCH = {INPUT_DIM_MIN_VALUE, INPUT_DIM_MAX_VALUE};
 static const std::vector<uint64_t> DIM_RANGE_WITH_BATCH = {INPUT_DIM_MIN_VALUE, INPUT_DIM_MAX_VALUE_BATCH};
@@ -97,10 +87,6 @@ static inline const std::initializer_list<DataType>& GetAntiQuantScaleDtypeSuppo
     switch (npuArch) {
         case NpuArch::DAV_2201:
             return ASCEND910B_AQSCALE_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_2002:
-            return ASCEND310P_X_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_3510:
-            return DAV3510_ANTIQUANT_SCALE_DTYPE_SUPPORT_LIST;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %s is not implemented", op::ToString(socVersion).GetString());
             return EMPTY_LIST;
@@ -114,10 +100,8 @@ static inline const std::initializer_list<DataType>& GetXDtypeSupportList()
     SocVersion socVersion = GetCurrentPlatformInfo().GetSocVersion();
     switch (npuArch) {
         case NpuArch::DAV_2201:
-        case NpuArch::DAV_3510:
+
             return ASCEND910B_X_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_2002:
-            return ASCEND310P_X_DTYPE_SUPPORT_LIST;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %s is not implemented", op::ToString(socVersion).GetString());
             return EMPTY_LIST;
@@ -132,10 +116,6 @@ static inline const std::initializer_list<DataType>& GetYDtypeSupportList()
     switch (npuArch) {
         case NpuArch::DAV_2201:
             return ASCEND910B_Y_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_3510:
-            return DAV3510_Y_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_2002:
-            return ASCEND310P_Y_DTYPE_SUPPORT_LIST;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %s is not implemented", op::ToString(socVersion).GetString());
             return EMPTY_LIST;
@@ -150,10 +130,6 @@ static inline const std::initializer_list<DataType>& GetWeightDtypeSupportList()
     switch (npuArch) {
         case NpuArch::DAV_2201:
             return ASCEND910B_WEIGHT_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_3510:
-            return DAV3510_WEIGHT_DTYPE_SUPPORT_LIST;
-        case NpuArch::DAV_2002:
-            return ASCEND310P_WEIGHT_DTYPE_SUPPORT_LIST;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %s is not implemented", op::ToString(socVersion).GetString());
             return EMPTY_LIST;
@@ -194,7 +170,7 @@ static const aclTensor* SetTensorToNDFormat(const aclTensor* input)
 
 static bool CheckShapeValid(const aclTensor* x, const aclTensor* weight, const aclTensor* out)
 {
-    if (GetCurrentPlatformInfo().GetSocVersion() != SocVersion::ASCEND310P) {
+    {
         return true;
     }
     op::Shape broadcastShape;
@@ -314,10 +290,7 @@ static int64_t GetWeightK(const aclTensor* weight)
 {
     size_t kDimWeight = weight->GetViewShape().GetDimNum() - WEIGHT_K_OFFSET;
     int64_t kWeight = weight->GetViewShape().GetDim(kDimWeight);
-    if (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        kWeight = weight->GetViewShape().GetDim(kDimWeight + 1);
-    }
+
     return kWeight;
 }
 
@@ -325,10 +298,7 @@ static int64_t GetWeightN(const aclTensor* weight)
 {
     size_t kDimWeight = weight->GetViewShape().GetDimNum() - WEIGHT_K_OFFSET;
     int64_t nWeight = weight->GetViewShape().GetDim(kDimWeight + 1);
-    if (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        nWeight = weight->GetViewShape().GetDim(kDimWeight);
-    }
+
     return nWeight;
 }
 
@@ -365,8 +335,7 @@ static bool CheckAntiquantParamShape(
     int64_t nAntiquantScale = antiquantScale->GetViewShape().GetDim(nDimAntiquantScale);
     int64_t kAntiquantScale = 0;
     // 仅在310P weightNz场景，aclnn接口的weight为（n, k）输入
-    bool isWeightNk = weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-                      GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P;
+    bool isWeightNk = false;
     // 非per_group场景antiquantScale支持(1),(n),(1,n), 且group size应该为0
     if (antiquantScale->GetViewShape().GetDimNum() == 1) {
         if (antiquantGroupSize > 0 || (nAntiquantScale != 1 && nAntiquantScale != nWeight)) {
@@ -484,9 +453,7 @@ static bool CheckXWeightDimValue(const aclTensor* weight, int64_t kX, int64_t mX
 {
     int64_t kWeight = GetWeightK(weight);
     int64_t nWeight = GetWeightN(weight);
-    if (GetCurrentPlatformInfo().GetSocVersion() != SocVersion::ASCEND310P &&
-        op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510 &&
-        (kX > M_K_N_MAX_VALUE || nWeight > M_K_N_MAX_VALUE || (transposeX && (mX > M_K_N_MAX_VALUE)))) {
+    if (((kX > M_K_N_MAX_VALUE) || (nWeight > M_K_N_MAX_VALUE) || (((transposeX) && (mX > M_K_N_MAX_VALUE))))) {
         OP_LOGE(
             ACLNN_ERR_PARAM_INVALID,
             "k,n shouldn't be larger than %ld, actual k is %ld, n is %ld. When x is transposed, "
@@ -496,15 +463,7 @@ static bool CheckXWeightDimValue(const aclTensor* weight, int64_t kX, int64_t mX
     }
 
     if (weight->GetDataType() == DataType::DT_INT8) {
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510 &&
-            weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-            (kX > M_K_N_MAX_VALUE || nWeight > M_K_N_MAX_VALUE)) {
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID,
-                "k,n shouldn't be larger than %ld, actual k is %ld, n is %ld. ",
-                M_K_N_MAX_VALUE, kX, nWeight);
-            return false;
-        }
+
     }
 
     if (weight->GetDataType() == DataType::DT_INT4) {
@@ -521,13 +480,7 @@ static bool CheckXWeightDimValue(const aclTensor* weight, int64_t kX, int64_t mX
             return false;
         }
 
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510 &&
-            weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ && transposeWeight) {
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID,
-                "DAV3510 does not support w4 tranB when weight's dtype is FORMAT_FRACTAL_NZ!");
-            return false;
-        }
+
     }
 
     return true;
@@ -580,19 +533,6 @@ static bool CheckXWeightY(const aclTensor* x, const aclTensor* weight, const acl
     int64_t mY = y->GetViewShape().GetDim(nDimY - 1);
     int64_t nY = y->GetViewShape().GetDim(nDimY);
 
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P && antiquantGroupSize > 0) {
-        OP_CHECK(
-            !CheckMultiplyOverflow(mX, kX),
-            OP_LOGE(ACLNN_ERR_PARAM_INVALID, "m * k (%ld * %ld) is overflow of int64.", mX, kX),
-        return false);
-        if (mX * kX > MAX_MK_VALUE) {
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID, "m*k shouldn't be larger than %ld, actual m is %ld, k is %ld.", MAX_MK_VALUE,
-                mX, kX);
-            return false;
-        }
-    }
-
     if (mY != mX) {
         OP_LOGE(ACLNN_ERR_PARAM_INVALID, "y's m and x's m should be equal, actual y's m is %ld, x's m is %ld.", mY, mX);
         return false;
@@ -612,8 +552,7 @@ static bool CheckShapeForPerGrp(const aclTensor* weight, int antiquantGroupSize)
     int64_t kWeight = GetWeightK(weight);
     int64_t nWeight = GetWeightN(weight);
     // DAV3510 nz没有该限制
-    if ((antiquantGroupSize != 0) && (kWeight % antiquantGroupSize) != 0 &&
-        op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    if (((antiquantGroupSize != 0) && ((kWeight % antiquantGroupSize) != 0))) {
         OP_LOGE(
             ACLNN_ERR_PARAM_INVALID,
             "when weight's dtype is [int4], weight's format is [FRACTAL_NZ], antiquantGroupSize is larger than 0,"
@@ -622,7 +561,7 @@ static bool CheckShapeForPerGrp(const aclTensor* weight, int antiquantGroupSize)
             kWeight, antiquantGroupSize);
         return false;
     }
-    if ((nWeight % N_ALIGN_VALUE) != 0 && op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    if ((nWeight % N_ALIGN_VALUE) != 0) {
         OP_LOGE(
             ACLNN_ERR_PARAM_INVALID,
             "when weight's dtype is [int4], weight's format is [FRACTAL_NZ], antiquantGroupSize is larger than 0,"
@@ -653,8 +592,7 @@ static bool CheckValForWeightInt4Nz(
                 (transposeX ? "transposed" : "not transposed"), (transposeWeight ? "transposed" : "not transposed"));
             return false;
         }
-        if ((antiquantGroupSize != ANTIQUANT_GRP_SIZE128) && (antiquantGroupSize != ANTIQUANT_GRP_SIZE64) &&
-            (npuArch != NpuArch::DAV_3510)) {
+        if (((antiquantGroupSize != ANTIQUANT_GRP_SIZE128) && (antiquantGroupSize != ANTIQUANT_GRP_SIZE64))) {
             OP_LOGE(
                 ACLNN_ERR_PARAM_INVALID,
                 "when weight's dtype is [int4], weight's format is [FRACTAL_NZ], antiquantGroupSize should be "
@@ -673,7 +611,7 @@ static bool CheckValForWeightInt4Nz(
             return false;
         }
         // per-channel场景
-        if (!transposeWeight && (npuArch != NpuArch::DAV_3510)) {
+        if (!(transposeWeight)) {
             OP_LOGE(
                 ACLNN_ERR_PARAM_INVALID,
                 "when weight's dtype is [int4], weight's format is [FRACTAL_NZ], and antiquantGroupSize is 0, "
@@ -689,8 +627,7 @@ static bool CheckValForWeightInt8Nz(
     const aclTensor* x, const aclTensor* weight, int antiquantGroupSize,
     const aclTensor* antiquantScale)
 {
-    if ((weight->GetDataType() != DataType::DT_INT8) || (weight->GetStorageFormat() != Format::FORMAT_FRACTAL_NZ) ||
-        op::GetCurrentPlatformInfo().GetCurNpuArch() != NpuArch::DAV_3510) {
+    {
         return true;
     }
 
@@ -790,8 +727,8 @@ static aclnnStatus CheckSocValid()
     NpuArch npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
     switch (npuArch) {
         case NpuArch::DAV_2201:
-        case NpuArch::DAV_3510:
-        case NpuArch::DAV_2002:
+
+
             break;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "support for %s is not implemented", op::ToString(socVersion).GetString());
@@ -806,8 +743,6 @@ static aclnnStatus CheckNzSocValid()
     SocVersion socVersion = GetCurrentPlatformInfo().GetSocVersion();
     NpuArch npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
     switch (npuArch) {
-        case NpuArch::DAV_3510:
-            break;
         default: {
             OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "aclnn nz support for %s is not implemented", op::ToString(socVersion).GetString());
             return ACLNN_ERR_RUNTIME_ERROR;
@@ -834,25 +769,14 @@ static bool CheckNotNull(
 
 static bool CheckOptionalNotNull(const aclTensor* quantScaleOptional, const aclTensor* quantOffsetOptional)
 {
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        if (quantScaleOptional != nullptr || quantOffsetOptional != nullptr) {
-            OP_LOGE(ACLNN_ERR_PARAM_NULLPTR, "Current Soc do not support quantScaleOptional or quantOffsetOptional");
-            return false;
-        }
-    }
+
     return true;
 }
 
 static bool CheckAntiquantForFixpipe(const aclTensor* antiquantScale, const aclTensor* antiquantOffsetOptional)
 {
     if (antiquantOffsetOptional->GetDataType() == DataType::DT_INT32) {
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID,
-                "antiquantOffset's dtype only support DT_FLOAT16 and DT_BF16, "
-                "actual antiquantOffset's dtype is DT_INT32.");
-            return false;
-        }
+
 
         if (antiquantScale->GetDataType() != DataType::DT_UINT64 &&
             antiquantScale->GetDataType() != DataType::DT_INT64) {
@@ -932,32 +856,7 @@ static bool CheckXDtypeValidForNormal(
 }
 
 static bool CheckBiasWithXBf16(const aclTensor* weight, const aclTensor* biasOptional){
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        if (weight->GetDataType() == DataType::DT_FLOAT4_E2M1 || weight->GetDataType() == DataType::DT_FLOAT8_E4M3FN ||
-            weight->GetDataType() == DataType::DT_HIFLOAT8) {
-            if (biasOptional->GetDataType() != DataType::DT_BF16) {
-                OP_LOGE(
-                    ACLNN_ERR_PARAM_INVALID, "biasOptional's dtype should be [DT_BF16], actual is [%s].",
-                    op::ToString(biasOptional->GetDataType()).GetString());
-                return false;
-            }
-        } else if (
-            weight->GetDataType() == DataType::DT_INT8 && weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ) {
-            if (biasOptional->GetDataType() != DataType::DT_FLOAT) {
-                OP_LOGE(
-                    ACLNN_ERR_PARAM_INVALID, "biasOptional's dtype should be [DT_FLOAT], actual is [%s].",
-                    op::ToString(biasOptional->GetDataType()).GetString());
-                return false;
-            }
-        } else {
-            if (biasOptional->GetDataType() != DataType::DT_BF16 && biasOptional->GetDataType() != DataType::DT_FLOAT) {
-                OP_LOGE(
-                    ACLNN_ERR_PARAM_INVALID, "biasOptional's dtype should be [DT_FLOAT]/[DT_BF16], actual is [%s].",
-                    op::ToString(biasOptional->GetDataType()).GetString());
-                return false;
-            }
-        }
-    } else {
+    {
         if (biasOptional->GetDataType() != DataType::DT_FLOAT) {
             OP_LOGE(
                 ACLNN_ERR_PARAM_INVALID, "biasOptional's dtype should be [DT_FLOAT], actual is [%s].",
@@ -1030,18 +929,7 @@ static bool CheckDtypeValid(
         return false;
     }
 
-    if (weight != nullptr && weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        if (weight->GetDataType() != DataType::DT_INT4 && weight->GetDataType() != DataType::DT_FLOAT4_E2M1 &&
-            weight->GetDataType() != DataType::DT_INT8) {
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID,
-                "when weight's format is FRACTAL_NZ, weight's dtype only support DT_INT4、DT_FLOAT4_E2M1 and DT_INT8, "
-                "actual is [%s].",
-                op::ToString(weight->GetDataType()).GetString());
-            return false;
-        }
-    }
+
     return true;
 }
 
@@ -1076,11 +964,7 @@ static bool CheckFormatValid(
 
 static bool CheckDimValid(const aclTensor* x, const aclTensor* weight, const aclTensor* y)
 {
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        CHECK_RET(IsDimSupport(x, DIM_RANGE_WITH_BATCH, "x"), false);
-        CHECK_RET(IsDimSupport(weight, DIM_RANGE_WITH_BATCH, "weight"), false);
-        CHECK_RET(IsDimSupport(y, DIM_RANGE_WITH_BATCH, "y"), false);
-    } else {
+    {
         CHECK_RET(IsDimSupport(x, DIM_RANGE_WITHOUT_BATCH, "x"), false);
         CHECK_RET(IsDimSupport(weight, DIM_RANGE_WITHOUT_BATCH, "weight"), false);
         CHECK_RET(IsDimSupport(y, DIM_RANGE_WITHOUT_BATCH, "y"), false);
@@ -1090,9 +974,7 @@ static bool CheckDimValid(const aclTensor* x, const aclTensor* weight, const acl
 
 static bool CheckBiasOptionalDimValid(const aclTensor* biasOptional)
 {
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        CHECK_RET(IsDimSupport(biasOptional, BIAS_DIM_RANGE_OPTIONAL_INPUT, "biasOptional"), false);
-    } else {
+    {
         CHECK_RET(IsDimSupport(biasOptional, DIM_RANGE_OPTIONAL_INPUT, "biasOptional"), false);
     }
     return true;
@@ -1136,33 +1018,7 @@ static bool CheckQuantScale(const aclTensor* quantScaleOptional, const aclTensor
 static aclnnStatus AntiQuantScaleAndOffsetContiguousCheck(const aclTensor* antiquantScale,
                                                           const aclTensor* antiquantOffsetOptional,
                                                           bool transposeWeight) {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        if (antiquantScale->GetViewShape().GetDimNum() == ANTIQUANT_DIM_MAX_VALUE &&
-            antiquantScale->GetViewShape().GetDim(0) != 1 && antiquantScale->GetViewShape().GetDim(1) != 1) {
-            OP_CHECK(
-                (transposeWeight && !IsContiguous(antiquantScale)) ||
-                    (!transposeWeight && IsContiguous(antiquantScale)),
-                OP_LOGE(
-                    ACLNN_ERR_PARAM_INVALID,
-                    "when weight is contiguous or transpose last two dims, antiquantScale tensor should be "
-                    "consistent with it."),
-                return ACLNN_ERR_PARAM_INVALID);
-        }
-
-        if (antiquantOffsetOptional != nullptr &&
-            antiquantOffsetOptional->GetViewShape().GetDimNum() == ANTIQUANT_DIM_MAX_VALUE &&
-            antiquantOffsetOptional->GetViewShape().GetDim(0) != 1 &&
-            antiquantOffsetOptional->GetViewShape().GetDim(1) != 1) {
-            OP_CHECK(
-                (transposeWeight && !IsContiguous(antiquantOffsetOptional)) ||
-                    (!transposeWeight && IsContiguous(antiquantOffsetOptional)),
-                OP_LOGE(
-                    ACLNN_ERR_PARAM_INVALID,
-                    "when weight is contiguous or transpose last two dims, antiquantOffsetOptional tensor should "
-                    "be consistent with it."),
-                return ACLNN_ERR_PARAM_INVALID);
-        }
-    } else {
+    {
         OP_CHECK(
             transposeWeight || IsContiguous(antiquantScale),
             OP_LOGE(
@@ -1197,17 +1053,7 @@ static aclnnStatus ContiguousCheck(
         OP_LOGE(ACLNN_ERR_PARAM_INVALID, "only support weight tensor is contiguous or transpose last two dims."),
         return ACLNN_ERR_PARAM_INVALID);
 
-    if (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        OP_CHECK(
-            IsContiguous(antiquantScale),
-            OP_LOGE(ACLNN_ERR_PARAM_INVALID, "only support antiquantScale tensor is contiguous."),
-            return ACLNN_ERR_PARAM_INVALID);
-        OP_CHECK(
-            antiquantOffsetOptional == nullptr || IsContiguous(antiquantOffsetOptional),
-            OP_LOGE(ACLNN_ERR_PARAM_INVALID, "only support antiquantOffsetOptional tensor is contiguous."),
-            return ACLNN_ERR_PARAM_INVALID);
-    } else {
+    {
         aclnnStatus antiQuantRes =
             AntiQuantScaleAndOffsetContiguousCheck(antiquantScale, antiquantOffsetOptional, transposeWeight);
         CHECK_RET(antiQuantRes == ACLNN_SUCCESS, antiQuantRes);
@@ -1535,15 +1381,9 @@ static aclnnStatus TensorPreProcess(TupleTensor mandatoryTensors, TupleTensor op
     auto& tensorQuantScaleOptional = std::get<INDEX_QUANT_SCALE_BAK_IN_OPTIONAL_TUPLE>(optionalTensors);
     // 将int32的输入weight dtype修改为int4。同时ViewShape,ViewStrides也从int32修改为int4所对应的。
     // 采用float32承载float4_e2m1数据，对于float32采用相同处理流程
-    if (weight->GetDataType() == DataType::DT_INT32 ||
-        (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510 &&
-         weight->GetDataType() == DataType::DT_FLOAT)) {
+    if (weight->GetDataType() == DataType::DT_INT32) {
         CHECK_RET(PackedWeightPreProcess(weight, tensorWeight, executor) == ACLNN_SUCCESS, ACLNN_ERR_PARAM_INVALID);
-    } else if (
-        weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910B ||
-         GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910_93 ||
-         op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510)) {
+    } else if (((weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ) && (((GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910B) || (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND910_93))))) {
         // aclnn转Nz接口调用：
         //     昇腾910B AI处理器/昇腾910_93 AI处理器 weight为nz且带transpose时，weight originshape应该为(n, k)实际为(k,
         //     n) 昇腾910B AI处理器/昇腾910_93 AI处理器 weight为nz且不带transpose时，weight originshape应该为(k,
@@ -1569,13 +1409,7 @@ static aclnnStatus TensorPreProcess(TupleTensor mandatoryTensors, TupleTensor op
     }
 
     // microscaling场景，采用uint8承载float8_e8m0数据，此处需修正antiquantScale dtype
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510 &&
-        weight->GetDataType() == DataType::DT_FLOAT && antiquantScaleRef->GetDataType() == DataType::DT_UINT8) {
-        CHECK_RET(
-            ModifyTensorDtype(antiquantScaleRef, nullptr, DataType::DT_FLOAT8_E8M0, executor) == ACLNN_SUCCESS,
-            ACLNN_ERR_PARAM_INVALID);
-        OP_LOGD("The conversion of antiquantScale from uint8 to fp8 is completed.");
-    }
+
 
     return ACLNN_SUCCESS;
 }
@@ -1586,22 +1420,10 @@ aclnnStatus CheckContiguous(
     const aclTensor*& quantOffsetOptional, const aclTensor*& biasOptional, const int& antiquantGroupSize,
     bool& transposeX, bool& transposeWeight, aclOpExecutor* executor)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_CHECK(
-            !transposeX && IsContiguous(x),
-            OP_LOGE(
-                ACLNN_ERR_PARAM_INVALID, "DAV_3510 not support x transpose and only support x tensor is contiguous."),
-            return ACLNN_ERR_PARAM_INVALID);
-    }
+
     CHECK_RET(TensorContiguousProcess(x, transposeX, executor), ACLNN_ERR_INNER_NULLPTR);
 
-    if (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-        GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        // 在310P输入weight为Nz格式时，输入的weight、antiquantScale、antiquantOffset必须连续。
-        // 由于weight在输入前已经做过连续处理，而且StorageShape修改为FractalNz的格式，若连续处理会影响到StorageShape
-        CHECK_RET(CreateContiguous(antiquantScale, executor), ACLNN_ERR_INNER_NULLPTR);
-        CHECK_RET(CreateContiguous(antiquantOffsetOptional, executor), ACLNN_ERR_INNER_NULLPTR);
-    } else {
+    {
         if (weight->GetStorageFormat() != Format::FORMAT_FRACTAL_NZ) {
             CHECK_RET(TensorContiguousProcess(weight, transposeWeight, executor), ACLNN_ERR_INNER_NULLPTR);
         }
@@ -1613,17 +1435,7 @@ aclnnStatus CheckContiguous(
     CHECK_RET(CreateContiguous(quantOffsetOptional, executor), ACLNN_ERR_INNER_NULLPTR);
     CHECK_RET(CreateContiguous(biasOptional, executor), ACLNN_ERR_INNER_NULLPTR);
 
-    if (GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) {
-        if (antiquantGroupSize > 0) {
-            auto ret = TransposeAndTransDataForInputsGroup(
-                weight, antiquantScale, antiquantOffsetOptional, transposeWeight, executor);
-            CHECK_RET(ret == ACLNN_SUCCESS, ret);
-        } else {
-            auto ret = TransposeAndTransDataForInputs(
-                weight, antiquantScale, antiquantOffsetOptional, transposeWeight, executor);
-            CHECK_RET(ret == ACLNN_SUCCESS, ret);
-        }
-    }
+
     return ACLNN_SUCCESS;
 }
 
@@ -1701,10 +1513,7 @@ aclnnStatus AclnnWeightQuantBatchMatmulGetWorkspaceSizeCommonProcess(
     CHECK_RET(res == ACLNN_SUCCESS, res);
 
     transposeX = IsTransposeLastTwoDims(x);
-    transposeWeight = (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-                       GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) ?
-                          true :
-                          IsTransposeLastTwoDims(tensorWeight);
+    transposeWeight = IsTransposeLastTwoDims(tensorWeight);
     OP_LOGD("transposeX is %d, transposeWeight is %d", transposeX, transposeWeight);
     res = CheckParams(mandatoryTensors, optionalTensors, antiquantGroupSize, transposeWeight);
     CHECK_RET(res == ACLNN_SUCCESS, res);
@@ -1743,10 +1552,7 @@ aclnnStatus aclnnWeightQuantBatchMatmulV2GetWorkspaceSize(
     const aclTensor* tensorQuantScaleOptional = quantScaleOptional;
     const aclTensor* reservedRef = nullptr;
     bool transposeX = IsTransposeLastTwoDims(x);
-    bool transposeWeight = (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-                            GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) ?
-                               true :
-                               IsTransposeLastTwoDims(tensorWeight);
+    bool transposeWeight = IsTransposeLastTwoDims(tensorWeight);
     aclnnStatus res = AclnnWeightQuantBatchMatmulGetWorkspaceSizeCommonProcess(
         std::tie(x, weight, tensorWeight, antiquantScale, y, antiquantScaleRef),
         std::tie(
@@ -1795,10 +1601,7 @@ aclnnStatus aclnnWeightQuantBatchMatmulV3GetWorkspaceSize(
     const aclTensor* tensorQuantScaleOptional = quantScaleOptional;
     const aclTensor* reservedRef = nullptr;
     bool transposeX = IsTransposeLastTwoDims(x);
-    bool transposeWeight = (weight->GetStorageFormat() == Format::FORMAT_FRACTAL_NZ &&
-                            GetCurrentPlatformInfo().GetSocVersion() == SocVersion::ASCEND310P) ?
-                               true :
-                               IsTransposeLastTwoDims(tensorWeight);
+    bool transposeWeight = IsTransposeLastTwoDims(tensorWeight);
     aclnnStatus res = CheckInnerPrecise(innerPrecise);
     CHECK_RET(res == ACLNN_SUCCESS, res);
     res = AclnnWeightQuantBatchMatmulGetWorkspaceSizeCommonProcess(

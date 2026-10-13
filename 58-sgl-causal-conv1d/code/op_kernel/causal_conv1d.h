@@ -21,9 +21,6 @@
 #include "causal_conv1d_tiling_data.h"
 #include "causal_conv1d_tiling_key.h"
 #include "causal_conv1d_common.h"
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 310
-#include "arch35/causal_conv1d_regbase.h"
-#endif
 
 namespace NsCausalConv1d {
 
@@ -554,16 +551,6 @@ __aicore__ inline void CAUSAL_CONV1D_CLASS::ComputeFnRollingOutput(int32_t slotC
     LocalTensor<float> &currF = cl.currF;
     LocalTensor<T> ring = inBuf.Get<T>();
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 310
-    const bool hasActivation = HasActivation();
-    if (hasActivation) {
-        ComputeFnRollingOutputRegbase<T, true>(ring[slotCurr * MAX_BLOCK_DIM], currF, state0F,
-                                               weightF[3 * MAX_BLOCK_DIM], baseDim);
-    } else {
-        ComputeFnRollingOutputRegbase<T, false>(ring[slotCurr * MAX_BLOCK_DIM], currF, state0F,
-                                                weightF[3 * MAX_BLOCK_DIM], baseDim);
-    }
-#else
     Cast(currF, ring[slotCurr * MAX_BLOCK_DIM], RoundMode::CAST_NONE, baseDim);
     PipeBarrier<PIPE_V>();
     MulAddDst(state0F, currF, weightF[3 * MAX_BLOCK_DIM], baseDim);
@@ -574,7 +561,6 @@ __aicore__ inline void CAUSAL_CONV1D_CLASS::ComputeFnRollingOutput(int32_t slotC
         PipeBarrier<PIPE_V>();
         Silu(currF, state0F, baseDim);
     }
-#endif
 }
 
 template <CAUSAL_CONV1D_TEMPLATE_ARGS>
@@ -593,10 +579,6 @@ __aicore__ inline void CAUSAL_CONV1D_CLASS::AdvanceFnLocalPartials(int32_t slotC
     LocalTensor<T> ring = inBuf.Get<T>();
     constexpr int32_t w0Idx = MAX_WIDTH - kTemplateWidth;
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 310
-    AdvanceFnLocalPartialsRegbase<T, kTemplateWidth>(ring[slotCurr * MAX_BLOCK_DIM], weightF[w0Idx * MAX_BLOCK_DIM],
-                                                     state0F, state1F, state2F, baseDim, MAX_BLOCK_DIM);
-#else
     Cast(currF, ring[slotCurr * MAX_BLOCK_DIM], RoundMode::CAST_NONE, baseDim);
     PipeBarrier<PIPE_V>();
 
@@ -625,7 +607,6 @@ __aicore__ inline void CAUSAL_CONV1D_CLASS::AdvanceFnLocalPartials(int32_t slotC
         Mul(state2F, currF, weightF[w0Idx * MAX_BLOCK_DIM], baseDim);
         PipeBarrier<PIPE_V>();
     }
-#endif
 }
 
 template <CAUSAL_CONV1D_TEMPLATE_ARGS>

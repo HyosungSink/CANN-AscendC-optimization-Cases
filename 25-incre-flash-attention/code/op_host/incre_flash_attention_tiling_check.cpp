@@ -361,44 +361,7 @@ ge::graphStatus IFATiling::CheckInputFormatAndLimits()
         return ge::GRAPH_FAILED;
     }
 
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-		if(atbRunFlag_ ){
-            return ProcessCheckATBInput();
-        }
-        std::string layOutStr = ifaContext_->layOut;
-        OP_CHECK_IF(
-            (headDim_ > 128U || numHeads_ * qSeqSize_ / numKvHeads_ > 32) && numHeads_ * qSeqSize_ != numKvHeads_,  
-            OP_LOGE(ifaContext_->opName, "On 300I DUO, when gqa > 1 or qlen > 1, it requires that gqa * qlen <= 32 and headDim <=128."),
-            return ge::GRAPH_FAILED);
-        
-        OP_CHECK_IF(
-            pageAttentionFlag_ && layOutStr != "BSH" && layOutStr != "BSND" && numHeads_ * qSeqSize_ != numKvHeads_,  
-            OP_LOGE(ifaContext_->opName, "On 300I DUO, when gqa > 1 or qlen > 1, it requires that the input layout to be BSH / BSND with page attention enabled."),
-            return ge::GRAPH_FAILED);
-
-        OP_CHECK_IF(
-            (!pageAttentionFlag_) && layOutStr != "BNSD" && numHeads_ * qSeqSize_ != numKvHeads_,  
-            OP_LOGE(ifaContext_->opName, "On 300I DUO, when gqa > 1 or qlen > 1, it requires that the input layout to be BNSD without page attention enabled."),
-            return ge::GRAPH_FAILED);
-
-        OP_CHECK_IF(
-            (batchSize_ > 256),
-            OP_LOGE(ifaContext_->opName, "batch size:%u cannot be greater than 256 when 310P.", batchSize_),
-            return ge::GRAPH_FAILED);
-        OP_CHECK_IF(
-            (sMax_ > 65536),
-            OP_LOGE(ifaContext_->opName, "sMax:%u cannot be greater than 65536 when 310P.", sMax_),
-            return ge::GRAPH_FAILED);
-        OP_CHECK_IF(
-            (headDim_ % 16 != 0),
-            OP_LOGE(ifaContext_->opName, "in 310P, headDim:%u need align to 16.", headDim_),
-            return ge::GRAPH_FAILED);
-
-        OP_CHECK_IF(
-            (antiQuantFlag_ && (headDim_ % 32 != 0)),
-            OP_LOGE(ifaContext_->opName, "in 310P, headDim:%u need align to 32 when kv dtype is int8.", headDim_),
-            return ge::GRAPH_FAILED);
-    } else {
+    {
         OP_CHECK_IF(
             (batchSize_ > 65536),
             OP_LOGE(ifaContext_->opName, "batch size:%u cannot be greater than 65536.", batchSize_),
@@ -583,7 +546,7 @@ bool IFATiling::CheckIfRollBack() const
         return false; // 空tensor由新模板处理
     }
 
-    if (socVersion_ != IfaSocVersion::SOC_ASCEND_310P) {
+    {
         // 1 page attention
         if (ifaContext_->blockTable.tensor != nullptr) {
             return false;
@@ -926,9 +889,6 @@ ge::graphStatus IFATiling::SharedPrefixCheckBasic()
     OP_CHECK_IF(kvPaddingSizeFlag_, OP_LOGE(ifaContext_->opName, "shared prefix with kv padding is not supported"),
                return ge::GRAPH_FAILED);
 
-    OP_CHECK_IF(socVersion_ == IfaSocVersion::SOC_ASCEND_310P,
-               OP_LOGE(ifaContext_->opName, "shared prefix is not supported on 310p"), return ge::GRAPH_FAILED);
-
     return ge::GRAPH_SUCCESS;
 }
 
@@ -987,13 +947,7 @@ ge::graphStatus IFATiling::CheckUbSpace()
 
 bool IFATiling::IsFlashDecode(uint32_t coreNum, IfaPerfMode perfMode)
 {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        perfMode = IfaPerfMode::BMM_ALL_BY_VEC;
-        if (nNumOfQInOneGroup_ * qSeqSize_ > 1U) {
-            OP_LOGD(ifaContext_ -> opName, "flash decode has not been implemented when 310P and GQA > 1.");
-            return false;
-        }
-    }
+
     if (balanceModeFlag_) {
         uint32_t tndFDCoreArrLen = tilingDataMla_.tndSplitCoreParams.get_tndFDCoreArrLen();
         return tndFDCoreArrLen > 0U;
@@ -1183,23 +1137,6 @@ bool IFATiling::IsKvZeroBatchSplit(bool needUpdate, uint32_t lastValidBMoreIdx, 
     return true;
 }
 
-bool IFATiling::EnableGQA310P()
-{
-    if (IsFlashDecode(aicNum_, IfaPerfMode::BMM_ALL_BY_VEC)){
-        return false;
-    }
-    if (nNumOfQInOneGroup_ * qSeqSize_ > 1U) {
-        return true;
-    }
-    if (pageAttentionFlag_ && nNumOfQInOneGroup_ * qSeqSize_ == 1U && (seqSize_ >= 256U) && inputLayout_ == IfaLayout::BSH_BSND) {
-        return true;
-    }
-    if (!pageAttentionFlag_ && nNumOfQInOneGroup_ * qSeqSize_ == 1U && (seqSize_ >= 256U) && inputLayout_ == IfaLayout::BNSD) {
-        return true;
-    }
-    return false;
-}
-
 bool IFATiling::EnableCubeViewMMFullLoad()
 {
     if (!CheckConstraints()) {
@@ -1240,9 +1177,7 @@ bool IFATiling::EnableCubeViewMMFullLoad()
 
 bool IFATiling::EnableAllVec() const
 {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return true;
-    }
+
     if (pageAttentionFlag_) {
         return false;
     }
@@ -1441,7 +1376,7 @@ ge::graphStatus IFATiling::ProcessAttenMask()
         return ge::GRAPH_FAILED;
     }
 
-    if ( (sparseMode_ == 3 || sparseMode_ == 4 || gqaMtpFlag_) && (socVersion_ != IfaSocVersion::SOC_ASCEND_310P) ) { // 3 : rightDown, 4 : band
+    if (((sparseMode_ == 3) || (sparseMode_ == 4) || (gqaMtpFlag_))) { // 3 : rightDown, 4 : band
         auto shape = ifaContext_->attenMask.tensor->GetStorageShape();
         OP_CHECK_IF((sparseMode_ != 0 && sparseMode_ != 1) && (shape.GetDimNum() != 2U || shape.GetDim(0) != 2048 || shape.GetDim(1) != 2048),  // 2， 只支持2维shape
             OP_LOGE(ifaContext_->opName, "when sparse = %d, atten_mask tensor shape must be [2048, 2048] in MLA.", static_cast<int32_t>(sparseMode_)),

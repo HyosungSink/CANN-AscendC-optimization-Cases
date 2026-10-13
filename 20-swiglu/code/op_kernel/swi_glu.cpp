@@ -37,13 +37,11 @@ extern "C" __global__ __aicore__ void swi_glu(GM_ADDR input_gm, GM_ADDR output_g
       op.Init(input_gm, nullptr, output_gm, tiling);
       op.Process();
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__  == 220
     else if (TILING_KEY_IS(27)) {
       SwigluSingle<SwigluVectorBF16<bfloat16_t, float, bfloat16_t, 2>, bfloat16_t, bfloat16_t> op;
       op.Init(input_gm, nullptr, output_gm, tiling);
       op.Process();
     }
-#endif
   } else {
     if (TILING_KEY_IS(1)) {
       SwigluSingle<SwigluVectorBF16<half, float, half, 1>, half, half> op;
@@ -54,12 +52,10 @@ extern "C" __global__ __aicore__ void swi_glu(GM_ADDR input_gm, GM_ADDR output_g
       op.Init(input_gm, nullptr, output_gm, tiling);
       op.Process();
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__  == 220
     else if (TILING_KEY_IS(27)) {
       SwigluSingle<SwigluVectorBF16<bfloat16_t, float, bfloat16_t, 1>, bfloat16_t, bfloat16_t> op;
       op.Init(input_gm, nullptr, output_gm, tiling);
       op.Process();
     }
-#endif
   }
 }

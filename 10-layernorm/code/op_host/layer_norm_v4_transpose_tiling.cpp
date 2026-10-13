@@ -53,9 +53,7 @@ uint32_t LayerNormV4TransposeTiling::FindDichotomizeAddDiffSize()
 
 bool LayerNormV4TransposeTiling::IsCapable()
 {
-    if (commonParams.isRegBase) {
-        return false;
-    }
+
     if ((commonParams.rowSize > TRANSPOSE_ROW_LIMIT) || (commonParams.rowSize == commonParams.rowAlign)) {
         OP_LOGI(
             context_->GetNodeName(),
@@ -81,7 +79,7 @@ uint64_t LayerNormV4TransposeTiling::GetTilingKey() const
     if (commonParams.tensorDtype == ge::DT_FLOAT16 && commonParams.paramDtype == ge::DT_FLOAT) {
         tilingKey = static_cast<uint64_t>(LayerNormV4TilingKey::LAYER_NORM_TRANSPOSE_FLOAT16_FLOAT32);
     }
-    if (!commonParams.isAscend310P) {
+    {
         if (commonParams.tensorDtype == ge::DT_FLOAT && commonParams.paramDtype == ge::DT_FLOAT) {
             tilingKey = static_cast<uint64_t>(LayerNormV4TilingKey::LAYER_NORM_TRANSPOSE_FLOAT32_FLOAT32);
         }
@@ -103,7 +101,7 @@ void LayerNormV4TransposeTiling::DoBlockTiling(BlockTilingData& blockTilingParam
     for (int64_t curBlockNum = commonParams.coreNum; curBlockNum > 0; curBlockNum--) {
         blockTilingParams.blockFormer = (commonParams.colSize + curBlockNum - 1) / curBlockNum;
         // 910B直接获取切分，无需后续判断
-        if (!commonParams.isAscend310P) {
+        {
             break;
         }
         meanOutMoreThanBLOCK = (blockTilingParams.blockFormer >= B32_BLOCK_ALIGN_NUM);
@@ -165,7 +163,7 @@ void LayerNormV4TransposeTiling::DoUbTiling(const BlockTilingData& blockTilingPa
         ubTilingParams.ubTailOfTailBlock =
             blockTilingParams.blockTail - (ubTilingParams.ubLoopOfTailBlock - 1) * ubTilingParams.ubFormer;
         // 910B直接获取切分，无需后续判断
-        if (!commonParams.isAscend310P) {
+        {
             return;
         }
         // 单核无需判断踩踏情况

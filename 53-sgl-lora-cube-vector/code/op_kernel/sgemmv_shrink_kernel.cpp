@@ -259,8 +259,6 @@ private:
 
 // declare all dtype kernel
 SGEMMV_SHRINK_TYPE_DECLARE(half)
-#if (__CCE_AICORE__ >= 220)
 SGEMMV_SHRINK_TYPE_DECLARE(bfloat16_t)
-#endif
 
 #endif  // SGL_KERNEL_NPU_KERNEL_SGEMMV_SHRINK_H

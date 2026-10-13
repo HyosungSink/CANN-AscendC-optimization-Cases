@@ -824,8 +824,6 @@ FusedFloydAttentionS1s2Bn2gs1<implMode, layOutType, hasPse, hasAtten, hasDrop, I
     extraInfo.k1CoreOffset = bs1Offset + s2Offset + s1Offset;
 }
 
-
-
 template <ImplModeEnum implMode, LayOutTypeEnum layOutType, bool hasPse, bool hasAtten, bool hasDrop, typename INPUT_T,
           typename T, bool isBasicBlock, CubeFormat bmm1Format, bool enableL1Reuse>
 template <typename T2, const MatmulConfig &MM_CFG>
@@ -848,8 +846,6 @@ FusedFloydAttentionS1s2Bn2gs1<implMode, layOutType, hasPse, hasAtten, hasDrop, I
     bmm1.SetTensorB(this->keyGm[kCoreOffset], true);
     bmm1.SetTail(extraInfo.s1RealSize, extraInfo.s2RealSize);
 }
-
-
 
 template <ImplModeEnum implMode, LayOutTypeEnum layOutType, bool hasPse, bool hasAtten, bool hasDrop, typename INPUT_T,
           typename T, bool isBasicBlock, CubeFormat bmm1Format, bool enableL1Reuse>

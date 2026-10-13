@@ -219,9 +219,7 @@ __aicore__ inline void dCopyIn(int64_t colIndex, int64_t colSize, int64_t rowSiz
         rightPad = FLOAT_ALIGN - colSizeMod;
         isPad = true;
     } 
-#if __CCE_AICORE__ == 220
     if ASCEND_IS_AIV {
-#endif
     DataCopyParams intriParams;
     intriParams.blockCount = rowSize;
     intriParams.blockLen   = (colSize + FLOAT_ALIGN - 1) / FLOAT_ALIGN;
@@ -233,9 +231,7 @@ __aicore__ inline void dCopyIn(int64_t colIndex, int64_t colSize, int64_t rowSiz
     GetTPipePtr()->ReleaseEventID<HardEvent::V_MTE2>(eventID);
     int64_t offset = colIndex * COL_TEMPLATE;
     DataCopy(deterministicStruct.buffer1_, deterministicStruct.workspaceGmOri_[offset], intriParams);
-#if __CCE_AICORE__ == 220
     }
-#endif
 }
 
 __aicore__ inline void dCompute(int64_t colIndex, int64_t rowIndex, int64_t colSize, int64_t rowSize, deterministic_struct& deterministicStruct) {

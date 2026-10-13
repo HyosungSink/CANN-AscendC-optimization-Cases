@@ -30,7 +30,6 @@ static const uint64_t DEFAULT_PROCESSSIZE = 8192;
 static const uint64_t DEFAULT_PROCESSSIZE_KIRINX90 = 5120;
 static const uint64_t DEFAULT_NUMGROUPS = 32;
 static const uint64_t RESERVED_WORKSPACE_SIZE_910B = static_cast<uint64_t>(16 * 1024 * 1024);
-static const uint64_t RESERVED_WORKSPACE_SIZE_310P = static_cast<uint64_t>(2 * 1024 * 1024);
 static const uint64_t FLOAT32_BYTES = 4;
 static const uint64_t FLOAT16_BYTES = 2;
 static const uint64_t BLOCK_SIZE = 32;
@@ -175,25 +174,8 @@ static ge::graphStatus TilingPrepare4GroupNormSilu(gert::TilingParseContext* con
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     compileInfo->totalCoreNum = ascendcPlatform.GetCoreNumAiv();
     OP_LOGD(context, "Get core num for ai_core:%d", compileInfo->totalCoreNum);
-    if (ascendcPlatform.GetCurNpuArch() == NpuArch::DAV_2002) {
-        compileInfo->is310P = 1;
-        compileInfo->totalCoreNum = compileInfo->totalCoreNum + ascendcPlatform.GetCoreNumVector();
-    }
-    if (IsRegbaseSocVersion(context)) {
-        compileInfo->isRegbase = 1;
-        uint32_t vectorLength = Ops::Base::GetVRegSize(context);
-        OP_CHECK_IF(
-            (vectorLength <= FLOAT32_BYTES),
-            OP_LOGE(context->GetNodeType(), "vector length is invalid."),
-            return ge::GRAPH_FAILED);
-        compileInfo->vectorLength = vectorLength;
 
-        int32_t blockSize = Ops::Base::GetUbBlockSize(context);
-        OP_CHECK_IF(
-            (blockSize <= 0), OP_LOGE(context->GetNodeType(), "block size is invalid."),
-            return ge::GRAPH_FAILED);
-        compileInfo->blockSizePlatform = blockSize;
-    }
+
     OP_LOGD(context, "Get total core num:%d", compileInfo->totalCoreNum);
     OP_CHECK_IF(
         (compileInfo->totalCoreNum <= 0),
@@ -360,68 +342,9 @@ static void SetTiling(const gert::TilingContext* context, GroupNormSiluTilingDat
     }
 }
 
-static ge::graphStatus SetProcessSize(const gert::TilingContext* context, GroupNormSiluTilingData& tilingData)
-{
-    auto gammaDtype = context->GetInputDesc(INPUT_IDX_GAMMA)->GetDataType();
-    uint64_t gammaDtypeSize = ge::GetSizeByDataType(gammaDtype);
-    uint64_t gammaPerCore = (tilingData.get_numPerCore() + 1) * tilingData.get_shapeD();
-    OP_CHECK_IF(
-        (gammaDtypeSize == 0),
-        OP_LOGE(context->GetNodeType(), "Division by zero, gammaDtypeSize is 0!"), return ge::GRAPH_FAILED);
-    uint64_t gammaPerCoreRoundUp = CeilDiv(gammaPerCore, (BLOCK_SIZE / gammaDtypeSize)) * (BLOCK_SIZE / gammaDtypeSize);
-    auto compileInfo = context->GetCompileInfo<GroupNormSiluCompileInfo>();
-    uint64_t remainUbSize = compileInfo->ubSizePlatForm - gammaPerCoreRoundUp * gammaDtypeSize * GAMMA_BETA_UB_NUM -
-                            BLOCK_SIZE * RESERVED_BLOCK_NUM;
-    OP_CHECK_IF(
-        (remainUbSize == 0),
-        OP_LOGE(context->GetNodeType(), "RemainUbSize is 0!"), return ge::GRAPH_FAILED);
-    int64_t maxProcessSize = remainUbSize / INPUT_OUTPUT_UB_NUM;
-    if (maxProcessSize < tilingData.get_hwNum()) {
-        maxProcessSize = maxProcessSize / BLOCK_SIZE * BLOCK_SIZE;
-    } else {
-        int64_t lcmNum = Lcm(tilingData.get_hwNum(), (BLOCK_SIZE / gammaDtypeSize));
-        OP_CHECK_IF(
-            (lcmNum == 0),
-            OP_LOGE(context->GetNodeType(), "Division by zero, lcmNum is 0!"), return ge::GRAPH_FAILED);
-        maxProcessSize = maxProcessSize / lcmNum * lcmNum;
-    }
-    tilingData.set_processSize(maxProcessSize);
-    tilingData.set_numGroups(gammaPerCoreRoundUp);
-    return ge::GRAPH_SUCCESS;  
-}
 
-static ge::graphStatus SetTilingSD(const gert::TilingContext* context, GroupNormSiluTilingData& tilingData)
-{
-    auto xShape = context->GetInputShape(INPUT_IDX_X)->GetStorageShape();
-    auto xDtypeSize = ge::GetSizeByDataType(context->GetInputDesc(INPUT_IDX_X)->GetDataType());
-    uint64_t shapeN = xShape.GetDim(DIM_0);
-    if (tilingData.get_realCoreNum() > 0 && tilingData.get_numGroups() == DEFAULT_NUMGROUPS && shapeN == 1 &&
-        xDtypeSize == FLOAT16_BYTES && tilingData.get_hwNum() > 1) {
-        OP_LOGD(context, "Start running SetTilingSD.");
-        auto compileInfo = context->GetCompileInfo<GroupNormSiluCompileInfo>();
-        uint64_t numPerCoreRound = tilingData.get_numGroups() / compileInfo->totalCoreNum;
-        tilingData.set_numPerCore(numPerCoreRound);
-        tilingData.set_realCoreNum(compileInfo->totalCoreNum);
-        tilingData.set_numLastCore(
-            tilingData.get_numGroups() - tilingData.get_numPerCore() * tilingData.get_realCoreNum());
-        OP_CHECK_IF(
-            (SetProcessSize(context, tilingData) != ge::GRAPH_SUCCESS),
-            OP_LOGE(context->GetNodeType(), "SetProcessSize failed."), return ge::GRAPH_FAILED);
-        tilingData.set_loopNum(tilingData.get_elemNum() / tilingData.get_processSize());
-        tilingData.set_loopTail(tilingData.get_elemNum() - tilingData.get_processSize() * tilingData.get_loopNum());
-        if (tilingData.get_processSize() > tilingData.get_hwNum()) {
-            tilingData.set_innerLoopNum(tilingData.get_processSize() / tilingData.get_hwNum());
-            tilingData.set_innerLoopTail(
-                tilingData.get_processSize() - tilingData.get_hwNum() * tilingData.get_innerLoopNum());
-        } else {
-            tilingData.set_innerLoopNum(tilingData.get_hwNum() / tilingData.get_processSize());
-            tilingData.set_innerLoopTail(
-                tilingData.get_hwNum() - tilingData.get_processSize() * tilingData.get_innerLoopNum());
-        }
-        tilingData.set_tilingKey(static_cast<int64_t>(GroupNormSiluTilingKey::TILINGKEY_SPECIAL_SHAPE_SD));
-    }
-    return ge::GRAPH_SUCCESS;
-}
+
+
 
 static ge::graphStatus Tiling4GroupNormSilu(gert::TilingContext* context)
 {
@@ -447,13 +370,7 @@ static ge::graphStatus Tiling4GroupNormSilu(gert::TilingContext* context)
     // ub tiling
     SetUbTiling(tilingData);
     size_t sysWorkspaceSize = RESERVED_WORKSPACE_SIZE_910B;
-    if (compileInfo->is310P == 1) {
-        OP_LOGD(context, "Current chip type is 310P.");
-        sysWorkspaceSize = RESERVED_WORKSPACE_SIZE_310P;
-        OP_CHECK_IF(
-            (SetTilingSD(context, tilingData) != ge::GRAPH_SUCCESS),
-            OP_LOGE(context->GetNodeType(), "SetTilingSD failed."), return ge::GRAPH_FAILED);
-    }
+
     OP_CHECK_IF(
         GroupNormSiluSetTilingData(context, tilingData) != ge::GRAPH_SUCCESS,
         OP_LOGE(context->GetNodeType(), "GroupNormSiluSetTilingData set tiling data fail."),

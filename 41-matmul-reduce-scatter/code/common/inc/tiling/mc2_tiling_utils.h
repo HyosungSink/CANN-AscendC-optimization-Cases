@@ -28,7 +28,6 @@
 #include "tiling/platform/platform_ascendc.h"
 #include "tiling/tiling_api.h"
 #include "../../include/tiling_base/tiling_type.h"
-#include "../../../3rd/mat_mul_v3/op_host/op_tiling/arch35/matmul_v3_base_tiling_advanced.h"
 #include "platform/soc_spec.h"
 
 namespace mc2tiling {
@@ -40,7 +39,6 @@ constexpr uint32_t COMM_PAIRWISE = (COMM_MESH << 3U);
 constexpr uint32_t COMM_UNDEFINED = 0xFFFFFFFFU;
 constexpr uint8_t COMM_ALG_FULL_MESH_HOST = 6;
 constexpr uint64_t CHECK_VALUE_ODD = 2;
-constexpr uint32_t AIC_NUM_950 = 32;
 constexpr uint64_t MC2_TILINGKEY_OFFSET =
     uint64_t(1000000000000000000UL);  // 10^18
 constexpr size_t RES_LEN = 64;
@@ -54,7 +52,6 @@ constexpr char HCCL_DETERMINISTIC[] = "HCCL_DETERMINISTIC";
 6：CCU_SCHED（A2/3支持 A5不支持） 7：AICPU_UB/ROCE（A5不支持）
 **/
 constexpr uint8_t AIV_ENGINE = 3;
-constexpr uint8_t A5_CCU_ENGINE = 5;
 constexpr uint8_t Y_INDEX = 3;
 constexpr uint8_t COMM_ALG_DEFAULT = 0;
 constexpr uint8_t COMM_ALG_FULL_MESH = 1;
@@ -225,9 +222,7 @@ const std::map<ge::DataType, mc2tiling::HcclDataType> HCCL_DATA_TYPE = {
 };
 
  const std::map<NpuArch, std::set<uint32_t>> supportedRankSizeSet = {
-    {NpuArch::DAV_2002, {1, 2, 4}},
     {NpuArch::DAV_2201, {1, 2, 4, 8}},
-    {NpuArch::DAV_3510, {1, 2, 4, 8, 16, 32, 64}},
 };
 
 const std::set<ge::Format> SUPPORTED_FORMAT = {
@@ -255,12 +250,7 @@ inline ge::graphStatus GetEpWinSize(const gert::TilingContext *context, const ch
     uint64_t &hcclBufferSizeEp, uint64_t &maxWindowSizeEp, uint32_t attrGroupEpIndex, bool isLayered)
 {
     auto attrs = context->GetAttrs();
-    if (mc2tiling::GetNpuArch(context) == NpuArch::DAV_3510) {
-        // A5 暂不支持 Hccl CommGetBufSizeCfg 接口，此处暂作规避
-        hcclBufferSizeEp = mc2tiling::Mc2TilingUtils::GetMaxWindowSize();
-        // A5 上前 1MB 作为状态区，剩余空间用作数据区
-        maxWindowSizeEp = hcclBufferSizeEp - MTE_STATE_ZONE_SIZE;
-    } else {
+    {
         if (isLayered) {
             hcclBufferSizeEp = mc2tiling::Mc2TilingUtils::GetMaxWindowSize();
         } else {
@@ -276,7 +266,7 @@ inline ge::graphStatus GetEpWinSize(const gert::TilingContext *context, const ch
 
 // 临时判断是否为标卡4p形态(4卡，950)
 inline bool IsStandardCard4P(const uint32_t rankDim, const NpuArch npuArch) {
-    return ((rankDim == STANDARD_CARD_4P) && (npuArch == NpuArch::DAV_3510));
+    return false;
 }
 }  // namespace mc2tiling
 

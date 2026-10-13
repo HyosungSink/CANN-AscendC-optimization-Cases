@@ -112,8 +112,6 @@ public:
     GMMAttrs attrsInfo;
     GroupedMatmulCommonUtil(){};
     ~GroupedMatmulCommonUtil(){};
-
-private:
 };
 } // namespace ops
 

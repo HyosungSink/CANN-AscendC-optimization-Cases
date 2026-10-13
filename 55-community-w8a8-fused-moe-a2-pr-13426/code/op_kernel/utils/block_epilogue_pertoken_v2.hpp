@@ -166,9 +166,6 @@ public:
         AscendC::SetFlag<AscendC::HardEvent::MTE2_S>(event_id_2);
         AscendC::SetFlag<AscendC::HardEvent::MTE2_V>(event_id_2);
 
-        
-
-        
         AscendC::WaitFlag<AscendC::HardEvent::MTE2_V>(event_id_2);
         AscendC::WaitFlag<AscendC::HardEvent::MTE2_S>(event_id_2); // Note that the value must be MTE2_S instead of MTE2_V.
                                                                    // Otherwise, 0 will be read, causing garbled characters.

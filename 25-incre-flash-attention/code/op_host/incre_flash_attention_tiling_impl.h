@@ -127,7 +127,6 @@ private:
     bool AtbCheckFlag910();
     void SetupPerfMode();
     bool EnableAllVec() const;
-    bool EnableGQA310P();
     bool EnableCubeViewMM() const;
     bool EnableCubeViewMMDD() const;
     bool EnableCubeViewMMFullLoad();

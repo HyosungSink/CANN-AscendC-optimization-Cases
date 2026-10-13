@@ -35,9 +35,7 @@ public:
         if (singleTiling.is32BAligned == 1) {
             SWIGLU_SINGLE_PROCESS(singleTiling);
         } else {
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
             SWIGLU_SINGLE_PROCESS_NON32BALIGNED(singleTiling);
-#endif
         }
     }
 

@@ -443,14 +443,7 @@ ge::graphStatus Tiling4AddRmsNormDynamicQuant(gert::TilingContext* context)
     auto colStorageShape = optiling::EnsureNotScalar(colShape->GetStorageShape());
     uint32_t col_val = colStorageShape.GetDim(0);
     bool isEmptyTensor = (col_val == 0);
-    if (IsRegbaseSocVersion(context)) {
-        if (isEmptyTensor) {
-            AddRmsNormDynamicQuantEmptyTiling emptyTiling(context);
-            return emptyTiling.DoTiling();
-        }
-        AddRmsNormDynamicQuantRegbaseTiling regbaseTiling(context);
-        return regbaseTiling.DoTiling();
-    }
+
 
     AddRmsNormDynamicQuantTilingData tiling;
     AddRmsNormDynamicQuantTilingHelper instanceNormV3TilingHelper(context);

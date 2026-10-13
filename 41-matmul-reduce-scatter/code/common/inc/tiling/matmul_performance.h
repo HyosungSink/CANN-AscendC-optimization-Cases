@@ -19,7 +19,6 @@
 #include "formulaic_tiling_datatype.h"
 namespace MatmulPerformance {
 constexpr double COMPUTES_PER_CYCLE = 4096;
-constexpr double K_UNALIGN_UTIL_RATIO_SOC310P = 0.8;
 constexpr double K_UNALIGN_UTIL_RATIO = 0.7;
 constexpr double K_UNALIGN_UTIL_RATIO_910_B4 = 0.8;
 constexpr uint64_t CACHE_LINE_LEN = 512;
@@ -30,21 +29,14 @@ constexpr uint64_t MIN_M_SIZE_FACTOR = 3;
 constexpr uint64_t MARK_CORE_NUM_SOC910B = 20;
 // start: cycle per micro second for different soc version
 constexpr double CYCLE_PER_MICRO_SEC = 1.8 * ONE_KBYTE;
-constexpr double CYCLE_PER_MICRO_SEC_NPUARCH_3510 = 1.65 * ONE_KBYTE;
 constexpr double CYCLE_PER_MICRO_SEC_VERSION310_P = 1.08 * ONE_KBYTE;
 // end: cycle per micro second for different soc version
 constexpr auto DEFAULT_KEY_FOR_PAR_MAP = "0_0_2_2_2";
-constexpr double UTIL_BY_K_DENOMINATOR_OFFSET_SOC310P = 1.5;
-constexpr double UTIL_BY_K_DENOMINATOR_GRADIENT_SOC310P = 1.25;
-constexpr double UTIL_BY_K_DENOMINATOR_OFFSET_SOC310P_NO_QUANT = 1.5;
-constexpr double UTIL_BY_K_DENOMINATOR_GRADIENT_SOC310P_NO_QUANT = 0.5;
-constexpr uint64_t MIN_MSIZE_QUANT_SOC310P = 1024;
 constexpr uint64_t INT8_DTYPE_SIZE = 1;
 constexpr uint64_t SMALL_RANKTILE = 2;
 constexpr uint64_t BMM_DATASIZE_K_BAR = 2048;
 constexpr uint64_t BMM_DATASIZE_SMALL_K = 16 * ONE_GBYTE;
 constexpr uint64_t BMM_DATASIZE_LARGE_K = 24 * ONE_GBYTE;
-constexpr uint64_t MM_MIN_DATASIZE_NPUARCH_3510 = 5 * ONE_GBYTE;
 constexpr uint64_t MM_MIN_DATASIZE_OTHER_SOC = 10 * ONE_GBYTE; // M * N * K >= 10G
 constexpr double MAX_PARTICAL_ENHANCEMENT_FACTOR_CUBE_UTIL = 1.4;
 constexpr double MNVALUE_THRESHOLD = 820;
@@ -66,29 +58,15 @@ public:
     void SetCyclePerMicroSec(SocVersion inputSocVersion)
     {
         mmShapeInfo_.cyclePerMicroSec = MatmulPerformance::CYCLE_PER_MICRO_SEC;
-        if (inputSocVersion == SocVersion::SOC310_P) {
-            mmShapeInfo_.cyclePerMicroSec = MatmulPerformance::CYCLE_PER_MICRO_SEC_VERSION310_P;
-        } else if (inputSocVersion == SocVersion::SOC950) {
-            mmShapeInfo_.cyclePerMicroSec = MatmulPerformance::CYCLE_PER_MICRO_SEC_NPUARCH_3510;
-            mmMinDataSize_ = MatmulPerformance::MM_MIN_DATASIZE_NPUARCH_3510;
-        } else {
+        {
             mmShapeInfo_.cyclePerMicroSec = MatmulPerformance::CYCLE_PER_MICRO_SEC;
         }
     }
     void SetCalcType(const mc2tiling::TilingArgs& args)
     {
-        if ((mmShapeInfo_.socType == SocVersion::SOC950) &&
-            ((args.aType == matmul_tiling::DataType::DT_HIFLOAT8) ||
-             (args.aType == matmul_tiling::DataType::DT_FLOAT8_E4M3FN) ||
-             (args.aType == matmul_tiling::DataType::DT_FLOAT8_E5M2))) {
-            calcType_ = MatmulCalcType::QUANT;
-        } else if ((args.aType == matmul_tiling::DataType::DT_INT8) &&
+        if ((args.aType == matmul_tiling::DataType::DT_INT8) &&
                    (mmShapeInfo_.socType != SocVersion::SOC910_B)) {  // A8W8
             calcType_ = MatmulCalcType::QUANT;
-        } else if ((mmShapeInfo_.socType == SocVersion::SOC310_P) &&
-                   (args.bType == matmul_tiling::DataType::DT_INT8)) {  // A16W8
-            mmShapeInfo_.inMatrixBDtypeSize = MatmulPerformance::INT8_DTYPE_SIZE;
-            calcType_ = MatmulCalcType::ANTI_QUANT;
         }
     }
     // Constructor
@@ -123,11 +101,8 @@ public:
     // 根据输入shape，预测cube利用率（取值0 < cubeUtil_ < 1），再用利用率预测耗时
     // 耗时 = M * k * N / 频率 / 每cycle多少计算  /核数 / 利用率
     void GetMachineParameters();
-    void CheckKvalueAlignVersion310P();
     void FindCubeUtil(uint64_t mSize, uint64_t rankTileNum, bool flagAllReduce, uint64_t* maxTileLen = nullptr);
     double FindCubeUtilByL2Usage(uint64_t mSize, uint64_t rankTileNum, uint64_t* maxTileLen = nullptr);
-    double FindCubeUtilQuantVersion310P() const;
-    double FindCubeUtilVersion310P() const;
     void ChangeCubeUtilByKAlign();
     void GetMatmulGradient();
     void SetBatchSize(uint64_t bSize)

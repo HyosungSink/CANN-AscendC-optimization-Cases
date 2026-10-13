@@ -1152,7 +1152,6 @@ __aicore__ inline void IncreFlashAttentionAttenPreloadMla<IFAT>::AttenMaskCopyIn
     LocalTensor<bool> maskUb = inputQue2.AllocTensor<bool>();
     attenMaskSizeAlign = Align(actualColumnCount, 32U);
     maskUb.SetSize(dealRowCount * attenMaskSizeAlign);
-#if (__CCE_AICORE__ > 200)
     if (actualColumnCount % 32 == 0) {
         DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
     } else {
@@ -1169,9 +1168,6 @@ __aicore__ inline void IncreFlashAttentionAttenPreloadMla<IFAT>::AttenMaskCopyIn
         padParams.paddingValue = 0;
         DataCopyPad(maskUb, attenMaskBoolGm[offset], intriParams, padParams);
     }
-#else
-    DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
-#endif
     inputQue2.template EnQue(maskUb);
 }
 

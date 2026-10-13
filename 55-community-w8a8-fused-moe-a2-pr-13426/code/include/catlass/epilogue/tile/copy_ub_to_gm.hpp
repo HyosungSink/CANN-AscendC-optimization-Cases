@@ -138,35 +138,8 @@ struct CopyUb2GmAligned<Arch::AtlasA2, Gemm::GemmType<Element, layout::RowMajor>
     };
 };
 
-//////////////////////////// CopyUb2Gm(Ascend950, No TLA) ////////////////////////////
 //Partial specialization for CopyUb2Gm(AtlasA5 wo-tla), RowMajor in and RowMajor out.
-template <typename Element>
-struct CopyUb2Gm<Arch::Ascend950, Gemm::GemmType<Element, layout::RowMajor>> {
-    using LayoutDst = layout::RowMajor;
-    using LayoutSrc = layout::RowMajor;
 
-    static constexpr uint32_t ELE_NUM_PER_C0 = BYTE_PER_C0 / sizeof(Element);
-
-    CATLASS_DEVICE
-    CopyUb2Gm() = default;
-
-    CATLASS_DEVICE
-    void operator()(
-        AscendC::GlobalTensor<Element> const &dstTensor,
-        AscendC::LocalTensor<Element> const &srcTensor,
-        layout::RowMajor const &layoutDst,
-        layout::RowMajor const &layoutSrc)
-    {
-        AscendC::DataCopyExtParams dataCopyParams(
-            layoutDst.shape(0),
-            layoutDst.shape(1) * sizeof(Element),
-            (layoutSrc.stride(0) - layoutSrc.shape(1)) / ELE_NUM_PER_C0,
-            (layoutDst.stride(0) - layoutDst.shape(1)) * sizeof(Element),
-            0
-        );
-        AscendC::DataCopyPad(dstTensor, srcTensor, dataCopyParams);
-    }
-};
 
 }  // Catlass::Epilogue::Tile
 

@@ -278,11 +278,7 @@ private:
         PipeBarrier<PIPE_V>();
         Add(xFp32LocalQuant, xFp32LocalQuant, sqxLocalQuant, numCol);
         PipeBarrier<PIPE_V>();
-        #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        Cast(x1LocalQuant, xFp32LocalQuant, RoundMode::CAST_NONE, numCol);
-        #else
         Cast(x1LocalQuant, xFp32LocalQuant, RoundMode::CAST_RINT, numCol);
-        #endif
         PipeBarrier<PIPE_V>();
         // copy gamma
         event_t eventVMTE2Quant = static_cast<event_t>(GetTPipePtr()->FetchEventID(HardEvent::V_MTE2));
@@ -348,11 +344,7 @@ private:
         Mul(xFp32LocalQuant, xFp32LocalQuant, sqxLocalQuant, numCol);
         PipeBarrier<PIPE_V>();
         if constexpr (RN) {
-            #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            Cast(x1LocalQuant, xFp32LocalQuant, RoundMode::CAST_NONE, numCol);
-            #else
             Cast(x1LocalQuant, xFp32LocalQuant, RoundMode::CAST_RINT, numCol);
-            #endif
             SetFlag<HardEvent::V_MTE3>(eventVMTE3Quant);
             WaitFlag<HardEvent::V_MTE3>(eventVMTE3Quant);
             DataCopyCustom<TX>(resOutGm, x1LocalQuant, numCol);

@@ -60,10 +60,7 @@ static ge::graphStatus ArchNotSupportMmadS8S4(gert::TilingContext* context, plat
     auto platformInfoPtr = context->GetPlatformInfo();
     OP_LOGE_IF(platformInfoPtr == nullptr, ge::GRAPH_FAILED, context->GetNodeName(), "platformInfoPtr is null");
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfoPtr);  
-    if (ascendcPlatform.GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGI(context->GetNodeName(), "DAV_3510 Platform support Intrinsic_data_move_l12bt bf16");
-        return TilingRegistryArch::GetInstance().DoTilingImpl(context);
-    } else if (
+    if (
         socVersion == platform_ascendc::SocVersion::ASCEND910B ||
         socVersion == platform_ascendc::SocVersion::ASCEND910_93) {
         OP_LOGI(context->GetNodeName(), "Platform not support Intrinsic_data_move_l12bt bf16");
@@ -93,7 +90,7 @@ static ge::graphStatus WeightQuantBatchMatmulV2TilingFunc(gert::TilingContext* c
         socVersion = compileInfoPtr->socVersion;
         supportMmadS8S4 = compileInfoPtr->supportMmadS8S4;
     }
-    if (socVersion != platform_ascendc::SocVersion::ASCEND310P) {
+    {
         OP_LOGI(context->GetNodeName(), "Platform support Intrinsic_fix_pipe_l0c2out");
         if (supportMmadS8S4) {
             OP_LOGI(context->GetNodeName(), "Platform support Intrinsic_mmad s8s4");
@@ -107,10 +104,6 @@ static ge::graphStatus WeightQuantBatchMatmulV2TilingFunc(gert::TilingContext* c
         } else {
             return ArchNotSupportMmadS8S4(context, socVersion);
         }
-    } else {
-        OP_LOGI(context->GetNodeName(), "Platform not support Intrinsic_fix_pipe_l0c2out");
-        std::vector<int32_t> registerList = {WEIGHT_NZ_PRIORITY};
-        return TilingRegistry::GetInstance().DoTilingImpl(context, registerList);
     }
 }
 

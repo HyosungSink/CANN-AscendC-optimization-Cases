@@ -342,8 +342,6 @@ private:
 
 // declare all dtype kernel
 BGMV_EXPAND_TYPE_DECLARE(half)
-#if (__CCE_AICORE__ >= 220)
 BGMV_EXPAND_TYPE_DECLARE(bfloat16_t)
-#endif
 
 #endif  // SGL_KERNEL_NPU_KERNEL_BGMV_EXPAND_H

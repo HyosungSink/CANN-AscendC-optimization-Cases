@@ -342,16 +342,7 @@ public:
         CHECK_RET(uniqueExecutor.get() != nullptr, ACLNN_ERR_INNER_CREATE_EXECUTOR);
         l0Executor_ = uniqueExecutor.get();
 
-        if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-            auto x1MDim = gmmDsqParams_.x->GetViewShape().GetDim(0);
-            auto x2NIndex = (*gmmDsqParams_.weight)[0]->GetViewShape().GetDimNum() - 1;
-            auto x2NDim = (*gmmDsqParams_.weight)[0]->GetViewShape().GetDim(x2NIndex);
-            if (x1MDim == 0 || x2NDim == 0) {
-                *workspaceSize_ = 0ULL;
-                uniqueExecutor.ReleaseTo(executor_);
-                return ACLNN_SUCCESS;
-            }
-        }
+
         auto ret = CheckParams();
         CHECK_RET(ret == ACLNN_SUCCESS, ret);
         

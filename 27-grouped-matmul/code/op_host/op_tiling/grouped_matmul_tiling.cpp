@@ -16,8 +16,6 @@
 
 #include <climits>
 #include "register/op_impl_registry.h"
-#include "arch35/grouped_weight_quant_batch_matmul_tiling.h"
-#include "arch35/grouped_no_quant_matmul_tiling.h"
 #include "../../common/include/tiling_base/tiling_templates_registry.h"
 #include "../../common/include/err/ops_err.h"
 #include "../../op_kernel/grouped_matmul_tiling_key.h"
@@ -1331,9 +1329,7 @@ ge::graphStatus GMMTiling::CalcStepKaKb(const gert::TilingContext* context, cons
   if (hasBias_) {
     availableL1Size -= static_cast<uint64_t>(baseN_) * static_cast<uint64_t>(4);  // 4: size of float32 or int32
   }
-  if (compileInfoPtr->socVersion == platform_ascendc::SocVersion::ASCEND310P) {
-    availableL1Size = BEST_L1_PARTA + BEST_L1_PARTB;
-  }
+
   OP_CHECK_IF(availableL1Size < L1_PARTA_SIZE,
              OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "availableL1Size is less than 256k"),
              return ge::GRAPH_FAILED);
@@ -1355,10 +1351,7 @@ ge::graphStatus GMMTiling::CalcStepKaKb(const gert::TilingContext* context, cons
     // 2: double buffer
     mmStepKb = (l1BSize / 2UL) / (static_cast<uint64_t>(baseN_) * baseK_ * mmDataTypeSize_);
   }
-  if (compileInfoPtr->socVersion == platform_ascendc::SocVersion::ASCEND310P &&
-                                    wFormat_ == matmul_tiling::CubeFormat::NZ && mInMM <= baseM_) {
-    mmStepKa = std::min<uint32_t>(mmStepKa, std::max(1, 128 / baseK_));  // 128: nz inner block size. In practice, baseK_*mmStepKa=128 makes performance better.
-  }
+
 
   OP_CHECK_IF(mmStepKa == 0 || mmStepKb == 0,
              OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "stepka or stepkb cannot be 0"),
@@ -1408,10 +1401,7 @@ ge::graphStatus GMMTiling::GMMSetMMTiling(const gert::TilingContext* context, co
   uint32_t mmDepthA1 = mmStepKa * DOUBLE_BUFFER_STEPKA_STEPKB * stepM;
   uint32_t mmDepthB1 = mmStepKb * DOUBLE_BUFFER_STEPKA_STEPKB * stepN;
   tilingData.mmTilingData.set_shareMode(0);
-  if (compileInfoPtr->socVersion == platform_ascendc::SocVersion::ASCEND310P) {
-    tilingData.mmTilingData.set_shareUbSize(0);
-    tilingData.mmTilingData.set_transLength(131072);  // 131072: 128KB size
-  }
+
   tilingData.mmTilingData.set_dbL0C(1);  // disable double buffer for LOC
   tilingData.mmTilingData.set_baseM(baseM_);  // set precomputed baseM
   tilingData.mmTilingData.set_baseN(baseN_);  // set precomputed baseN
@@ -2052,26 +2042,7 @@ ASCENDC_EXTERN_C ge::graphStatus TilingGMM(gert::TilingContext* context) {
   ge::DataType weightDtype = w0Desc->GetDataType();
   auto compileInfoPtr = context->GetCompileInfo<GMMCompileInfo>();
   OP_CHECK_NULL_WITH_CONTEXT(context, compileInfoPtr);
-  if (compileInfoPtr->npuArch == NpuArch::DAV_3510) {
-      // 全量化：双8bits或双4bits(不会有A4W2)
-      bool isQuant = xDType == ge::DT_FLOAT4_E2M1 || xDType == ge::DT_INT4 ||
-                     (ge::GetSizeByDataType(xDType) == 1 && ge::GetSizeByDataType(weightDtype) == 1);
-      if (isQuant) {
-          return TilingRegistry::GetInstance().DoTilingImpl(context);
-      } else if (xDType != weightDtype) {
-          GroupedWeightQuantBatchMatmulTiling groupedWeightQuantTiling;
-          OP_CHECK_IF(!groupedWeightQuantTiling.SetTiling(context),
-                     OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "SetTiling failed."), return ge::GRAPH_FAILED);
-          return ge::GRAPH_SUCCESS;
-      }
-      bool isUnQuant = (xDType == ge::DT_FLOAT16 || xDType == ge::DT_BF16 || xDType == ge::DT_FLOAT) && (xDType == weightDtype);
-      if (isUnQuant) {
-        GroupedNoQuantMatmulTiling groupedNoQuantMatmulTiling;
-        OP_CHECK_IF(!groupedNoQuantMatmulTiling.SetTiling(context),
-                     OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "SetTiling failed."), return ge::GRAPH_FAILED);
-        return ge::GRAPH_SUCCESS;
-      }
-  }
+
   GMMTiling tiling;
   if(xDType == ge::DT_INT8 && weightDtype == ge::DT_INT4) {     // A8W4 Tiling
     ge::graphStatus A8W4TilingResult = tiling.A8W4Tiling(context, compileInfoPtr);
@@ -2112,7 +2083,7 @@ ASCENDC_EXTERN_C ge::graphStatus TilingPrepareForGMM(gert::TilingParseContext* c
   ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::L0_C, compileInfoPtr->l0CSize);
   ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::L2, compileInfoPtr->l2Size);
 
-  OP_CHECK_IF((compileInfoPtr->npuArch != NpuArch::DAV_3510 && compileInfoPtr->aivNum == 0),
+  OP_CHECK_IF(compileInfoPtr->aivNum == 0,
              OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(),
              "platform info is invalid, aicNum=%u, aivNum=%u, ubSize=%lu, l1Size=%lu, l0CSize=%lu, l0ASize=%lu, l0BSize=%lu",
              compileInfoPtr->aicNum, compileInfoPtr->aivNum, compileInfoPtr->ubSize, compileInfoPtr->l1Size,

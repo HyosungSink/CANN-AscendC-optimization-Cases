@@ -96,9 +96,7 @@ constexpr uint32_t DIM_NUM_FOUR = 4;
 
 void IFATiling::SetCoreNum()
 {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        coreNum_ = aicNum_; // use aic num in 310p
-    } else {
+    {
         if (balanceModeFlag_) {
             coreNum_ = aicNum_;
             return;
@@ -133,9 +131,7 @@ ge::graphStatus IFATiling::GetNpuInfo()
     OP_CHECK_IF(aicNum_ == 0 || aivNum_ == 0,
         OPS_REPORT_VECTOR_INNER_ERR(ifaContext_->opName, "num of core obtained is 0."), return GRAPH_FAILED);
 
-    if (ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P) {
-        socVersion_ = IfaSocVersion::SOC_ASCEND_310P;
-    } else {
+    {
         socVersion_ = IfaSocVersion::SOC_ASCEND_910B;
 
         cvRatio_ = aivNum_ / aicNum_;
@@ -697,13 +693,7 @@ ge::graphStatus IFATiling::ProcessBaseInputs()
 void IFATiling::SetupPerfMode()
 {
     // 310P
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        if (EnableGQA310P()) {
-            perfMode_ = IfaPerfMode::CUBE_VIEW_MM;
-        } else {
-            perfMode_ = IfaPerfMode::BMM_ALL_BY_VEC;
-        }
-    } else {
+    {
         if (gqaKvNZFlag_) {
             perfMode_ = IfaPerfMode::CUBE_VIEW_MM_DD;
         } else if (ropeFlag_) {
@@ -889,13 +879,7 @@ ge::graphStatus IFATiling::InitInOutMode()
                   outputType_);
         return ge::GRAPH_FAILED;
     }
-    if ((socVersion_ == IfaSocVersion::SOC_ASCEND_310P) && (inOutMode_ != TilingInOutMode::FP16_FP16)) {
-        OP_LOGE(ifaContext_->opName,
-            "input dtype float16 with output dtype float16 is currently supported when 310P, but "
-            "current input dtype is %d and output dtype is %d",
-            inputQType_, outputType_);
-        return ge::GRAPH_FAILED;
-    }
+
     return ge::GRAPH_SUCCESS;
 }
 
@@ -2628,11 +2612,7 @@ ge::graphStatus IFATiling::CalcInnerSize(uint32_t seqSize)
         sInnerSize_ = sInnerSize[idx];
     }
     // for ifa_cube_310P
-    if ((socVersion_ == IfaSocVersion::SOC_ASCEND_310P) && (nNumOfQInOneGroup_ * qSeqSize_ > 1U)) {
-        auto bmm1BufferSize =  40U * 1024U;
-        sInnerSize_ = std::min(bmm1BufferSize / nNumOfQInOneGroup_ / qSeqSize_ / static_cast<uint32_t>(sizeof(float)), MAX_SPLIT_SIZE);
-        sInnerSize_ = (sInnerSize_ / 128U) *  128U;
-    }
+
 
     if (ropeFlag_) {
         sInnerSize_ = 512U;
@@ -2875,9 +2855,7 @@ void IFATiling::NormalCalcFDWorkSpace(const uint32_t actCoreNum) {
         }
         logSumExpSize = NUM2 * FDParamNums * (BYTE_BLOCK / blockTypeSize_);  // log和sum的存储空间一致，共需要2份内存
         workspaceSize_ += static_cast<size_t>((accumOutSize + logSumExpSize)) * static_cast<size_t>(blockTypeSize_);
-        if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-            workspaceSize_ += static_cast<size_t>(actCoreNum) * 32U; // 每个核SyncAll软同步需要32Byte记录状态
-        }
+
     }
 }
 
@@ -3476,9 +3454,7 @@ ge::graphStatus IFATiling::CalcNumBlocks()
     auto aicNum = aicNum_;
     auto aivNum = aivNum_;
     UpdatePerfMode();
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        aivNum = aicNum;
-    } else {
+    {
         if (perfMode_ == IfaPerfMode::CUBE_VIEW_MM_MLA || !splitKVFlag_) {
             if (perfMode_ == IfaPerfMode::C1_V1) { // 2:bn数不超过vector core一半时，CV开启CV 1:1
                 aivNum = usedCoreNum_;             // CV 1:1时,GetTaskRation()的结果为1,所以aivNum与aicNum相等
@@ -3853,10 +3829,7 @@ ge::graphStatus IFATiling::ProcessCheckAtbFormat()
     aivNum_ = ascendcPlatform.GetCoreNumAiv();
     libapiSize_ = ascendcPlatform.GetLibApiWorkSpaceSize();
     ifaContext_->numBlocks = ascendcPlatform.CalcTschBlockDim(aivNum_, aicNum_, aivNum_);
-    if (ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P) {
-        socVersion_ = IfaSocVersion::SOC_ASCEND_310P;
-        coreNum_ = aicNum_;
-    } else {
+    {
         socVersion_ = IfaSocVersion::SOC_ASCEND_910B;
         coreNum_ = aivNum_;
     }
@@ -3872,9 +3845,7 @@ bool IFATiling::AtbCheckFlag() {
         return false;
     }
 
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return AtbCheckFlag310();
-    } else if (socVersion_ == IfaSocVersion::SOC_ASCEND_910B) {
+    if (socVersion_ == IfaSocVersion::SOC_ASCEND_910B) {
         return AtbCheckFlag910();
     } else {
         OP_LOGD(ifaContext_->opName, "soc version not supported in ATB.");
@@ -3940,9 +3911,7 @@ ge::graphStatus IFATiling::AtbTilingCheck()
         return ge::GRAPH_FAILED;
     }
 
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return AtbTilingCheck310();
-    } else {
+    {
         return AtbTilingCheck910();
     }
 }
@@ -4017,10 +3986,7 @@ ge::graphStatus IFATiling::AtbSplitBlock() const
 {
     const uint32_t taskNum = GetTotalQBlockNum();
     
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        // A2A3切分BS1N1, 在kernel中判断
-        ifaContext_->numBlocks = taskNum < ifaContext_->numBlocks ? taskNum : ifaContext_->numBlocks;
-    }
+
     const uint32_t taskNumPerCore = taskNum / ifaContext_->numBlocks;
     const uint32_t tailTaskNum = taskNum % ifaContext_->numBlocks;
     uint32_t taskStart = 0U;
@@ -4060,9 +4026,7 @@ ge::graphStatus IFATiling::AtbTilingCheck910() const {
 }
 
 uint32_t IFATiling::GetTotalWorkspaceSize() const {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return static_cast<uint32_t>(libapiSize_);
-    }
+
 
     // 根据实际的numBlocks减少下
     uint32_t usrWorkspaceSize = static_cast<uint32_t>(WS_REPEAT_NUM * aivNum_ * BLOCKSIZE_CALC_256 * static_cast<uint32_t>(headDim_) * NUM_BYTES_FLOAT16) + 
@@ -4071,9 +4035,7 @@ uint32_t IFATiling::GetTotalWorkspaceSize() const {
 }
 
 uint32_t IFATiling::GetHeadSize() const {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return ifaContext_->query.shape->GetStorageShape().GetDim(1) * BLOCK_SIZE / numHeads_;
-    }
+
 
     if (ifaContext_->query.shape->GetStorageShape().GetDimNum() == DIM_NUM_TWO) {
         return ifaContext_->query.shape->GetStorageShape().GetDim(DIM_IDX_1) / numHeads_;
@@ -4086,9 +4048,7 @@ uint32_t IFATiling::GetHeadSize() const {
 
 uint32_t IFATiling::CalcSeqStepQ() const
 {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return MAX_MATMUL_BASE_M;
-    } else if (ifaContext_->actualSeqLengthsQ.tensor != nullptr) {
+    if (ifaContext_->actualSeqLengthsQ.tensor != nullptr) {
         uint32_t mmADataNum = static_cast<uint32_t>(L0B_SIZE / DOUBLE_BUFFER_NUM / NUM_BYTES_FLOAT16);
         uint32_t maxSeqStepQ = std::min(MAX_MATMUL_BASE_M, mmADataNum / headDim_ / BLOCK_SIZE * BLOCK_SIZE);
         return maxSeqStepQ;
@@ -4099,9 +4059,7 @@ uint32_t IFATiling::CalcSeqStepQ() const
 
 uint32_t IFATiling::GetTotalQBlockNum() const
 {
-    if (socVersion_ == IfaSocVersion::SOC_ASCEND_310P) {
-        return batchSize_ * numHeads_;
-    } else if (ifaContext_->actualSeqLengthsQ.tensor != nullptr) {
+    if (ifaContext_->actualSeqLengthsQ.tensor != nullptr) {
         const int64_t *actualLenDataQ = ifaContext_->actualSeqLengthsQ.tensor->GetData<int64_t>();
 
         uint32_t totalQblockSum = 0;
@@ -4192,5 +4150,5 @@ IFA_EXTERN_C ge::graphStatus TilingIncreFlashAttention(gert::TilingContext *cont
 {
     return TilingIncreFlashAttentionAdapter(context);
 }
-REGISTER_TILING_TEMPLATE_FIA(IncreFlashAttention, IFATiling, std::vector<int32_t>({(int32_t)NpuArch::DAV_2201, (int32_t)NpuArch::DAV_2002}), 90);
+REGISTER_TILING_TEMPLATE_FIA(IncreFlashAttention, IFATiling, std::vector<int32_t>({(int32_t)NpuArch::DAV_2201}), 90);
 } // namespace optiling

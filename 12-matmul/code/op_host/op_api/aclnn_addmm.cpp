@@ -71,7 +71,7 @@ static const std::initializer_list<op::DataType> dtypeSupportListMat1AndMat2 = {
 static inline bool CheckNpuArchIsSupportBf16(void)
 {
     auto npuArch = op::GetCurrentPlatformInfo().GetCurNpuArch();
-    return (npuArch == NpuArch::DAV_2201) || (npuArch == NpuArch::DAV_3510);
+    return npuArch == NpuArch::DAV_2201;
 }
 
 static inline bool CheckWeightNzDtypeValid(
@@ -425,7 +425,7 @@ static aclnnStatus AddmmCheckWeightNzParam(AclnnAddmmTensor& addmmTensor, int8_t
 {
     auto socVersion = GetCurrentPlatformInfo().GetSocVersion();
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    bool isSupportNpuArch = ((npuArch == NpuArch::DAV_2201) || (npuArch == NpuArch::DAV_3510));
+    bool isSupportNpuArch = npuArch == NpuArch::DAV_2201;
     if (!isSupportNpuArch) {
         OP_LOGE(
             ACLNN_ERR_PARAM_INVALID, "Weight NZ is unsupported by the current SOC version [%s].",

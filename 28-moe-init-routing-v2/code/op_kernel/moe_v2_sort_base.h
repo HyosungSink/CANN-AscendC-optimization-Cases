@@ -39,9 +39,6 @@ protected:
     GlobalTensor<int32_t> expandDstToSrcRowGm;
     GlobalTensor<int32_t> expertTokensCountOrCumsumGm;
     GlobalTensor<int32_t> expertTokensBeforeCapacityGm;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    GlobalTensor<int32_t> syncTmpSpaceGm_;
-#endif
     int64_t tileLength;
     int64_t bufferNum = 1;
     int64_t totalLength;

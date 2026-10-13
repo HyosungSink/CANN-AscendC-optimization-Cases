@@ -17,9 +17,7 @@
 #define ADD_RMS_NORM_DYNAMIC_QUANT_HELPER_H_
 
 #include "reduce_common.h"
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 #include "impl/dav_c220/kernel_operator_reg_others_impl.h"
-#endif
 
 using namespace AscendC;
 constexpr uint32_t FLOAT_BLOCK_ELEM = 8;

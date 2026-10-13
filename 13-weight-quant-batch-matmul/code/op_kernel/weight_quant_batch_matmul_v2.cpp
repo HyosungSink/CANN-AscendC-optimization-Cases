@@ -15,7 +15,6 @@
 
 #define K_MAX_SHAPE_DIM 0
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3003)
 #include "weight_quant_batch_matmul_v2_constant.h"
 #include "tool.h"
 #include "kernel_operator.h"
@@ -37,9 +36,6 @@
 #endif
 using WeightQuantBatchMatmulV2Msd::WeightQuantBatchMatmulV2MsdMultiCoreKernel;
 #endif
-#endif
-#else
-#include "weight_quant_batch_matmul_v2_weight_nz_performance.h"
 #endif
 
 #include "weight_quant_batch_matmul_v2_kernel_tiling_key.h"
@@ -68,7 +64,6 @@ using namespace WeightQuantBatchMatmulV2;
 #define DTYPE_WEIGHT AscendC::int4b_t
 #endif
 
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510))
 #define INVOKE_WEIGHT_QUANT_BMM_OP_IMPL(templateClass, ...)                                                      \
     do {                                                                                                         \
         GET_TILING_DATA_WITH_STRUCT(WeightQuantBatchMatmulV2TilingData, tilingDataIn, tiling);                   \
@@ -128,7 +123,6 @@ using namespace WeightQuantBatchMatmulV2;
             &tPipe);                                                                                             \
         op.Process();                                                                                            \
     } while (0)
-#endif
 
 template <int SOC_VERSION_TYPE, int SUB_SOC_VERSION_TYPE, int ANTIQUANT_SCENARIO, int ALGORITHM, int SUB_ALGORITHM,
           int SUB_ALGORITHM_CUSTOM, int INNER_PRECISE, int TEMPLATE_CUSTOM, int API_CONSTEXPR, bool TRANS_A, bool TRANS_B,
@@ -147,7 +141,6 @@ __global__ __aicore__ void weight_quant_batch_matmul_v2(
     }
     REGISTER_TILING_DEFAULT(WeightQuantBatchMatmulV2TilingData);
     AscendC::TPipe tPipe;
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3003)
     KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_MIX_AIC_1_2);
 #if (                                      \
     defined(ORIG_DTYPE_ANTIQUANT_SCALE) && \
@@ -375,22 +368,5 @@ __global__ __aicore__ void weight_quant_batch_matmul_v2(
             QuantType::PER_TENSOR, AL1_FULL_LOAD);
     } 
 #endif
-#endif
-#else
-    if constexpr (BATCH == WQBMMV2_BATCH_ZERO && SUB_ALGORITHM_CUSTOM == WQBMMV2_SUB_ALGO_WEIGHT_NZ &&
-        FULL_LOAD_MODE == WQBMMV2_FULL_LOAD_MODE_NONE_AB_K &&
-        ALGORITHM == WQBMMV2_ALGO_CUSTOM && TEMPLATE_EXTRA == WQBMMV2_TEMPLATE_EXTRA_NOT_USED) {
-        // 模板参数为aTrans bTrans antiQuantType hasAntiQuantOffset
-        static constexpr QuantType antiQuantType = static_cast<QuantType>(ANTIQUANT_TYPE);
-        INVOKE_WEIGHT_QUANT_BMM_OP_NZ_IMPL(
-            WeightQuantBatchMatmulV2WeightNzPerformanceKernel, TRANS_A, true, antiQuantType, HAS_ANTIQUANT_OFFSET);
-    } else if constexpr (BATCH == WQBMMV2_BATCH_ONE && SUB_ALGORITHM_CUSTOM == WQBMMV2_SUB_ALGO_WEIGHT_NZ &&
-               FULL_LOAD_MODE == WQBMMV2_FULL_LOAD_MODE_NONE_AB_K &&
-               ALGORITHM == WQBMMV2_ALGO_CUSTOM && TEMPLATE_EXTRA == WQBMMV2_TEMPLATE_EXTRA_NOT_USED) {
-        // 模板参数为aTrans bTrans antiQuantType hasAntiQuantOffset
-        static constexpr QuantType antiQuantType = static_cast<QuantType>(ANTIQUANT_TYPE);
-        INVOKE_WEIGHT_QUANT_BMM_OP_NZ_IMPL(
-            WeightQuantBatchMatmulV2WeightNzKernel, TRANS_A, true, antiQuantType, HAS_ANTIQUANT_OFFSET);
-    }
 #endif
 }

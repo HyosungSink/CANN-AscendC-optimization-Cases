@@ -29,9 +29,7 @@ bool LayerNormV4SingleReadTiling::IsCapable()
     if ((commonParams.rowSize != ALLOW_COL1 && commonParams.rowSize != ALLOW_COL2) || commonParams.tensorDtype != ge::DT_BF16 || commonParams.paramDtype != ge::DT_BF16) {
         return false;
     }
-    if (commonParams.isRegBase) {
-        return false;
-    }
+
     uint32_t rowMax = 0;
     rowMax = ((commonParams.ubSizePlatForm - NUM_EIGHT * BLOCK_SIZE) / FLOAT_SIZE) / NUM_TWO;
     if (commonParams.rowAlign > rowMax) {

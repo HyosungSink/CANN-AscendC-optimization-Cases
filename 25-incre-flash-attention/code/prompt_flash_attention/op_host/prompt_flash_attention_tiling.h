@@ -567,8 +567,6 @@ protected:
     bool EnableMTE2BmmPipe(PromptFlashAttentionTilingData& tilingData, matmul_tiling::MatmulApiTiling& bmm,
                            TCubeTiling& bmmTilingData, uint32_t sOuterFactor, uint32_t sInnerFactor);
     void EnableBmmDoubleBuffer(TCubeTiling& bmmTilingData);
-    void PromptFlashAttention310PSetBmm1(matmul_tiling::MatmulApiTiling& bmm1);
-    void PromptFlashAttention310PSetBmm2(matmul_tiling::MatmulApiTiling& bmm2);
     bool PromptFlashAttentionCheckBmm1(PromptFlashAttentionTilingData& tilingData, TCubeTiling& bmm1TilingData,
                                        int64_t l1SizeRemain, int64_t l0CSize,
                                        uint32_t sOuterFactor, uint32_t sInnerFactor,
@@ -599,9 +597,6 @@ protected:
     void Align(uint32_t &num);
     ge::graphStatus GetBasicShape(uint32_t &b, uint32_t &s, uint32_t &h, uint32_t &seqInnerSize,
                                 const gert::StorageShape *queryShape, const gert::StorageShape *keyShape, const uint32_t n);
-    ge::graphStatus GetBasicShape310P(uint32_t &b, uint32_t &bKV, uint32_t &s, uint64_t &h, uint32_t &seqInnerSize,
-                                      const gert::StorageShape *queryShape, const gert::StorageShape *keyShape, const uint64_t n,
-                                      size_t actualLenDims, size_t actualLenDimsKV);
     ge::graphStatus GetBasicShape910B(uint32_t &b, uint32_t &s, uint32_t &h, uint32_t &seqInnerSize,
                                       const gert::StorageShape *queryShape, const gert::StorageShape *keyShape, const uint32_t n);
     size_t GetPFAWorkSpaceSize(PromptFlashAttentionTilingData& tilingData);

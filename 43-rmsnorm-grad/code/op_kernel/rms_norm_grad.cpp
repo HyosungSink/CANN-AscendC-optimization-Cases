@@ -12,13 +12,8 @@
  * \file rms_norm_grad.cpp
  * \brief
  */
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 100)
-#include "rms_norm_grad_whole_reduce_n.h"
-#include "rms_norm_grad_whole_reduce_d.h"
-#else
 #include "rms_norm_grad_split_d_high_precision.h"
 #include "rms_norm_grad_split_n_high_precision.h"
-#endif
 
 extern "C" __global__ __aicore__ void rms_norm_grad(
     GM_ADDR dy, GM_ADDR x, GM_ADDR rstd, GM_ADDR gamma, GM_ADDR dx, GM_ADDR dgamma, GM_ADDR workspace, GM_ADDR tiling)
@@ -26,18 +21,6 @@ extern "C" __global__ __aicore__ void rms_norm_grad(
     GET_TILING_DATA(tilingData, tiling);
     GM_ADDR usrWorkspace = AscendC::GetUserWorkspace(workspace);
 
-#if defined(__CCE_AICORE__) && (__CCE_AICORE__ == 100)
-    if (TILING_KEY_IS(1)) {
-        RmsNormGradWholeReduceN<DTYPE_DY> rms_norm_grad_whole_reduce_n;
-        rms_norm_grad_whole_reduce_n.Init(dy, x, rstd, gamma, dx, dgamma, &tilingData);
-        rms_norm_grad_whole_reduce_n.Process();
-    }
-    if (TILING_KEY_IS(2)) {
-        RmsNormGradWholeReduceD<DTYPE_DY> rms_norm_grad_whole_reduce_d;
-        rms_norm_grad_whole_reduce_d.Init(dy, x, rstd, gamma, dx, dgamma, &tilingData);
-        rms_norm_grad_whole_reduce_d.Process();
-    }
-#else
     if (TILING_KEY_IS(1)) {
         RmsNormGradSplitNHighPrecision<DTYPE_DY, DTYPE_GAMMA> rms_norm_grad_split_n;
         rms_norm_grad_split_n.Init(dy, x, rstd, gamma, dx, dgamma, &tilingData, usrWorkspace);
@@ -48,7 +31,6 @@ extern "C" __global__ __aicore__ void rms_norm_grad(
         rms_norm_grad_split_d.Init(dy, x, rstd, gamma, dx, dgamma, &tilingData, usrWorkspace);
         rms_norm_grad_split_d.Process();
     }
-#endif
 }
 
 #ifndef __CCE_KT_TEST__

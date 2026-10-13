@@ -29,7 +29,6 @@ static constexpr int FLOAT_BLOCK_ELEM = 8;
 static constexpr int MAX_REPEAT_STRIDE_ELEM = 255 * FLOAT_BLOCK_ELEM;
 static constexpr int CUBE_MAX_ELEM_FP32 = 16 * 16 / 2;
 static constexpr int RESERVED_WORKSPACE_SIZE_910B = 16 * 1024 * 1024;
-static constexpr int RESERVED_WORKSPACE_SIZE_310P = 2 * 1024 * 1024;
 constexpr int MINIMUM_COLUMN_SLICE = 2048;
 
 static constexpr uint32_t X1_DTYPE_OFFSET = 1000000;
@@ -147,7 +146,7 @@ enum class DATA_TYPE : uint32_t {
  */
 inline TILING_TYPE AddLayerNormTilingImpl(
     uint64_t maxUbSize, ge::DataType dataType, ge::DataType betagammaDataType, int32_t bufferNum, int64_t numCol,
-    bool enableXOut, enum BIAS_TYPE biasType, int64_t& rowPerTime, int64_t& colPerTime, bool is310P)
+    bool enableXOut, enum BIAS_TYPE biasType, int64_t& rowPerTime, int64_t& colPerTime)
 {
     int dtSize = GetSizeByDataType(dataType);
     int betagammaDtSize = GetSizeByDataType(betagammaDataType);
@@ -168,8 +167,7 @@ inline TILING_TYPE AddLayerNormTilingImpl(
     }
     // try 310 normal tiling case (with special reducesum and broadcast implementation):
     auto numColElemAligned = (numCol + blockElementNum - 1U) / blockElementNum * blockElementNum;
-    bool isSpecialReduceTiling = is310P && enableXOut && isNoBias && (dataType == ge::DT_FLOAT16) &&
-                                 ((numCol % blockElementNum) == 0) && (numColElemAligned <= MAX_REPEAT_STRIDE_ELEM);
+    bool isSpecialReduceTiling = false;
     if (isSpecialReduceTiling) {
         // Tensor(n_dim != 1): x1(dtype)/x2(dtype)/y(dtype)/x_que(dtype)/x(fp32)/z(fp32)/y(fp32)
         // Tensor(n_dim == 1): beta(float32)/gamma(float32)/bias(dtype)
@@ -194,8 +192,7 @@ inline TILING_TYPE AddLayerNormTilingImpl(
         }
     }
     // try 910 normal tiling case (with special reducesum and broadcast implementation):
-    isSpecialReduceTiling = (!is310P) && (isNoBias || isBroadcastBias) && isAllInputFP16 &&
-                            (numColElemAligned <= static_cast<unsigned int>(MAX_REPEAT_STRIDE_ELEM));
+    isSpecialReduceTiling = ((((isNoBias) || (isBroadcastBias))) && (isAllInputFP16) && (numColElemAligned <= static_cast<unsigned int>(MAX_REPEAT_STRIDE_ELEM)));
     if (isSpecialReduceTiling) {
         // Tensor(n_dim != 1): x1(dtype)/x2(dtype)/y(dtype)/mean(fp32)/rstd(fp32)/x_que(dtype)/x(fp32)/z(fp32)/y(fp32)
         // Tensor(n_dim == 1): beta(float32)/gamma(float32)/bias(dtype)
@@ -230,7 +227,7 @@ inline TILING_TYPE AddLayerNormTilingImpl(
         static_cast<double>(
             dtSize * (3 + additionalOutputNum) * numColAligned * bufferNum + 4 * 2 * bufferNum + 4 * 3 * numColAligned);
     // try normal tiling special case, 2 is fp16 or bf16 dtype size
-    bool isSpecialTiling = (!is310P) && (isBroadcastBias) && isAllInputFP16;
+    bool isSpecialTiling = ((isBroadcastBias) && (isAllInputFP16));
     // beta, gamma, bias on ub, count(beta, gamma) = 2, mul(4, 64) required by mean and rstd
     int64_t ubCacheSize = sizeof(float) * 2 * numColAligned * bufferNum +
                           dtSize * numColAligned * bufferNum + 4 * 64 + UB_RESERVED_BYTE;
@@ -284,7 +281,7 @@ inline TILING_TYPE AddLayerNormTilingImpl(
 
     // try SINGLE ROW LESS TENSOR
     // use less tensor size to cover larger last dim case.
-    bool isSingleRowLessTensorTiling = (!is310P) && isNoBias && isAllInputFP32 && enableXOut;
+    bool isSingleRowLessTensorTiling = ((isNoBias) && (isAllInputFP32) && (enableXOut));
     if (isSingleRowLessTensorTiling) {
         auto oneRowX1X2YBufSize = dtSize * 1 * numCol * bufferNum;
         auto oneRowMeanRstdBufSize = 4 * 1 * 2 * bufferNum;
@@ -300,7 +297,7 @@ inline TILING_TYPE AddLayerNormTilingImpl(
     }
 
     // when x1/x2: fp16/bf16 beta/gamma:fp32 - case 2
-    bool isSingleRowLessTensor2 = (!is310P) && (isNoBias || isBroadcastBias) && isXB16GammaB32 && enableXOut;
+    bool isSingleRowLessTensor2 = ((((isNoBias) || (isBroadcastBias))) && (isXB16GammaB32) && (enableXOut));
     if (isSingleRowLessTensor2) {
         auto oneRowX1X2YBufSize2 = dtSize * 1 * numCol + 4 * 1 * numCol;
         auto oneRowMeanRstdBufSize2 = 4 * 1 * 2;
@@ -482,7 +479,6 @@ static ge::graphStatus Tiling4AddLayerNorm(gert::TilingContext* context)
     tiling.set_eps(eps);
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(context->GetPlatformInfo());
     auto npuArch = ascendcPlatform.GetCurNpuArch();
-    bool is310P = npuArch == NpuArch::DAV_2002 ? true : false;
     uint64_t maxUbSize;
     ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, maxUbSize);
     auto maxCoreNum = ascendcPlatform.GetCoreNumAiv();
@@ -550,7 +546,7 @@ static ge::graphStatus Tiling4AddLayerNorm(gert::TilingContext* context)
 
     auto tilingType = AddLayerNormTilingImpl(
         maxUbSize, dataType, betagammaDataType, bufferNum, numCol, enableAdditionalOutput, biasType, rowPerTime,
-        colPerTime, is310P);
+        colPerTime);
     if (rowPerTime > firstdimPerCore) {
         rowPerTime = firstdimPerCore;
     }
@@ -560,22 +556,7 @@ static ge::graphStatus Tiling4AddLayerNorm(gert::TilingContext* context)
         (numCol % colPerTime == 0U) ? colPerTime : (numCol % colPerTime);
     OP_CHECK_IF(dataTypeSize == 0, OP_LOGE(context, "dataTypeSize is zero."), return ge::GRAPH_FAILED);
     auto blockElementNum = BLOCK_SIZE / dataTypeSize;
-    if (is310P) {
-        if (((numCol % blockElementNum) != 0) &&
-            (tilingType == TILING_TYPE::NORMAL || tilingType == TILING_TYPE::NORMAL_BIG_N ||
-             tilingType == TILING_TYPE::NORMAL_SPECIAL_REDUCE ||
-             tilingType == TILING_TYPE::NORMAL_BIG_N_SPECIAL_REDUCE)) {
-            tilingType = TILING_TYPE::SINGLE_ROW;
-            tiling.set_firstDimPerTime(1);
-        }
-        if (colTail < blockElementNum) {
-            auto colSliceNum = CEIL_DIV(numCol, colPerTime);
-            colPerTime = CEIL_DIV(numCol, (colSliceNum * blockElementNum)) * blockElementNum;
-            colTail = (numCol % colPerTime == 0U) ?
-                                 colPerTime :
-                                 (numCol % colPerTime);
-        }
-    }
+
     tiling.set_lastDimPerTime(colPerTime);
     tiling.set_colMoveCnt(colMoveCnt);
     tiling.set_colTail(colTail);
@@ -648,9 +629,7 @@ static ge::graphStatus Tiling4AddLayerNorm(gert::TilingContext* context)
     rawTilingData->SetDataSize(tiling.GetDataSize());
     size_t* currentWorkspace = context->GetWorkspaceSizes(1);
     size_t sysWorkspaceSize = RESERVED_WORKSPACE_SIZE_910B;
-    if (npuArch == NpuArch::DAV_2002) {
-        sysWorkspaceSize = static_cast<size_t>(RESERVED_WORKSPACE_SIZE_310P);
-    }
+
     OP_CHECK_NULL_WITH_CONTEXT(context, currentWorkspace);
     currentWorkspace[0] = static_cast<size_t>(workspaceSize) + sysWorkspaceSize;
     return ge::GRAPH_SUCCESS;
@@ -661,13 +640,8 @@ static ge::graphStatus TilingAddLayerNorm(gert::TilingContext* context)
     auto platformInfo = context->GetPlatformInfo();
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     auto curArch = ascendcPlatform.GetCurNpuArch();
-    bool isAscendRegbase = (IsRegbaseSocVersion(context) ||
-                         curArch == NpuArch::DAV_5102) ? true : false;
-    if (isAscendRegbase) {
-        OP_LOGD(context, "AddLayerNorm Regbase tiling start");
-        AddLayerNormRegbaseTiling addLayerNormTiling(context);
-        return addLayerNormTiling.DoTiling();
-    }
+    bool isAscendRegbase = false;
+
     return Tiling4AddLayerNorm(context);
 }
 
@@ -683,8 +657,7 @@ static ge::graphStatus TilingPrepare4AddLayerNorm(gert::TilingParseContext* cont
     compileInfo->sysWorkspaceSize_ = ascendcPlatform.GetLibApiWorkSpaceSize();
     auto npuArch = ascendcPlatform.GetCurNpuArch();
     compileInfo->isAscend950_ =
-        (IsRegbaseSocVersion(context) ||
-         npuArch == NpuArch::DAV_5102) ? true : false;
+        false;
     uint64_t ubSizePlatform;
     ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubSizePlatform);
     compileInfo->ubSize_ = ubSizePlatform;

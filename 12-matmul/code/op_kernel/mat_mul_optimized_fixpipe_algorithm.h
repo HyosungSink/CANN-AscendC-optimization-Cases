@@ -171,9 +171,7 @@ MatmulBaseUnalignedNKernel<A_TYPE, B_TYPE, C_TYPE, BIAS_TYPE, BLOCK_TYPE, MM_CFG
             CrossCoreWaitFlag(0x6 + pingPongId);
         }
         this->mm_.GetTensorC(cTensor, enAtomic);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
         CrossCoreSetFlag<0x2, PIPE_FIX>(0x4 + pingPongId);
-#endif
     }
 }
 

@@ -112,7 +112,6 @@ constexpr uint32_t CONSTANT_TWO = 2;
 constexpr uint32_t MAX_UINT32 = 4294967295;
 constexpr int64_t BEST_L1_PART1 = 160 * 1024;
 constexpr int64_t BEST_L1_PART2 = 128 * 1024;
-constexpr int64_t BEST_L1_PART_310P = 512 * 1024;
 constexpr int64_t BEST_BASEN = 256;
 constexpr int64_t GLU_BASEN = 128;
 constexpr int64_t BEST_BASEN_MSD = 512;
@@ -121,7 +120,6 @@ constexpr uint32_t MSD_K_THRESHOLD = 2048;
 constexpr uint32_t SMALL_TOKEN_BOUND = 64;
 constexpr uint32_t TINY_TOKEN_BOUND = 16;
 constexpr uint32_t UB_BLOCK_UNIT_SIZE = 32; // initbuffer need 32 bytes align
-constexpr uint32_t UB_PER_BLOCK_ALIGN_310P = 1024;
 constexpr uint32_t UB_PER_BLOCK_ALIGN = 4 * 1024;
 constexpr uint32_t UB_ANTIQUANT_PER_BLOCK_ALIGN_FP16 = 8 * 1024;
 constexpr uint32_t CALC_MM2_SINGLE_CORE_NUM = 40;
@@ -327,7 +325,6 @@ private:
     bool isSmooth = false;
     bool isQuantBf16 = false;
     bool isMsdCase = false;
-    bool is310P = false;
     uint32_t minBaseNShape = MATMUL_MIN_SHAPE;
     bool isTilingDataValid = false;
 
@@ -346,7 +343,6 @@ void FFNTiling::Init()
     isSmooth = false;
     isQuantBf16 = false;
     isMsdCase = false;
-    is310P = false;
     minBaseNShape = MATMUL_MIN_SHAPE;
     isTilingDataValid = false;
 }
@@ -401,9 +397,7 @@ ActiveType FFNTiling::GetActiveType(const gert::TilingContext *context, const ch
 ge::graphStatus FFNTiling::GetBs(const gert::TilingContext *context, const gert::StorageShape *xShape)
 {
     int64_t tempBs;
-    if (is310P) {
-        tempBs = xShape->GetStorageShape().GetDim(1) * xShape->GetStorageShape().GetDim(DIMS_2);
-    } else {
+    {
         tempBs = xShape->GetStorageShape().GetDim(0);
         size_t dimNum = xShape->GetStorageShape().GetDimNum() >= 1 ? xShape->GetStorageShape().GetDimNum() - 1 : 0;
         for (size_t i = 1; i < dimNum; i++) {
@@ -444,12 +438,7 @@ ge::graphStatus FFNTiling::TilingCalcAndSetting(const gert::TilingContext *conte
                                                 const matmul_tiling::PlatformInfo &platInfo,
                                                 matmul_tiling::DataType matmulDtype)
 {
-    if (is310P) {
-        OP_CHECK_IF(CalMM1TilingBaseMNKBasicBlock(context, platInfo) != ge::GRAPH_SUCCESS,
-                   OP_LOGW(context, "Calculate mm1 baseMNK failed!"), return ge::GRAPH_FAILED);
-        OP_CHECK_IF(CalMM2TilingBaseMNKBasicBlock(context, platInfo) != ge::GRAPH_SUCCESS,
-                   OP_LOGW(context, "Calculate mm2 baseMNK failed!"), return ge::GRAPH_FAILED);
-    } else {
+    {
         OP_CHECK_IF(CalMM1TilingBaseMNK(context, platInfo) != ge::GRAPH_SUCCESS,
                    OP_LOGW(context, "Calculate mm1 baseMNK failed!"), return ge::GRAPH_FAILED);
         OP_CHECK_IF(CalMM2TilingBaseMNK(platInfo) != ge::GRAPH_SUCCESS,
@@ -559,11 +548,7 @@ ge::graphStatus FFNTiling::GetInputShape(const gert::TilingContext *context)
                 tokenNum, expertNum, expertNum, MAX_EXPERT_NUM),
             return ge::GRAPH_FAILED);
     } else { // origin FFN
-        if (is310P) {
-            k1 = xShape->GetStorageShape().GetDim(0) * xShape->GetStorageShape().GetDim(DIMS_3);
-            n1 = weight1Shape->GetStorageShape().GetDim(0) * weight1Shape->GetStorageShape().GetDim(DIMS_3);
-            n2 = weight2Shape->GetStorageShape().GetDim(0) * weight2Shape->GetStorageShape().GetDim(DIMS_3);
-        } else {
+        {
             n1 = weight1Shape->GetStorageShape().GetDim(1);
             n2 = weight2Shape->GetStorageShape().GetDim(1);
         }
@@ -588,7 +573,6 @@ matmul_tiling::PlatformInfo FFNTiling::MmGetPlatInfo(const FFNCompileInfo *compi
 ge::graphStatus FFNTiling::CheckAndGetBasicInfo(gert::TilingContext *context, const FFNCompileInfo *compileInfoPtr)
 {
     const uint32_t coreNum = compileInfoPtr->coreNum;
-    is310P = compileInfoPtr->socVersion == platform_ascendc::SocVersion::ASCEND310P;
 
     OP_CHECK_IF(
         (coreNum == 0 || compileInfoPtr->ubSize == 0 || compileInfoPtr->l1Size == 0 || compileInfoPtr->l0CSize == 0 ||
@@ -620,7 +604,7 @@ ge::graphStatus FFNTiling::TilingWithDifferentKN(gert::TilingContext *context, c
     bool whetherN1K1Satisfy = k1 > BEST_L1_PART2 / ((BEST_BASEN / CONSTANT_TWO) * xDataTypeSize) &&
                               n1 > BEST_BASEN * aicNum / (CONSTANT_TWO * CONSTANT_TWO);
     // cases in 310P will  also be in performance branch
-    if ((n1 != 0 && k1 == n2 && n1 == SixteenAlign(n1) && whetherN1K1Satisfy) || is310P) {
+    if (((n1 != 0) && (k1 == n2) && (n1 == SixteenAlign(n1)) && (whetherN1K1Satisfy))) {
         tilingStatus = TilingCalcAndSetting(context, mmPlatInfo, static_cast<matmul_tiling::DataType>(xDataType));
     }
 
@@ -833,9 +817,7 @@ ge::graphStatus FFNTiling::FFNSetUbDivideBlk()
     } else if (xDataType == ge::DT_FLOAT16 && weight1Dtype == ge::DT_FLOAT16) {
         ubDivideBlkNum = UB_PEFORMENCE_BLOCK_NUM_FP16;
         ubIoBlkNum = UB_PEFORMENCE_IO_USED_BLOCK_FP16;
-        if (is310P) {
-            ubBlockAlign = UB_PER_BLOCK_ALIGN_310P;
-        }
+
         return ge::GRAPH_SUCCESS;
     } else if (xDataType == ge::DT_INT8) {
         if (outputDtype == ge::DT_BF16) {
@@ -1182,11 +1164,7 @@ void FFNTiling::FFNCalMMStep(const uint32_t baseM, const uint32_t baseN, const u
     uint32_t bestL1Part1 = BEST_L1_PART1;
     uint32_t bestL1Part2 = BEST_L1_PART2;
 
-    if (is310P) {
-        divTwo = 1;
-        bestL1Part1 = BEST_L1_PART_310P;
-        bestL1Part2 = BEST_L1_PART_310P;
-    }
+
     uint32_t mmStepM = 1;
     uint32_t mmStepN = 1;
     uint32_t mmStepKa = (bestL1Part1 >> 1) / (baseM * baseK * xDataTypeSize);
@@ -1228,11 +1206,7 @@ ge::graphStatus FFNTiling::FFNSetMM1Tiling(const gert::TilingContext *context,
     uint32_t baseN1 = tilingData.ffnSingleCoreParams.get_baseN1();
 
     mm1.SetBType(matmul_tiling::TPosition::GM, wFormat, matmulDtype, false);
-    if (is310P) {
-        mm1.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::NZ, matmulDtype, false);
-        mm1.SetCType(matmul_tiling::TPosition::VECCALC, matmul_tiling::CubeFormat::NZ,
-                     matmul_tiling::DataType::DT_FLOAT16);
-    } else {
+    {
         mm1.SetAType(matmul_tiling::TPosition::GM, matmul_tiling::CubeFormat::ND, matmulDtype, false);
         mm1.SetCType(matmul_tiling::TPosition::VECCALC, matmul_tiling::CubeFormat::ND_ALIGN,
                      matmul_tiling::DataType::DT_FLOAT16);
@@ -1581,13 +1555,7 @@ ge::graphStatus FFNTiling::FormatCheck(const gert::TilingContext *context)
         (weight1Format != weight2Format || inputFormat != outputFormat),
         OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "InputFormat, weight1Format, weight2Format and outputFormat are not same"),
         return ge::GRAPH_FAILED);
-    if (is310P) {
-        OP_CHECK_IF(inputFormat != ge::FORMAT_FRACTAL_NZ,
-                   OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(),
-                                               "inputFormat and outputFormat only support NZ, the format is %s",
-                                               TypeUtils::FormatToSerialString(inputFormat).c_str()),
-                   return ge::GRAPH_FAILED);
-    } else {
+    {
         OP_CHECK_IF(IsPrivateFormat(inputFormat),
                    OPS_REPORT_VECTOR_INNER_ERR(context->GetNodeName(), "Current inputFormat is %s, which is not supported",
                                                TypeUtils::FormatToSerialString(inputFormat).c_str()),
@@ -1673,10 +1641,7 @@ ge::graphStatus FFNTiling::FFNApiMM1Tiling(const gert::TilingContext *context,
     matmul_tiling::MatmulApiTiling mm1(platInfo);
     mm1.SetAType(matmul_tiling::TPosition::GM, xFormat, matmulDtype, false);
     mm1.SetBType(matmul_tiling::TPosition::GM, wFormat, matmulDtype, false);
-    if (is310P) {
-        mm1.SetCType(matmul_tiling::TPosition::VECCALC, matmul_tiling::CubeFormat::NZ,
-                     matmul_tiling::DataType::DT_FLOAT16);
-    } else {
+    {
         mm1.SetCType(matmul_tiling::TPosition::VECCALC, matmul_tiling::CubeFormat::ND_ALIGN,
                      matmul_tiling::DataType::DT_FLOAT16);
     }
@@ -1912,9 +1877,7 @@ uint64_t FFNTiling::SelectTilingKey() const
 
 ge::graphStatus FFNTiling::FFNSetTilingKey(gert::TilingContext *context, uint64_t &key)
 {
-    if (is310P) {
-        return ge::GRAPH_SUCCESS;
-    }
+
     // add featurekey offset
     if (key == HIGH_PERFORMANCE_KEY || key == QUANT_KEY) {
         uint64_t featureKey = 0;
@@ -1949,9 +1912,7 @@ ge::graphStatus FFNTiling::FFNSetTilingData(gert::TilingContext *context)
     maxExpertParallelism1 = std::max(maxExpertParallelism1, CONSTANT_TWO);
     uint64_t workspace1Tokens = static_cast<uint64_t>(maxTokens);
     uint64_t workspace1Size = 0;
-    if (is310P) {
-        workspace1Size = 0;
-    } else if (key == HIGH_PRECISION_KEY || key == HIGH_PRECISION_BF16_KEY || isQuantBf16 ||
+    if (key == HIGH_PRECISION_KEY || key == HIGH_PRECISION_BF16_KEY || isQuantBf16 ||
                (xDataType == ge::DT_BF16 &&
                 (key == ANTI_QUANT_KEY || key == ANTI_QUANT_PERGROUP_KEY || key == ANTI_QUANT_MSD_KEY))) {
         workspace1Size = uint64_t(workspace1Tokens) * n1 * sizeof(float);

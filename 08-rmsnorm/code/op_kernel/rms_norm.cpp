@@ -13,20 +13,10 @@
  * \brief rmsnorm kernel file
  */
 #include "rms_norm.h"
-#if ((defined(__CCE_AICORE__) && __CCE_AICORE__ != 310) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113)) \
-         && (defined(__NPU_ARCH__) && __NPU_ARCH__ != 5102)
 #include "rms_norm_split_d.h"
-#endif
-#if ((defined(__CCE_AICORE__) && __CCE_AICORE__ == 310) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 5102)) \
- 	     && !(defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113)
-#include "arch35/rms_norm_regbase.h"
-#include "arch35/rms_norm_regbase_split_d.h"
-#endif
 #include "rms_norm_whole_reduce_sum.h"
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ != 100
 #include "rms_norm_merge_n.h"
 #include "rms_norm_single_row.h"
-#endif
 
 using namespace AscendC;
 using namespace RmsNorm;
@@ -47,19 +37,14 @@ extern "C" __global__ __aicore__ void rms_norm(
     GM_ADDR x, GM_ADDR gamma, GM_ADDR y, GM_ADDR rstd, GM_ADDR workspace, GM_ADDR tiling)
 {
     GET_TILING_DATA(tilingData, tiling);
-#if ((defined(__CCE_AICORE__) && __CCE_AICORE__ != 310) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113)) \
- 	     && (defined(__NPU_ARCH__) && __NPU_ARCH__ != 5102)
     if (TILING_KEY_IS(RMSNORM_TILING_NORMAL)) {
         GENERAL_OP_IMPL(KernelRmsNorm, DTYPE_X, DTYPE_GAMMA);
     } else if (TILING_KEY_IS(RMSNORM_TILING_SPILT_D)) {
         GENERAL_OP_IMPL(KernelRmsNormSplitD, DTYPE_X, DTYPE_GAMMA);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ != 100
     } else if (TILING_KEY_IS(RMSNORM_TILING_MERGE_N)) {
         GENERAL_OP_IMPL(KernelRmsNormMergeN, DTYPE_X, DTYPE_GAMMA);
     } else if (TILING_KEY_IS(RMSNORM_TILING_SINGLE_ROW)) {
         GENERAL_OP_IMPL(KernelRmsNormSingleRow, DTYPE_X, DTYPE_GAMMA);
-#endif
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     } else if (TILING_KEY_IS(1110)) {
         GENERAL_OP_IMPL(KernelRmsNormWholeReduceSum, half, true);
     } else if (TILING_KEY_IS(1120)) {
@@ -72,16 +57,5 @@ extern "C" __global__ __aicore__ void rms_norm(
         GENERAL_OP_IMPL(KernelRmsNormWholeReduceSum, float, false);
     } else if (TILING_KEY_IS(1030)) {
         GENERAL_OP_IMPL(KernelRmsNormWholeReduceSum, bfloat16_t, false);
-#endif
     }
-#endif
-#if ((defined(__CCE_AICORE__) && __CCE_AICORE__ == 310) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 5102)) \
- 	     && !(defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113)
-    KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_AIV_ONLY);
-    if (TILING_KEY_IS(5000)) {
-        GENERAL_OP_IMPL(RmsNorm::KernelRmsNormRegBase, DTYPE_X, DTYPE_GAMMA);
-    } else if (TILING_KEY_IS(2001)) {
-        GENERAL_OP_IMPL(RmsNorm::KernelRmsNormRegBaseSplitD, DTYPE_X, DTYPE_GAMMA);
-    }
-#endif
 }

@@ -112,27 +112,6 @@ struct ElementAccumulatorSelector<bfloat16_t, bfloat16_t> {
     using ElementAccumulator = float;
 };
 
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 3510)
-template<>
-struct ElementAccumulatorSelector<float8_e4m3_t, float8_e4m3_t> {
-    using ElementAccumulator = float;
-};
-
-template<>
-struct ElementAccumulatorSelector<float8_e5m2_t, float8_e5m2_t> {
-    using ElementAccumulator = float;
-};
-
-template<>
-struct ElementAccumulatorSelector<float8_e4m3_t, float8_e5m2_t> {
-    using ElementAccumulator = float;
-};
-
-template<>
-struct ElementAccumulatorSelector<float8_e5m2_t, float8_e4m3_t> {
-    using ElementAccumulator = float;
-};
-#endif
 
 template<>
 struct ElementAccumulatorSelector<AscendC::int4b_t, AscendC::int4b_t> {
@@ -265,11 +244,6 @@ struct L0ALayoutSelector {
 template<>
 struct L0ALayoutSelector<Arch::AtlasA2> {
     using Layout = layout::zZ;
-};
-
-template<>
-struct L0ALayoutSelector<Arch::Ascend950> {
-    using Layout = layout::zN;
 };
 
 template<class Element, class Layout, class Enable = void>

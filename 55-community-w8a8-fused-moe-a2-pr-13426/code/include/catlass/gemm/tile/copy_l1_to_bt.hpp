@@ -11,11 +11,6 @@
 #ifndef CATLASS_GEMM_TILE_COPY_L1_TO_BT_HPP
 #define CATLASS_GEMM_TILE_COPY_L1_TO_BT_HPP
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
 #include "atlasa2/copy_l1_to_bt.hpp"
-#endif
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 3510)
-#include "ascend950/copy_l1_to_bt.hpp"
-#endif
 
 #endif

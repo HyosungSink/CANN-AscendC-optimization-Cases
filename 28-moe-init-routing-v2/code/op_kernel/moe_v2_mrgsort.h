@@ -161,20 +161,11 @@ __aicore__ inline void MoeV2Mrgsort::UpdateSortInfo()
 
 __aicore__ inline void MoeV2Mrgsort::CopyOut()
 {
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyExtParams intriParams;
-#else
     DataCopyParams intriParams;
-#endif
     intriParams.blockCount = 1;
     intriParams.blockLen = GetSortLen<float>(curLoopSortedNum) * sizeof(float);
     SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyCustom<float, false, false>(this->gmOutput[outOffset], this->ubOutput, intriParams.blockCount,
-                                        intriParams.blockLen);
-#else
     DataCopyPad(this->gmOutput[outOffset], this->ubOutput, intriParams);
-#endif
     outOffset += GetSortLen<float>(curLoopSortedNum);
 }
 

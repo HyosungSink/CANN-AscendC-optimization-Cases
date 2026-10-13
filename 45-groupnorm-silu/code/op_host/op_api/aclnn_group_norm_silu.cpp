@@ -37,8 +37,6 @@ extern "C" {
 #endif
 
 // 根据API定义，需要列出所能支持的所有dtype
-static const std::initializer_list<op::DataType> ASCEND310P_DTYPE_DTYPE_SUPPORT_LIST = {
-    op::DataType::DT_FLOAT16, op::DataType::DT_FLOAT};
 
 static const std::initializer_list<op::DataType> ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST = {
     op::DataType::DT_FLOAT16, op::DataType::DT_BF16, op::DataType::DT_FLOAT};
@@ -63,11 +61,7 @@ static bool CheckNotNull(
 
 static const std::initializer_list<DataType>& GetDtypeSupportList(const NpuArch& npuArch)
 {
-    if (npuArch == NpuArch::DAV_2201 || Ops::NN::AclnnUtil::IsRegbase(npuArch)) {
-        return ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST;
-    } else {
-        return ASCEND310P_DTYPE_DTYPE_SUPPORT_LIST;
-    }
+    return ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST;
 }
 
 static bool CheckDtypeValid(
@@ -93,23 +87,10 @@ static bool CheckDtypeValid(
     }
     // 检查out, meanOut, rstdOut的数据类型是否与self一致
     OP_CHECK_DTYPE_NOT_MATCH(out, self->GetDataType(), return false);
-    if (!Ops::NN::AclnnUtil::IsRegbase(npuArch)) {
+    {
         // 检查out, meanOut, rstdOut的数据类型是否与self一致
         OP_CHECK_DTYPE_NOT_MATCH(meanOut, self->GetDataType(), return false);
         OP_CHECK_DTYPE_NOT_MATCH(rstdOut, self->GetDataType(), return false);
-    } else {
-        // 混合精度时，输出为float32
-        if ((gamma != nullptr) && (gamma->GetDataType() != self->GetDataType())) {
-            OP_CHECK_DTYPE_NOT_MATCH(gamma, op::DataType::DT_FLOAT, return false);
-            OP_CHECK_DTYPE_NOT_MATCH(meanOut, gamma->GetDataType(), return false);
-            OP_CHECK_DTYPE_NOT_MATCH(rstdOut, gamma->GetDataType(), return false);
-        }
-        if ((beta != nullptr) && (beta->GetDataType() != self->GetDataType())) {
-            OP_CHECK_DTYPE_NOT_MATCH(beta, op::DataType::DT_FLOAT, return false);
-            OP_CHECK_DTYPE_NOT_MATCH(meanOut, beta->GetDataType(), return false);
-            OP_CHECK_DTYPE_NOT_MATCH(rstdOut, beta->GetDataType(), return false);
-        }
-        return true;
     }
     // self为float32时，beta、gamma也必须为float32
     if (self->GetDataType() == op::DataType::DT_FLOAT && gamma != nullptr) {
@@ -127,7 +108,7 @@ static bool CheckAttr(const aclTensor* self, int64_t group, double eps, const Np
     OP_CHECK(
         group > 0, OP_LOGE(ACLNN_ERR_PARAM_INVALID, "Expected group to be greater than 0, got %ld.", group),
         return false);
-    if (!Ops::NN::AclnnUtil::IsRegbase(npuArch)) {
+    {
         OP_CHECK(
             self->GetViewShape()[0] > 0,
             OP_LOGE(ACLNN_ERR_PARAM_INVALID, "Expected N to be greater than 0, got %ld.", self->GetViewShape()[0]),
@@ -261,7 +242,7 @@ static const aclTensor* GetGamma(
     const aclTensor* gammaContiguous = nullptr;
     if (gamma) {
         gammaContiguous = l0op::Contiguous(gamma, executor);
-    } else if (!Ops::NN::AclnnUtil::IsRegbase(npuArch)) {
+    } else {
         auto gammaTensor = executor->AllocTensor(op::Shape({size}), self->GetDataType(), self->GetViewFormat());
         CHECK_RET(gammaTensor != nullptr, nullptr);
         gammaContiguous = l0op::OnesLike(gammaTensor, executor);
@@ -275,7 +256,7 @@ static const aclTensor* GetBeta(
     const aclTensor* betaContiguous = nullptr;
     if (beta) {
         betaContiguous = l0op::Contiguous(beta, executor);
-    } else if (!Ops::NN::AclnnUtil::IsRegbase(npuArch)) {
+    } else {
         auto betaTensor = executor->AllocTensor(op::Shape({size}), self->GetDataType(), self->GetViewFormat());
         CHECK_RET(betaTensor != nullptr, nullptr);
         betaContiguous = l0op::ZerosLike(betaTensor, executor);
@@ -298,17 +279,13 @@ aclnnStatus aclnnGroupNormSiluGetWorkspaceSize(
     CHECK_RET(ret == ACLNN_SUCCESS, ret);
     // 空tensor支持
     if (self->IsEmpty()) {
-        if (!Ops::NN::AclnnUtil::IsRegbase(SOC_VERSION)) {
+        {
             // meanOut在输入空Tensor情况下，输出0
             ret = FillScalar(meanOut, 0, uniqueExecutor.get());
             CHECK_RET(ret == ACLNN_SUCCESS, ret);
             // rstdOut在输入空Tensor情况下，输出NAN
             ret = FillScalar(rstdOut, NAN, uniqueExecutor.get());
             CHECK_RET(ret == ACLNN_SUCCESS, ret);
-            *workspaceSize = 0;
-            uniqueExecutor.ReleaseTo(executor);
-            return ACLNN_SUCCESS;
-        } else if (self->GetViewShape().GetDim(0) == 0) {
             *workspaceSize = 0;
             uniqueExecutor.ReleaseTo(executor);
             return ACLNN_SUCCESS;
@@ -323,7 +300,7 @@ aclnnStatus aclnnGroupNormSiluGetWorkspaceSize(
         GetGamma(selfContiguous, gamma, selfContiguous->GetViewShape()[1], uniqueExecutor.get(), SOC_VERSION);
     auto betaContiguous =
         GetBeta(selfContiguous, beta, selfContiguous->GetViewShape()[1], uniqueExecutor.get(), SOC_VERSION);
-    if (!Ops::NN::AclnnUtil::IsRegbase(SOC_VERSION)) {
+    {
         CHECK_RET(gammaContiguous != nullptr, ACLNN_ERR_INNER_NULLPTR);
         CHECK_RET(betaContiguous != nullptr, ACLNN_ERR_INNER_NULLPTR);
     }
@@ -378,17 +355,13 @@ aclnnStatus aclnnGroupNormSiluV2GetWorkspaceSize(
     CHECK_RET(ret == ACLNN_SUCCESS, ret);
     // 空tensor支持
     if (self->IsEmpty()) {
-        if (!Ops::NN::AclnnUtil::IsRegbase(SOC_VERSION)) {
+        {
             // meanOut在输入空Tensor情况下，输出0
             ret = FillScalar(meanOut, 0, uniqueExecutorV2.get());
             CHECK_RET(ret == ACLNN_SUCCESS, ret);
             // rstdOut在输入空Tensor情况下，输出NAN
             ret = FillScalar(rstdOut, NAN, uniqueExecutorV2.get());
             CHECK_RET(ret == ACLNN_SUCCESS, ret);
-            *workspaceSize = 0;
-            uniqueExecutorV2.ReleaseTo(executor);
-            return ACLNN_SUCCESS;
-        } else if (self->GetViewShape().GetDim(0) == 0) {
             *workspaceSize = 0;
             uniqueExecutorV2.ReleaseTo(executor);
             return ACLNN_SUCCESS;
@@ -403,7 +376,7 @@ aclnnStatus aclnnGroupNormSiluV2GetWorkspaceSize(
         GetGamma(selfContiguous, gamma, selfContiguous->GetViewShape()[1], uniqueExecutorV2.get(), SOC_VERSION);
     auto betaContiguous =
         GetBeta(selfContiguous, beta, selfContiguous->GetViewShape()[1], uniqueExecutorV2.get(), SOC_VERSION);
-    if (!Ops::NN::AclnnUtil::IsRegbase(SOC_VERSION)) {
+    {
         CHECK_RET(gammaContiguous != nullptr, ACLNN_ERR_INNER_NULLPTR);
         CHECK_RET(betaContiguous != nullptr, ACLNN_ERR_INNER_NULLPTR);
     }

@@ -548,8 +548,6 @@ struct CopyGmToL1<ArchTag, Gemm::GemmType<Element, layout::VectorLayout>, Gemm::
     }
 };
 
-
-
 ///////////////////////////////////////
 /// new add gemv, ColumnMajor -> nN
 template <class ArchTag, class Element>

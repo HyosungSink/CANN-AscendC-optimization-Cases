@@ -37,9 +37,6 @@ __global__ __aicore__ void lightning_indexer(__gm__ uint8_t *query, __gm__ uint8
                                              __gm__ uint8_t *sparseValues, __gm__ uint8_t *workspace,
                                              __gm__ uint8_t *tiling)
 {
-#if (__CCE_AICORE__ == 310) || (defined __DAV_310R6__) || (__CCE_AICORE__ == 200)
-
-#else
     TPipe tPipe;
     __gm__ uint8_t *user = GetUserWorkspace(workspace);
     KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_MIX_AIC_1_2);
@@ -50,5 +47,4 @@ __global__ __aicore__ void lightning_indexer(__gm__ uint8_t *query, __gm__ uint8
         INVOKE_LI_NO_KFC_OP_IMPL(LIPreload, bfloat16_t, bfloat16_t, int32_t, PAGE_ATTENTION, 
                                  LI_LAYOUT(LAYOUT_T), LI_LAYOUT(K_LAYOUT_T), DT_W_FLAG);
     }
-#endif
 }

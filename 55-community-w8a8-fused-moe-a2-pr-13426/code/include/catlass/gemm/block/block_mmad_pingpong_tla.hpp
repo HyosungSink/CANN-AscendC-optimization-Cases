@@ -145,13 +145,11 @@ public:
     static_assert(L1_TILE_M == L0_TILE_M && L1_TILE_N == L0_TILE_N,
         "The situation where the basic blocks of L1 and L0 differ on the m and n axes is not supported yet");
     static_assert(L0_TILE_K <= L1_TILE_K, "L0TileShape::K cannot exceed L1TileShape::K");
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 2201)
     static_assert(L1_TILE_M * SizeOfBits<ElementA>::value % _32B == 0, "L1TileShape::M must be 32B aligned.");
     static_assert(L1_TILE_K * SizeOfBits<ElementA>::value % _32B == 0, "L1TileShape::K must be 32B aligned.");
     static_assert(L1_TILE_K * SizeOfBits<ElementB>::value % _32B == 0, "L1TileShape::K must be 32B aligned.");
     static_assert(L1_TILE_N * SizeOfBits<ElementB>::value % _32B == 0, "L1TileShape::N must be 32B aligned.");
     static_assert(L0_TILE_K * SizeOfBits<ElementB>::value % _32B == 0, "L0TileShape::K must be 32B aligned.");
-#endif
 
     static_assert((!HAS_BIAS && (L1A_STAGES + L1B_STAGES) <= 8) || (HAS_BIAS && (L1A_STAGES + L1B_STAGES) <= 7), 
         "L1 Buffer overflow: Exceeds the supported range of EVENT(0~7)");
@@ -308,14 +306,8 @@ public:
         using CopyGmToL1B = typename TileCopy_::template CopyGmToL1B<TensorB>;
         CopyGmToL1A copyGmToL1A;
         CopyGmToL1B copyGmToL1B;
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 2201)
         using CopyL0CToGm = typename TileCopy_::template CopyL0CToGm<TensorC>;
         CopyL0CToGm copyL0CToDst;
-#endif        
-#if (defined (CATLASS_ARCH) && CATLASS_ARCH == 3510)
-        using CopyL0CToDst = typename TileCopy_::template CopyL0CToDst<TensorC>;
-        CopyL0CToDst copyL0CToDst;
-#endif        
 
         uint32_t mBlockActual = actualShape.m();
         uint32_t kBlockActual = actualShape.k();

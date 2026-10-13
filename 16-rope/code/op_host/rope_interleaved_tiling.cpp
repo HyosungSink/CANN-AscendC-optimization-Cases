@@ -334,8 +334,7 @@ ge::graphStatus TilingSplit(gert::TilingContext *context, const gert::StorageSha
 ge::graphStatus RopeInterLeavedTilingClass::DoOpTiling()
 {
     const auto ascendcPlatform = platform_ascendc::PlatformAscendC(context_->GetPlatformInfo());
-    OP_CHECK_IF(ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P,
-                OP_LOGE(context_, "current soc does not support interleaved."), return ge::GRAPH_FAILED);
+
     
     const gert::StorageShape *xShape = context_->GetInputShape(INPUT_X_IDX);
     OP_CHECK_NULL_WITH_CONTEXT(context_, xShape);

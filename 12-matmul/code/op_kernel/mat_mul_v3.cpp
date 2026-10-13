@@ -29,9 +29,7 @@
 #include "mat_mul_v3_tiling_key.h"
 
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 #include "mat_mul_multi_core_splitk_kernel.h"
-#endif
 
 using namespace AscendC;
 using namespace matmul;
@@ -171,21 +169,6 @@ __global__ __aicore__ void mat_mul_v3(
     REGISTER_TILING_DEFAULT(MatmulTilingData);
     __gm__ uint8_t *user = GetUserWorkspace(workspaceGM);
     GET_TILING_DATA(tilingData, tilingGM);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ < 220
-    // 第一个模板使用mix类型的，使得整个算子的coreType在dyn场景都为mix，静态则根据选择的tilingkey决定coreType
-    if constexpr (LOADMODE == MAT_MUL_V3_BASE_FULLLOAD && SPLITCOREMODE == MAT_MUL_V3_BASE_SPLIT_K &&
-        FIXOPTI == MAT_MUL_V3_BASE_FIXOPTI && MIXND2NZ == MAT_MUL_V3_MIXND2NZ_TRUE) {
-        MMV3_IMPL_CLASS(
-            MatmulBaseUnAlignedKernel, format_x1, MatmulBaseBlock, MM_CFG_VEC_ND2NZ
-        );
-    } else if constexpr (
-        LOADMODE == MAT_MUL_V3_BASE_FULLLOAD && SPLITCOREMODE == MAT_MUL_V3_BASE_SPLIT_K &&
-        FIXOPTI == MAT_MUL_V3_BASE_FIXOPTI && MIXND2NZ == MAT_MUL_V3_MIXND2NZ_FALSE) {
-        MMV3_IMPL_CLASS(
-            MatmulBaseKernel, format_x1, MatmulBaseBlock, MM_CFG_VEC_ND2NZ
-        );
-    }
-#else
     if constexpr (
         LOADMODE == MAT_MUL_V3_BASE_FULLLOAD && SPLITCOREMODE == MAT_MUL_V3_BASE_SPLIT_K &&
         FIXOPTI == MAT_MUL_V3_BASE_FIXOPTI && MIXND2NZ == MAT_MUL_V3_MIXND2NZ_FALSE &&
@@ -311,5 +294,4 @@ __global__ __aicore__ void mat_mul_v3(
             MatMulUnAlignedKernelDeterministicSplitK, CubeFormat::NZ, FIXPIPE_OPT_SELECT::VEC_NZ2ND_UNALIGNOUT
         );
     }
-#endif
 }

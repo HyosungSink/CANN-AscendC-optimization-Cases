@@ -11,8 +11,6 @@
 #ifndef CATLASS_GEMM_TILE_CAST_INT4_TO_INT8_HPP
 #define CATLASS_GEMM_TILE_CAST_INT4_TO_INT8_HPP
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
 #include "atlasa2/cast_int4_to_int8.hpp"
-#endif
 
 #endif

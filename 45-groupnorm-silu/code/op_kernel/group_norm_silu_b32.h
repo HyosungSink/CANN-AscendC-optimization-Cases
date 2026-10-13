@@ -361,7 +361,6 @@ __aicore__ inline void GroupNormSiluB32<T>::CopyOutYWithPad(
     const float& scale, const float& bias, const int64_t& yOffset, const int64_t& copyNum)
 {
     LocalTensor<T> outSilu = outQueueSilu.DeQue<T>();
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
     uint16_t blockLen = dataCount * sizeof(T);
@@ -370,20 +369,6 @@ __aicore__ inline void GroupNormSiluB32<T>::CopyOutYWithPad(
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(siluGm[gmXOffset + yOffset], outSilu, dataCopyParams);
     outQueueSilu.FreeTensor(outSilu);
-#else
-    if (tiling->hwNum % elementsPerBlock == 0) {
-        DataCopy(siluGm[gmXOffset + yOffset], outSilu, copyNum);
-        outQueueSilu.FreeTensor(outSilu);
-    } else {
-        if (copyNum >= elementsPerBlock) {
-            DataCopy(siluGm[gmXOffset + yOffset], outSilu, copyNum);
-        }
-        outQueueSilu.FreeTensor(outSilu);
-        CopyInX(yOffset + copyNum - elementsPerBlock, elementsPerBlock);
-        CalcSilu(scale, bias, elementsPerBlock);
-        CopyOutY(yOffset + copyNum - elementsPerBlock, elementsPerBlock);
-    }
-#endif
 }
 
 template <typename T>
@@ -391,7 +376,6 @@ __aicore__ inline void GroupNormSiluB32<T>::CopyOutMeanAndRstd(const int64_t& co
 {
     LocalTensor<T> meanOut = outQueueMean.DeQue<T>();
     LocalTensor<T> rstdOut = outQueueRstd.DeQue<T>();
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     // when support DataCopyPad, use DataCopyPad
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
@@ -401,7 +385,6 @@ __aicore__ inline void GroupNormSiluB32<T>::CopyOutMeanAndRstd(const int64_t& co
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(meanGm[blockIdx * tiling->numPerCore], meanOut, dataCopyParams);
     DataCopyPad(rstdGm[blockIdx * tiling->numPerCore], rstdOut, dataCopyParams);
-#endif
     outQueueMean.FreeTensor(meanOut);
     outQueueRstd.FreeTensor(rstdOut);
 }

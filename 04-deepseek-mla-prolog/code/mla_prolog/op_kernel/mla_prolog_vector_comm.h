@@ -16,12 +16,6 @@
 #ifndef MLA_PROLOG_VECTOR_COMM_H
 #define MLA_PROLOG_VECTOR_COMM_H
 
-#if __CCE_AICORE__ == 310
-#include "arch35/vf/vf_quant_pertensor.h"
-#include "arch35/vf/vf_quant_perchannel.h"
-#include "arch35/vf/vf_dynamic_quant.h"
-#include "arch35/vf/vf_dequant.h"
-#endif
 
 #include "mla_prolog_comm.h"
 namespace MlaProlog {
@@ -227,16 +221,12 @@ template <typename T>
 __aicore__ inline void Dequant(const LocalTensor<float> &outputLocal, const LocalTensor<T> &inputLocal, const LocalTensor<float> &scaleLocal,
                                const LocalTensor<float> &scale2Local, const Rectangle& rectangleParams)
 {
-#if __CCE_AICORE__ == 310
-    DequantVf(outputLocal, inputLocal, scaleLocal, scale2Local, rectangleParams.row, rectangleParams.col, rectangleParams.stride);
-#else
     uint64_t cnt = rectangleParams.col * rectangleParams.row;
     Cast(outputLocal, inputLocal, RoundMode::CAST_RINT, cnt);
     AscendC::PipeBarrier<PIPE_V>();
     RowMuls(outputLocal, outputLocal, scale2Local, rectangleParams);
     AscendC::PipeBarrier<PIPE_V>();
     VecMulMat(outputLocal, scaleLocal, outputLocal, rectangleParams);
-#endif
 }
 
 /**
@@ -390,13 +380,9 @@ __aicore__ inline void DynamicQuant(const LocalTensor<float> &outputLocal,
 __aicore__ inline void QuantPerChannel(const LocalTensor<int8_t> &outLocal, const LocalTensor<float> &inputLocal, const LocalTensor<float> &quantScaleLocal,
                                        const LocalTensor<uint8_t> &shareTmpUb, const Rectangle& rectangleParams)
 {
-#if __CCE_AICORE__ == 310
-    QuantPerChannelVf(outLocal, inputLocal, quantScaleLocal, rectangleParams.row, rectangleParams.col, rectangleParams.stride);
-#else
     VecMulMat(inputLocal, quantScaleLocal, inputLocal, rectangleParams);
     AscendC::PipeBarrier<PIPE_V>();
     CastFP32ToINT8(outLocal, inputLocal, shareTmpUb, rectangleParams.row * rectangleParams.col);
-#endif
 }
 
 /**
@@ -433,9 +419,6 @@ __aicore__ inline void QuantPerTensor(const LocalTensor<int8_t> &outLocal, const
 __aicore__ inline void QuantPerTensorToFP8e4m3(const LocalTensor<FP8E4M3> &outLocal, const LocalTensor<float> &inputLocal, 
                                                const LocalTensor<float> &quantScaleLocal, const Rectangle& rectangleParams)
 {
-#if __CCE_AICORE__ == 310
-    QuantPerTensorVF(outLocal, inputLocal, quantScaleLocal, rectangleParams.row, rectangleParams.col);
-#endif
 }
 
 /**
@@ -456,10 +439,6 @@ __aicore__ inline void QuantPerTileToFp8e4m3(const LocalTensor<FP8E4M3> &outLoca
                                     const LocalTensor<float> &inputLocal,
                                     const PerTileQuantParams& perTileQuantParams)
 {
-#if __CCE_AICORE__ == 310
-    LocalTensor<float> quantScaleLocal = outLocal[perTileQuantParams.row * perTileQuantParams.col].template ReinterpretCast<float>();
-    QuantPerTileVF<float, float, FP8E4M3>(outLocal, inputLocal, quantScaleLocal, perTileQuantParams.row, perTileQuantParams.col, perTileQuantParams.tileSize);
-#endif
 }
 
 __aicore__ inline void QuantPerTile(const LocalTensor<int8_t> &outLocal,

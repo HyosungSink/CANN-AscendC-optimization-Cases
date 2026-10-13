@@ -254,11 +254,7 @@ __aicore__ inline void ReduceKInUb(GM_ADDR cGM, GM_ADDR mmGM, uint64_t coreSize,
             pingpongEventIdWS = 1;
             gmSrc = gmSrcPong;
         }
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-        WaitEvent<PIPE_S>(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
         WaitEvent(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#endif
         SyncAll();
         PipeBarrier<PIPE_ALL>();
 
@@ -388,11 +384,7 @@ __aicore__ inline void ReduceKNzInUb(GM_ADDR cGM, GM_ADDR mmGM, uint64_t coreSiz
             pingpongEventIdWS = 1;
             gmSrc = gmSrcPong;
         }
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-        WaitEvent<PIPE_S>(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
         WaitEvent(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#endif
         SyncAll();
         PipeBarrier<PIPE_ALL>();
 
@@ -610,12 +602,7 @@ __aicore__ inline void MatMulMultiCoreSplitKDivide(GM_ADDR aGM, GM_ADDR bGM, GM_
             cGlobal = cGlobalPong;
         }
         if (outIndex > 1) {
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            WaitEvent<PIPE_S>(AIV_SYNC_AIC_FLAG + pingpongEventId);
-            WaitEvent<PIPE_S>(AIV_SYNC_AIC_FLAG + pingpongEventId + FLAG_ID_MAX);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             WaitEvent(AIV_SYNC_AIC_FLAG + pingpongEventId);
-#endif
             SyncAll();
             PipeBarrier<PIPE_ALL>();
         }
@@ -669,12 +656,7 @@ __aicore__ inline void MatMulMultiCoreSplitKDivide(GM_ADDR aGM, GM_ADDR bGM, GM_
                 }
             }
         }
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-        NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId + FLAG_ID_MAX);
         NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
-        NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId);
-#endif
         PipeBarrier<PIPE_ALL>();
     }
     PipeBarrier<PIPE_ALL>();
@@ -841,11 +823,7 @@ __aicore__ inline void ReduceKInUbNzL2cache(GM_ADDR cGM, GM_ADDR mmGM, uint64_t 
             pingpongEventIdWS = (pingpongEventIdWS + 1) & 1;
             gmSrc = pingpongEventIdWS ? gmSrcPong : gmSrcPing;
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            WaitEvent<PIPE_S>(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             CrossCoreWaitFlag(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#endif
             SyncAll();
             PipeBarrier<PIPE_ALL>();
 
@@ -982,11 +960,7 @@ __aicore__ inline void ReduceKInUbL2cache(GM_ADDR cGM, GM_ADDR mmGM, uint64_t co
             pingpongEventIdWS = (pingpongEventIdWS + 1) & 1;
             gmSrc = pingpongEventIdWS ? gmSrcPong : gmSrcPing;
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            WaitEvent<PIPE_S>(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             CrossCoreWaitFlag(AIC_SYNC_AIV_FLAG + pingpongEventIdWS);
-#endif
             SyncAll();
             PipeBarrier<PIPE_ALL>();
 
@@ -1242,12 +1216,7 @@ __aicore__ inline void MatMulMultiCoreSplitKDivideL2cache(GM_ADDR aGM, GM_ADDR b
                 nOffset = inIndex * tiling.singleCoreN; // 如果是NK就需要对mOffset重新计算
             }
             if (count > 1){
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            WaitEvent<PIPE_S>(AIV_SYNC_AIC_FLAG + pingpongEventId);
-            WaitEvent<PIPE_S>(AIV_SYNC_AIC_FLAG + pingpongEventId + FLAG_ID_MAX);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             CrossCoreWaitFlag(AIV_SYNC_AIC_FLAG + pingpongEventId);
-#endif
             SyncAll();
             PipeBarrier<PIPE_ALL>();
             }
@@ -1275,12 +1244,7 @@ __aicore__ inline void MatMulMultiCoreSplitKDivideL2cache(GM_ADDR aGM, GM_ADDR b
                     mmMN.IterateAll(cGlobal[offsetC], kIndex != index);
                 }
             }
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId + FLAG_ID_MAX);
-            NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             CrossCoreSetFlag<0x2, PIPE_FIX>(AIC_SYNC_AIV_FLAG + pingpongEventId);
-#endif
             PipeBarrier<PIPE_ALL>();
         }
     }
@@ -1371,12 +1335,7 @@ __aicore__ inline void MatMulKernelDeterministicSplitK(GM_ADDR aGM, GM_ADDR bGM,
 
     if ASCEND_IS_AIC {
         if (GetBlockIdx() >= tiling.usedCoreNum) {
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-            NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG + FLAG_ID_MAX);
-            NotifyEvent<PIPE_FIX>(AIC_SYNC_AIV_FLAG);
-#elif defined(__CCE_AICORE__) && __CCE_AICORE__ == 220
             CrossCoreSetFlag<0x2, PIPE_FIX>(AIC_SYNC_AIV_FLAG);
-#endif
             PipeBarrier<PIPE_ALL>();
             return;
         }

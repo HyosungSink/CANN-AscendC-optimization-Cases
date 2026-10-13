@@ -362,7 +362,6 @@ __aicore__ inline void GroupNormSiluG16<T1, T2>::CopyOutYWithPad(
 {
     LocalTensor<T1> outY = outQueueY.DeQue<T1>();
     LocalTensor<T1> tmpOut = tmpTensor.Get<T1>();
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
     uint16_t blockLen = dataCount * sizeof(T1);
@@ -371,25 +370,6 @@ __aicore__ inline void GroupNormSiluG16<T1, T2>::CopyOutYWithPad(
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(yGm[startAddr], outY, dataCopyParams);
     outQueueY.FreeTensor(outY);
-#else
-    if (tiling->hwNum % elementsPerBlockT1 == 0) {
-        DataCopy(yGm[startAddr], outY, copyNum);
-        outQueueY.FreeTensor(outY);
-    } else {
-        if (tiling->hwNum < elementsPerBlockT1) {
-            DataCopy(yGm[startAddr], outY, elementsPerBlockT1);
-            outQueueY.FreeTensor(outY);
-        } else {
-            if (copyNum >= elementsPerBlockT1) {
-                DataCopy(yGm[startAddr], outY, copyNum);
-            }
-            outQueueY.FreeTensor(outY);
-            CopyInX(startAddr + copyNum - elementsPerBlockT1, elementsPerBlockT1);
-            CalculateGroupNormSilu(scale, bias, elementsPerBlockT1);
-            CopyOutY(startAddr + copyNum - elementsPerBlockT1, elementsPerBlockT1);
-        }
-    }
-#endif
 }
 
 template <typename T1, typename T2>
@@ -410,7 +390,6 @@ __aicore__ inline void GroupNormSiluG16<T1, T2>::CopyOutMeanAndRstd(const int64_
 {
     LocalTensor<T1> meanOut = outQueueMean.DeQue<T1>();
     LocalTensor<T1> rstdOut = outQueueRstd.DeQue<T1>();
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     // when support DataCopyPad, use DataCopyPad
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
@@ -420,7 +399,6 @@ __aicore__ inline void GroupNormSiluG16<T1, T2>::CopyOutMeanAndRstd(const int64_
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(meanGm[blockIdx * tiling->numPerCore + startAddr], meanOut, dataCopyParams);
     DataCopyPad(rstdGm[blockIdx * tiling->numPerCore + startAddr], rstdOut, dataCopyParams);
-#endif
     outQueueMean.FreeTensor(meanOut);
     outQueueRstd.FreeTensor(rstdOut);
 }

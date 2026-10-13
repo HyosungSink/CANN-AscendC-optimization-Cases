@@ -23,15 +23,10 @@
 #include "graph/utils/type_utils.h"
 #include "log/log.h"
 #include "register/op_impl_registry.h"
-#include "arch35/adaptive_sliding_window_tiling.h"
-#include "arch35/adaptive_sliding_window_basic_api_tiling.h"
-#include "arch35/quant_batch_matmul_v3_iterbatch_tiling.h"
-#include "arch20/pp_matmul_int8_tiling.h"
 #include "error_util.h"
 #include "platform/platform_infos_def.h"
 #include "../../op_kernel/quant_batch_matmul_v3_tiling_key.h"
 #include "platform_util.h"
-#include "quant_batch_matmul_v3_tiling_arch20.h"
 
 
 using AscendC::BLOCK_CUBE;    // uint32_t 16
@@ -984,9 +979,7 @@ ge::graphStatus QuantBatchMatmulV3Tiling::PostTiling()
     }
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(context_->GetPlatformInfo());
     auto npuArch = ascendcPlatform.GetCurNpuArch();
-    if (npuArch == NpuArch::DAV_2002 && optionAttrs == QUANT_BATCH_MATMUL_V3_NEED_ATOMICLEAN) {
-        context_->SetScheduleMode(1); // kernel use SyncAll()
-    }
+
     if (NeedAtomiClean() && compileInfo_.supportL0c2Out) {
         context_->SetScheduleMode(1); // 独占全核，设置以后会让所有核空闲以后才启动，有多核同步指令需要做此设置避免影响整网其他算子
     }
@@ -1507,28 +1500,14 @@ bool QuantBatchMatmulV3Tiling::NeedAtomiClean() const {
     }
 }
 
-REGISTER_TILING_TEMPLATE("QuantBatchMatmulV3", PpMatmulInt8Tiling, 1);
 REGISTER_TILING_TEMPLATE("QuantBatchMatmulV3", QuantBatchMatmulV3Tiling, 2);
-REGISTER_TILING_TEMPLATE("QuantBatchMatmulV3", QuantBatchMatmulV3IterbatchTiling, 3);
-REGISTER_TILING_TEMPLATE("QuantBatchMatmulV3", AdaptiveSlidingWindowBasicAPITiling, 4);
-REGISTER_TILING_TEMPLATE("QuantBatchMatmulV3", AdaptiveSlidingWindowTiling, 5);
 
 static ge::graphStatus QuantBatchMatmulV3TilingFunc(gert::TilingContext *context)
 {
     OP_LOGE_IF(context == nullptr, ge::GRAPH_FAILED, "QuantBatchMatmulV3", "TilingContext is null!");
     auto compileInfoPtr = context->GetCompileInfo<QuantBatchMatmulV3CompileInfo>();
-     if (compileInfoPtr->supportMmadS8S4) {
-        vector<int32_t> registerList = {3, 5};
-        OP_LOGD("NO_OP_NAME", "Platform support mmad_s8s4.");
-        return TilingRegistry::GetInstance().DoTilingImpl(context, registerList);
-    } else if (compileInfoPtr->supportL12BtBf16) {
-        std::vector<int32_t> registerList = {4, 5};
-        OP_LOGD("NO_OP_NAME", "Adaptive sliding window tiling process.");
-        return TilingRegistry::GetInstance().DoTilingImpl(context, registerList);
-    } else if (IsSocVersionArch20Pertoken(context)) {
-        return QuantBatchMatmulPertokenArch20(context).DoTiling();
-    } else {  
-        std::vector<int32_t> registerList = {0, 1, 2};
+     {
+        std::vector<int32_t> registerList = {0, 2};
         return TilingRegistry::GetInstance().DoTilingImpl(context, registerList);
     }
 }

@@ -17,9 +17,7 @@
 #define ADD_LAYER_NORM_BASE_H_
 
 #include "kernel_operator.h"
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 #include "impl/dav_c220/kernel_operator_reg_others_impl.h"
-#endif
 
 using namespace AscendC;
 static constexpr float ZERO = 0;
@@ -31,13 +29,8 @@ constexpr uint32_t BROADCAST_ND_DIM_NUM = 2;    // only support 1 or 2
 constexpr uint32_t BROADCAST_ND_LAST_INDEX = 1; // only support 0 or 1
 constexpr uint32_t LAYER_NUM_TWO = 2;
 
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 #define OUTPUT_MEAN_RSTD 1
 #define SUPPORT_BF16 1
-#else
-#define OUTPUT_MEAN_RSTD 0
-#define SUPPORT_BF16 0
-#endif
 
 template <typename Tp2, Tp2 v>
 struct integral_constant {
@@ -57,7 +50,6 @@ __aicore__ inline void DataCopyEx(
     const R<T>& dst, const S<T>& src, const uint32_t len, const uint32_t count = 1,
     const DataCopyPadParams& padParams = {})
 {
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     DataCopyParams copyParams;
     copyParams.blockLen = len * sizeof(T);
     copyParams.blockCount = count;
@@ -66,32 +58,6 @@ __aicore__ inline void DataCopyEx(
     } else {
         DataCopyPad(dst, src, copyParams);
     }
-#else
-    auto elementCount = len * count;
-    int32_t numPerBlock = ONE_BLK_SIZE / sizeof(T);
-    if (elementCount % numPerBlock == 0) {
-        DataCopy(dst, src, elementCount);
-    } else {
-        if constexpr (is_same<R<T>, AscendC::LocalTensor<T>>::value) {
-            auto num = AlignUp(elementCount, numPerBlock);
-            DataCopy(dst, src, num);
-        } else {
-            int32_t num = elementCount / numPerBlock * numPerBlock;
-            DataCopy(dst, src, num);
-            if (elementCount != num) {
-                SetFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                WaitFlag<HardEvent::MTE3_S>(EVENT_ID0);
-                for (int32_t i = 0; i < numPerBlock; i++) {
-                    auto tensorValue = src.GetValue(elementCount - numPerBlock + i);
-                    src.SetValue(i, tensorValue);
-                }
-                SetFlag<HardEvent::S_MTE3>(EVENT_ID0);
-                WaitFlag<HardEvent::S_MTE3>(EVENT_ID0);
-                DataCopy(dst[elementCount - numPerBlock], src, numPerBlock);
-            }
-        }
-    }
-#endif
 }
 
 /*

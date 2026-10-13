@@ -75,9 +75,7 @@ protected:
 
     bool IsCapable() override
     {
-        if (Ops::Transformer::OpTiling::IsRegbaseSocVersion(context_)) {
-            return false;
-        }
+
         return true;
     }
 
@@ -91,7 +89,6 @@ private:
     ge::graphStatus LoadHKAndCalcTiling();
     ge::graphStatus LoadBiasAndCalcTiling();
     ge::graphStatus OptimizedCutH();
-    ge::graphStatus Check310pParams();
     void SetTilingData();
     void CutH();
     ge::graphStatus CalcTilingData();
@@ -842,59 +839,9 @@ void MoeFinalizeRoutingV2Membase::PrintTilingData()
     OP_LOGI("MoeFinalizeRoutingV2", "dropPadMode: %ld", tilingData.get_dropPadMode());
 }
 
-ge::graphStatus MoeFinalizeRoutingV2Membase::Check310pParams()
-{
-    auto x1InputDesc = context_->GetOptionalInputDesc(INDEX_IN_SKIP1_V2);
-    auto x2InputDesc = context_->GetOptionalInputDesc(INDEX_IN_SKIP2_V2);
-    auto biasInputDesc = context_->GetOptionalInputDesc(INDEX_IN_BIAS_V2);
-    auto expertIdxInputDesc = context_->GetOptionalInputDesc(INDEX_IN_EXPERT_FOR_SOURCE_ROW_V2);
-    OP_CHECK_IF(
-        x1InputDesc != nullptr || x2InputDesc != nullptr || biasInputDesc != nullptr || expertIdxInputDesc != nullptr,
-        OP_LOGE(context_->GetNodeName(), 
-        "310p only support inputs of expanded_x, expanded_row_idx and scales, any other inputs,"
-        "including x1, x2, bias and expert_idx, must be null."),
-        return ge::GRAPH_FAILED);
-    
-    auto attrsPtr = context_->GetAttrs();
-    OP_CHECK_NULL_WITH_CONTEXT(context_, attrsPtr);
-    int64_t dropPadMode = *(attrsPtr->GetAttrPointer<int64_t>(0));
-    OP_CHECK_IF(
-        dropPadMode != DROP_MODE_VALUE_2,
-        OP_LOGE(context_->GetNodeName(), "310p only supports dropPadMode being 2."),
-        return ge::GRAPH_FAILED);
-    
-    // check hidden size
-    // 调用本函数前会先调用DoGetShapeAttrsInfo，已完成输入shape校验
-    auto expandedXShape = context_->GetInputShape(INDEX_IN_EXPAND_PERMUTED_ROWS_V2)->GetStorageShape();
-    int64_t hiddenSize = expandedXShape.GetDim(DIM_INDEX_1);
-    OP_CHECK_IF(
-        hiddenSize % ONE_BLK_SIZE_V2 != 0,
-        OP_LOGE(context_->GetNodeName(), 
-            "310p only supports h, which means the trailing axis of expanded_x[num_rows * k, h], is 32-aligned."),
-        return ge::GRAPH_FAILED);
-
-    // check scale dtype
-    auto expandedXInputDesc = context_->GetInputDesc(INDEX_IN_EXPAND_PERMUTED_ROWS_V2);
-    auto expandedXDtype = expandedXInputDesc->GetDataType();
-    auto scaleInputDesc = context_->GetOptionalInputDesc(INDEX_IN_SCALES_V2);
-    auto scaleDtype = scaleInputDesc->GetDataType();
-    OP_CHECK_IF(
-        scaleDtype != expandedXDtype,
-        OP_LOGE(context_->GetNodeName(), "310p only supports scale and expanded_x having the same data type."),
-        return ge::GRAPH_FAILED);
-
-    return ge::GRAPH_SUCCESS;
-}
-
 ge::graphStatus MoeFinalizeRoutingV2Membase::CalcOpTiling()
 {
-    if (socVersion_ == platform_ascendc::SocVersion::ASCEND310P) {
-        OP_CHECK_IF(
-            Check310pParams() != ge::GRAPH_SUCCESS,
-            OP_LOGE(
-                context_->GetNodeName(), "Check 310p inputs failed."),
-            return ge::GRAPH_FAILED);
-    }
+
     // for nk can not equal dim0 of expandedX in regbase
     if (dropPadMode_ == DROP_MODE_VALUE_0 || dropPadMode_ == DROP_MODE_VALUE_2) {
         auto expandedXShape = params.expandedXShape->GetStorageShape();

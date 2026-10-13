@@ -172,11 +172,7 @@ private:
 
             Add(x1Fp32Local, x1Fp32Local, x2Fp32Local, num);
             PipeBarrier<PIPE_V>();
-            #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            Cast(xLocal, x1Fp32Local, RoundMode::CAST_NONE, num);
-            #else
             Cast(xLocal, x1Fp32Local, RoundMode::CAST_RINT, num);
-            #endif
             PipeBarrier<PIPE_V>();
             // x1+x2 saved in x1Fp32Local
             // 有beta的bf16场景，做一个x-> bf16 -> fp32的转换
@@ -349,11 +345,7 @@ private:
 
     __aicore__ inline void doCast(LocalTensor<TX>& rnLocal, LocalTensor<float>& xFp32Local, uint32_t num)
     {
-        #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        Cast(rnLocal, xFp32Local, RoundMode::CAST_NONE, num);
-        #else
         Cast(rnLocal, xFp32Local, RoundMode::CAST_RINT, num);
-        #endif
     }
 
     __aicore__ inline void doQuant(LocalTensor<float> xFp32Local, uint32_t num)

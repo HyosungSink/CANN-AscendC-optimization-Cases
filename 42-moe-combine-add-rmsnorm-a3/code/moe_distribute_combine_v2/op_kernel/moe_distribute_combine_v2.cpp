@@ -20,20 +20,14 @@
 #include "lib/matmul_intf.h"
 #include "moe_distribute_combine_v2_tiling_key.h"
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-#include "arch35/moe_distribute_combine_arch35.h"
-#else
 #include "moe_distribute_combine_a2.h"
 #include "moe_distribute_combine_a2_layered.h"
 #include "moe_distribute_combine_a2_layered_aicpu.h"
-#endif // __NPU_ARCH__ == 3510
 #include "moe_distribute_combine_v2_tiling.h"
 #include "moe_distribute_combine_v2.h"
 #include "moe_distribute_combine_v2_layered.h"
 
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510))
 using namespace MoeDistributeCombineA2Impl;
-#endif // __NPU_ARCH__ == 3510
 
 using namespace MoeDistributeCombineV2Impl;
 using namespace Mc2Kernel;
@@ -70,21 +64,10 @@ __global__ __aicore__ void moe_distribute_combine_v2(GM_ADDR expandX, GM_ADDR ex
 
 {
     REGISTER_TILING_DEFAULT(MoeDistributeCombineV2TilingData);
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510))
     REGISTER_TILING_FOR_TILINGKEY("ArchTag == TILINGKEY_TPL_A2", MoeDistributeCombineA2TilingData);
-#endif
     TPipe pipe;
 
 #if ((ORIG_DTYPE_EXPAND_X == DT_BF16) || (ORIG_DTYPE_EXPAND_X == DT_FLOAT16))
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-    if constexpr (ArchTag == TILINGKEY_TPL_A5) {
-        GET_TILING_DATA_WITH_STRUCT(MoeDistributeCombineV2TilingData, tilingData, tilingGM);
-        MoeDistributeCombineA5Impl::MoeDistributeCombineA5<DTYPE_EXPAND_X, int32_t> op;
-        op.Init(expandX, expertIds, assistInfoForCombine, epSendCount, tpSendCount, xActiveMask,
-                scales, sharedExpertX, XOut, workspaceGM, &pipe, &tilingData);
-        op.Process();
-    }
-#else
     if constexpr ((ArchTag == TILINGKEY_TPL_A2) && 
                 (LayeredMode == TILINGKEY_TPL_MTE) && (QuantMode == TILINGKEY_NO_QUANT)) {
         GET_TILING_DATA_WITH_STRUCT(MoeDistributeCombineA2TilingData, tilingData, tilingGM);
@@ -121,7 +104,6 @@ __global__ __aicore__ void moe_distribute_combine_v2(GM_ADDR expandX, GM_ADDR ex
             op.Process();
         }
     }
-#endif
     if constexpr ((ArchTag == TILINGKEY_TPL_A3) && (LayeredMode == TILINGKEY_TPL_MTE)) {
         ExecMoeDistributeCombineV2<DTYPE_EXPAND_X, DTYPE_X, int32_t, HasTp, QuantMode == TILINGKEY_INT8_QUANT, false>(
         expandX, expertIds, assistInfoForCombine, epSendCount, tpSendCount, scales, xActiveMask, sharedExpertX, 

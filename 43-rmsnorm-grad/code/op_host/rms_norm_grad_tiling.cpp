@@ -352,7 +352,7 @@ static ge::graphStatus Tiling4RmsNormGrad(gert::TilingContext* context)
     OP_CHECK_IF(
         curSocVersion == platform_ascendc::SocVersion::ASCEND910 && col_val % COL_VAL_MULTIPLE_910 != 0,
         OP_LOGE(context, "The input shape is not supported on the 910 chip."), return ge::GRAPH_FAILED);
-    bool isRegbase_ = IsRegbaseSocVersion(context) ? true : false;
+    bool isRegbase_ = false;
     if (isRegbase_) {
         if (isEmptyTensor) {
             OP_LOGD(context, "RmsNormGrad Empty tiling start");

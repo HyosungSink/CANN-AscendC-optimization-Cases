@@ -161,11 +161,7 @@ private:
             PipeBarrier<PIPE_V>();
             Add(x1Fp32Local, x1Fp32Local, x2_fp32, numCol);
             PipeBarrier<PIPE_V>();
-            #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            Cast(xLocal, x1Fp32Local, RoundMode::CAST_NONE, numCol);
-            #else
             Cast(xLocal, x1Fp32Local, RoundMode::CAST_RINT, numCol);
-            #endif
             PipeBarrier<PIPE_V>();
             // 有beta的bf16场景，做一个x-> bf16 -> fp32的转换
             if (hasBeta && !PT) {
@@ -268,11 +264,7 @@ private:
         }
         if constexpr (RN) {
             LocalTensor<TX> rnLocal = outQueueY1.AllocTensor<TX>();
-            #if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            Cast(rnLocal, xFp32Local, RoundMode::CAST_NONE, numCol);
-            #else
             Cast(rnLocal, xFp32Local, RoundMode::CAST_RINT, numCol);
-            #endif
             outQueueY1.EnQue(rnLocal);
             auto rnOut = outQueueY1.DeQue<TX>();
             DataCopyCustom<TX>(resOutGm[gmBias], rnOut, numCol);

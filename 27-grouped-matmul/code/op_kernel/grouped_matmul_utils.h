@@ -15,58 +15,9 @@
 #ifndef ASCENDC_GROUPED_MATMUL_UTILS_H
 #define ASCENDC_GROUPED_MATMUL_UTILS_H
 
-#if ((defined(__CCE_AICORE__) && (__CCE_AICORE__ == 310)) && !(defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113))
-#if ASC_DEVKIT_MAJOR >= 9
-#include "kernel_basic_intf.h"
-#else
 #include "kernel_operator.h"
-#endif
-#else
-#include "kernel_operator.h"
-#endif
 #include "kernel_tiling/kernel_tiling.h"
 #include "lib/matmul_intf.h"
-#if ((defined(__CCE_AICORE__) && (__CCE_AICORE__ == 310)) && !(defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113))
-  #if defined(ORIG_DTYPE_X) && defined(DT_INT8) && ORIG_DTYPE_X == DT_INT8
-      #define DTYPE_L0C_LOCAL int32_t
-  #else
-      #define DTYPE_L0C_LOCAL float
-  #endif
-  #if defined(ORIG_DTYPE_X) && defined(ORIG_DTYPE_WEIGHT) && defined(DT_FLOAT8_E5M2) && defined(DT_FLOAT8_E4M3FN) && \
-      defined(DT_HIFLOAT8) && defined(DT_INT8) && defined(DT_FLOAT4_E2M1) && defined(DT_INT4) && \
-      ((ORIG_DTYPE_X == DT_INT8 && ORIG_DTYPE_WEIGHT == DT_INT8) || \
-       (ORIG_DTYPE_X == DT_HIFLOAT8 && ORIG_DTYPE_WEIGHT == DT_HIFLOAT8) || \
-       ((ORIG_DTYPE_X == DT_FLOAT8_E5M2 || ORIG_DTYPE_X == DT_FLOAT8_E4M3FN) && \
-        (ORIG_DTYPE_WEIGHT == DT_FLOAT8_E5M2 || ORIG_DTYPE_WEIGHT == DT_FLOAT8_E4M3FN)) || \
-       (ORIG_DTYPE_X == DT_FLOAT4_E2M1 && ORIG_DTYPE_WEIGHT == DT_FLOAT4_E2M1) || \
-       (ORIG_DTYPE_X == DT_INT4 && ORIG_DTYPE_WEIGHT == DT_INT4))
-    #define V310_GMM_QUANT
-    #if defined(ORIG_DTYPE_SCALE) && defined(DT_FLOAT8_E8M0) && ORIG_DTYPE_SCALE == DT_FLOAT8_E8M0
-      #define V310_GMM_QUANT_MX
-    #elif defined(ORIG_DTYPE_SCALE) && defined(DT_UINT64) && defined(DT_INT64) && \
-        (ORIG_DTYPE_SCALE != DT_UINT64 && ORIG_DTYPE_SCALE != DT_INT64)
-      #define V310_GMM_QUANT_MIX
-      #define V310_GMM_QUANT_PERTENSOR_CUBE
-      #if (ORIG_DTYPE_X != DT_INT8 && ORIG_DTYPE_SCALE == DT_FLOAT)
-        #define V310_GMM_QUANT_PERTILE
-      #endif
-    #else
-      #define V310_GMM_QUANT_CUBE
-    #endif
-  #endif
-
-  #if defined(ORIG_DTYPE_X) && defined(ORIG_DTYPE_WEIGHT) && ORIG_DTYPE_X != ORIG_DTYPE_WEIGHT
-    #if ((ORIG_DTYPE_X == DT_FLOAT16 || ORIG_DTYPE_X == DT_BF16) &&                                                    \
-         (ORIG_DTYPE_WEIGHT == DT_FLOAT8_E5M2 || ORIG_DTYPE_WEIGHT == DT_FLOAT8_E4M3FN ||                              \
-          ORIG_DTYPE_WEIGHT == DT_HIFLOAT8 || ORIG_DTYPE_WEIGHT == DT_INT8 || ORIG_DTYPE_WEIGHT == DT_FLOAT4_E2M1 ||   \
-          ORIG_DTYPE_WEIGHT == DT_FLOAT || ORIG_DTYPE_WEIGHT == DT_INT32 ||     \
-          ORIG_DTYPE_WEIGHT == DT_INT4)) ||                                                                            \
-        (ORIG_DTYPE_X == DT_INT8 && (ORIG_DTYPE_WEIGHT == DT_INT4 || ORIG_DTYPE_WEIGHT == DT_INT32)) ||                \
-        (ORIG_DTYPE_X == DT_FLOAT8_E4M3FN && (ORIG_DTYPE_WEIGHT == DT_FLOAT4_E2M1 || ORIG_DTYPE_WEIGHT == DT_FLOAT))
-      #define V310_GMM_ANTI_QUANT
-    #endif
-  #endif
-#endif
 
 #if defined(ORIG_DTYPE_X) && defined(ORIG_DTYPE_WEIGHT) && defined(ORIG_DTYPE_Y) && defined(DT_INT8) && \
     defined(DT_BF16) && defined(DT_INT4)
@@ -115,7 +66,6 @@
     #define MM_DTYPE_Y DTYPE_Y
 #endif
 
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
   #ifdef GMM_ANTI_QUANT_A8W4_MSD_OUT_BF16
       #undef DTYPE_SCALE
       #define DTYPE_SCALE bfloat16_t
@@ -123,7 +73,6 @@
       #undef DTYPE_SCALE
       #define DTYPE_SCALE float
   #endif
-#endif
 
 #if defined(CONST_TILING)
   #define TILING_TYPE const int32_t
@@ -296,7 +245,6 @@ __aicore__ inline __gm__ T* GetTensorAddr(uint16_t index, GM_ADDR tensorPtr) {
     return reinterpret_cast<__gm__ T*>(*(retPtr + index));
 }
 
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ != 310) || (defined(__NPU_ARCH__) && __NPU_ARCH__ == 3113)
 __aicore__ inline int32_t GetSplitValueFromGroupList(uint32_t groupIdx, int32_t &preOffset,
                                                      const GMMBaseParams* __restrict &gmmBaseParams,
                                                      const GlobalTensor<int64_t> &groupListGm) {
@@ -312,7 +260,6 @@ __aicore__ inline int32_t GetSplitValueFromGroupList(uint32_t groupIdx, int32_t 
     }
     return splitValue;
 }
-#endif
 
 template <typename T>
 __aicore__ inline constexpr uint32_t GetTypeBits() {

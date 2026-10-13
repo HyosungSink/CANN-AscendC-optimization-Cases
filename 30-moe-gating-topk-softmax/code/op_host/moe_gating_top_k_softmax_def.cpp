@@ -51,12 +51,7 @@ public:
         this->AICore().AddConfig("ascend910b");
         this->AICore().AddConfig("ascend910_93");
 
-        OpAICoreConfig regbaseCfg;
-        regbaseCfg.DynamicCompileStaticFlag(true)
-            .DynamicRankSupportFlag(true)
-            .DynamicShapeSupportFlag(true)
-            .ExtendCfgInfo("opFile.value", "moe_gating_top_k_softmax_apt");
-        this->AICore().AddConfig("ascend950", regbaseCfg);
+
     }
 };
 

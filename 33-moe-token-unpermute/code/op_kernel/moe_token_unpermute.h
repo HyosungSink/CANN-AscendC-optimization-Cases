@@ -16,9 +16,6 @@
 #define MOE_TOKEN_UNPERMUTE
 
 #include "kernel_operator.h"
-#if __CCE_AICORE__ == 200
-#include "moe_token_unpermute_common.h"
-#endif
 
 using namespace AscendC;
 
@@ -176,21 +173,13 @@ __aicore__ inline void KernelMoeTokenUnpermute<T1, T2, T3, PROBS>::CalMultiOutTo
     this->indicesLocal = this->indices_inque.template AllocTensor<T2>();
     int64_t in_offset = out_offset * this->top_k;
     this->copyParams.blockLen = out_tokens_number * this->top_k * sizeof(T2);
-#if __CCE_AICORE__ == 200
-    MoeTokenUnPermute::DataCopyPadCustom(this->indicesLocal, this->indicesGM[in_offset], this->copyParams, this->extParams2);
-#else
     DataCopyPad(this->indicesLocal, this->indicesGM[in_offset], this->copyParams, this->extParams2);
-#endif
     this->indices_inque.template EnQue(this->indicesLocal);
 
     if constexpr (PROBS) {
         LocalTensor<T3> temp_probs_tensor = this->probs_inque.template AllocTensor<T3>();
         this->copyParams.blockLen = out_tokens_number * this->top_k * sizeof(T3);
-#if __CCE_AICORE__ == 200
-        MoeTokenUnPermute::DataCopyPadCustom(temp_probs_tensor, this->probsGM[in_offset], this->copyParams, this->extParams3);
-#else
         DataCopyPad(temp_probs_tensor, this->probsGM[in_offset], this->copyParams, this->extParams3);
-#endif
         this->probs_inque.template EnQue(temp_probs_tensor);
         temp_probs_tensor = this->probs_inque.template DeQue<T3>();
         if constexpr (!IsSameType<T3, float>::value) {
@@ -283,11 +272,7 @@ __aicore__ inline void KernelMoeTokenUnpermute<T1, T2, T3, PROBS>::CopyTokenIn(
         DataCopy(tokensLocal, this->tokensGM[offset], h_length);
     } else {
         this->copyParams.blockLen = h_length * sizeof(T1);
-#if __CCE_AICORE__ == 200
-        MoeTokenUnPermute::DataCopyPadCustom(tokensLocal, this->tokensGM[offset], this->copyParams, this->extParams1);
-#else
         DataCopyPad(tokensLocal, this->tokensGM[offset], this->copyParams, this->extParams1);
-#endif
     }
 
     this->tokens_inque.template EnQue(tokensLocal);
@@ -347,11 +332,7 @@ __aicore__ inline void KernelMoeTokenUnpermute<T1, T2, T3, PROBS>::CopyOut(
     if constexpr (!IsSameType<T1, float>::value) {
         temp_out_tensors = this->outque.template AllocTensor<T1>();
         PipeBarrier<PIPE_V>();
-#if __CCE_AICORE__ == 200
-        Cast(temp_out_tensors, this->token_tensor0, RoundMode::CAST_NONE, h_length);
-#else
         Cast(temp_out_tensors, this->token_tensor0, RoundMode::CAST_RINT, h_length);
-#endif
     } else {
         temp_out_tensors = this->token_tensor0;
     }
@@ -364,11 +345,7 @@ __aicore__ inline void KernelMoeTokenUnpermute<T1, T2, T3, PROBS>::CopyOut(
         DataCopy(this->outGM[offset], temp_out_tensors, h_length);
     } else {
         this->copyParams.blockLen = h_length * sizeof(T1);
-#if __CCE_AICORE__ == 200
-        MoeTokenUnPermute::DataCopyCustom(this->outGM[offset], temp_out_tensors, this->copyParams.blockCount, this->copyParams.blockLen);
-#else
         DataCopyPad(this->outGM[offset], temp_out_tensors, this->copyParams);
-#endif
     }
 
     this->outque.FreeTensor(temp_out_tensors);

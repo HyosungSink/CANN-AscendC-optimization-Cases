@@ -35,7 +35,7 @@ constexpr uint32_t MEAN_UB_SIZE = 512;
 
 bool LayerNormV4CommonTiling::IsCapable()
 {
-    if (commonParams.isRegBase || commonParams.isAscend310P || commonParams.isV3) {
+    if (commonParams.isV3) {
         return false;
     }
     return true;

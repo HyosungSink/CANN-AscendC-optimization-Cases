@@ -552,9 +552,6 @@ ge::graphStatus Mc2MatmulV3BaseTiling::DoOpTiling()
     OP_TILING_CHECK(GetMoreArgs() != ge::GRAPH_SUCCESS, CUBE_INNER_ERR_REPORT(args_.opName, "invalid context"),
         return ge::GRAPH_FAILED);
 
-    OP_TILING_CHECK(CheckDimsAligned310P() != ge::GRAPH_SUCCESS, CUBE_INNER_ERR_REPORT(args_.opName, "invalid context"),
-        return ge::GRAPH_FAILED);
-
     if (InitTilingData() == ge::GRAPH_FAILED) {
         return ge::GRAPH_FAILED;
     }
@@ -709,26 +706,6 @@ void Mc2MatmulV3BaseTiling::OptimizeBasicKernelStepK()
             runInfo_.baseN, runInfo_.baseK);
         OP_LOGI(args_.opName, "Doesn't fit optimization condition, aicNum: %lu", compileInfo_.aicNum);
     }
-}
-
-ge::graphStatus Mc2MatmulV3BaseTiling::CheckDimsAligned310P()
-{
-    if (compileInfo_.supportL12BtBf16 || compileInfo_.supportL0c2out) {
-        return ge::GRAPH_SUCCESS;
-    }
-    if (args_.outFormat == ge::FORMAT_ND) {
-        if (args_.nOriValue * bDtypeSize_ % BLOCK_BYTE_SIZE != 0) {
-            OP_LOGE(args_.opName, "shape of n should be 32-byte aligned");
-            return ge::GRAPH_FAILED;
-        }
-    }
-    if (args_.aFormat == ge::FORMAT_ND) {
-        if (args_.mOriValue * aDtypeSize_ % BLOCK_BYTE_SIZE != 0) {
-            OP_LOGE(args_.opName, "shape of m should be 32-byte aligned");
-            return ge::GRAPH_FAILED;
-        }
-    }
-    return ge::GRAPH_SUCCESS;
 }
 
 ge::graphStatus Mc2MatmulV3BaseTiling::InitTilingData()
@@ -1243,11 +1220,9 @@ void Mc2MatmulV3BaseTiling::DoSelectTiling()
             DO_CACL_TILING_ENABLE(DoL2CacheTiling())
             DO_CACL_TILING_ENABLE(DoSingleCoreSplitKTiling())
             DO_CACL_TILING_ENABLE(DoDeterministicMultiCoreSplitKTiling())
-            DO_CACL_TILING_ENABLE(DoL2CacheTiling310P())
             break;
         case Mc2TilingCalcSelect::BASE:
             DO_CACL_TILING_ENABLE(DoL2CacheTiling())
-            DO_CACL_TILING_ENABLE(DoL2CacheTiling310P())
             break;
         case Mc2TilingCalcSelect::SINGLE_CORE_SPLIT_K:
             DO_CACL_TILING_ENABLE(DoSingleCoreSplitKTiling())
@@ -2024,26 +1999,6 @@ bool Mc2MatmulV3BaseTiling::DoL2CacheTiling()
         return true;
     }
     return false; // 进去单核切K逻辑
-}
-
-bool Mc2MatmulV3BaseTiling::DoL2CacheTiling310P()
-{
-    if (compileInfo_.supportL12BtBf16 || compileInfo_.supportL0c2out) {
-        return false;
-    }
-    // 310P use (4, 2) or (5, 2)
-    uint64_t mTileBlock = compileInfo_.aicNum / 2;
-    mTileBlock = std::min(mTileBlock, MathUtil::CeilDivision(args_.mValue, runInfo_.baseM));
-    uint64_t nTileBlock = std::min(2UL, MathUtil::CeilDivision(args_.nValue, runInfo_.baseN));
-
-    uint64_t mTile = MathUtil::CeilDivision(args_.mValue, mTileBlock * runInfo_.baseM);
-    uint64_t nTile = MathUtil::CeilDivision(args_.nValue, nTileBlock * runInfo_.baseN);
-    runInfo_.l2Info.mTile = mTile;
-    runInfo_.l2Info.nTile = nTile;
-    runInfo_.l2Info.mTileBlock = mTileBlock;
-    runInfo_.l2Info.nTileBlock = nTileBlock;
-    OP_LOGI(args_.opName, "Enter L2cache tile kernel.");
-    return true;
 }
 
 void Mc2MatmulV3BaseTiling::CalTileFactor(uint64_t &nTile)

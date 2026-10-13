@@ -535,9 +535,7 @@ bool DequantSwigluQuantDskTiling::IsPerformanceAndGroupIndexBrach() {
 }
 
 bool DequantSwigluQuantDskTiling::IsCapable() {
-  if (Ops::NN::OpTiling::IsRegbaseSocVersion(context_)) {
-    return false;
-  }
+
   return IsPerformanceAndGroupIndexBrach();
 }
 

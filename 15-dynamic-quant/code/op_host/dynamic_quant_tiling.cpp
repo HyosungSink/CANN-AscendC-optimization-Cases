@@ -12,9 +12,6 @@
  * \brief
  */
 #include "dynamic_quant_tiling.h"
-#include "dynamic_quant_tiling_310P.h"
-#include "dynamic_quant_tiling_310P.h"
-#include "dynamic_quant_tiling_arch35.h"
 
 #include "register/op_impl_registry.h"
 #include "log/log.h"
@@ -717,11 +714,7 @@ static ge::graphStatus TilingForDynamicQuant(gert::TilingContext* context)
         return ge::GRAPH_FAILED;
     }
     ge::graphStatus ret = ge::GRAPH_FAILED;
-    if (IsRegbaseSocVersion(context)) {
-        static thread_local DynamicQuantRegbaseTiling tilingRegbase;
-        ret = tilingRegbase.RunFusionKernelTiling(context);
-        return ret;
-    }
+
     auto platformInfo = context->GetPlatformInfo();
     auto ascendcPlatform = platform_ascendc::PlatformAscendC(platformInfo);
     switch (ascendcPlatform.GetCurNpuArch()) {
@@ -730,11 +723,6 @@ static ge::graphStatus TilingForDynamicQuant(gert::TilingContext* context)
         case NpuArch::DAV_3113:
             static thread_local DynamicQuantTiling tiling;
             ret = tiling.RunFusionKernelTiling(context);
-            return ret;
-        case NpuArch::DAV_1001:
-        case NpuArch::DAV_2002:
-            static thread_local DynamicQuantTiling310P tiling310P;
-            ret = tiling310P.RunFusionKernelTiling(context);
             return ret;
         default:
             OP_LOGE(context, "DynamicQuan only supports Atlas 800I A2/A3 or  Atlas 300I Duo.");

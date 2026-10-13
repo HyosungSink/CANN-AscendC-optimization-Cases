@@ -52,8 +52,6 @@ extern aclnnStatus aclnnInnerDispatchFFNCombine(void *workspace, uint64_t worksp
                                             aclOpExecutor *executor, aclrtStream stream);
 extern "C" void __attribute__((weak)) NnopbaseSetHcclServerType(void *executor, NnopbaseHcclServerType sType);
 
-
-
 aclnnStatus aclnnDispatchFFNCombineGetWorkspaceSize(const aclTensor* x, const aclTensorList* weight1, const aclTensorList* weight2,
                                                     const aclTensor* expertId, const aclTensorList* scale1, const aclTensorList* scale2,
                                                     const aclTensor* probs, const aclTensor* xActiveMask,

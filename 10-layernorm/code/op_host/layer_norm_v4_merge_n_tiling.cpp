@@ -37,12 +37,8 @@ constexpr uint64_t TILINGKEY_ALIGN_LIMIT = 1000;
 
 bool LayerNormV4MergeNTiling::IsCapable()
 {
-    if (commonParams.isRegBase) {
-        return false;
-    }
-    if (commonParams.isAscend310P) {
-        return false;
-    }
+
+
     if (commonParams.isV3) {
         return false;
     }

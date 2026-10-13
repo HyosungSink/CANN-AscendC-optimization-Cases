@@ -28,45 +28,6 @@ struct CopyUb2L1Tla {
     static_assert(DEPENDENT_FALSE<ArchTag>, "Unsupported CopyUb2L1Tla, can not find the specialization.");
 };
 
-/// Partial specialization for Ascend950, zN in and zN out.
-template <class ElementSrc, class ElementDst, class LayoutSrc, class LayoutDst, class CoordSrc, class CoordDst>
-struct CopyUb2L1Tla<Arch::Ascend950,
-    tla::Tensor<AscendC::LocalTensor<ElementSrc>, LayoutSrc, CoordSrc, AscendC::TPosition::VECCALC>,
-    tla::Tensor<AscendC::LocalTensor<ElementDst>, LayoutDst, CoordDst, AscendC::TPosition::A1>,
-    std::enable_if_t<tla::detail::iszNUnAlign<ElementSrc, LayoutSrc>::value &&
-                     tla::detail::iszN<ElementDst, LayoutDst>::value>> {
-    static constexpr uint32_t ELE_NUM_PER_C0 = BYTE_PER_C0 / sizeof(ElementSrc);
-
-    // Methods
-
-    CATLASS_DEVICE
-    CopyUb2L1Tla() = default;
-
-    template <class TensorDst, class TensorSrc>
-    CATLASS_DEVICE
-    void operator()(TensorDst const &dstTensor, TensorSrc const &srcTensor)
-    {
-        static_assert(tla::detail::iszNUnAlign<typename TensorSrc::Element, typename TensorSrc::Layout>::value &&
-                      tla::detail::iszN<typename TensorDst::Element, typename TensorDst::Layout>::value &&
-                      TensorSrc::position == AscendC::TPosition::VECCALC &&
-                      TensorDst::position == AscendC::TPosition::A1,
-            "The input parameters do not match. TensorSrc must be UB and zN, "
-            "while TensorDst must be L1 and zN");
-
-        int64_t srcShape = tla::get<0, 0>(srcTensor.shape());
-        AscendC::DataCopyParams dataCopyParams(
-            tla::get<1, 1>(srcTensor.shape()),
-            srcShape,
-            (tla::get<1, 1>(srcTensor.stride()) / ELE_NUM_PER_C0 - srcShape),
-            (tla::get<1, 1>(dstTensor.stride()) / ELE_NUM_PER_C0 - srcShape)
-        );
-        
-        auto dstOffset = dstTensor.layout()(dstTensor.coord());
-        auto srcOffset = srcTensor.layout()(srcTensor.coord());
-        AscendC::DataCopy(dstTensor.data()[dstOffset], srcTensor.data()[srcOffset], dataCopyParams);
-    }
-};
-
 }  // namespace Catlass::Epilogue::Tile
 
 #endif // CATLASS_EPILOGUE_TILE_COPY_UB_TO_L1_TLA_HPP

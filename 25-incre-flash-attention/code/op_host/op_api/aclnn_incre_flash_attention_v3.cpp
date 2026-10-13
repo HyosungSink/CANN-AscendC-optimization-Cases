@@ -38,10 +38,7 @@ aclnnStatus aclnnIncreFlashAttentionV3GetWorkspaceSize(
     int64_t blockSize, int64_t innerPrecise, const aclTensor *attentionOut, uint64_t *workspaceSize,
     aclOpExecutor **executor)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "Interface aclnnIncreFlashAttention versions V1 to V4 are no longer supported on Ascend950.");
-        return ACLNN_ERR_RUNTIME_ERROR;
-    }
+
     static bool isFirstCall = true;
     if (isFirstCall) {
         OP_LOGW("aclnnIncreFlashAttentionV3GetWorkspaceSize is scheduled to be deprecated in December 2026, "
@@ -60,10 +57,7 @@ aclnnStatus aclnnIncreFlashAttentionV3GetWorkspaceSize(
 aclnnStatus aclnnIncreFlashAttentionV3(void *workspace, uint64_t workspaceSize, aclOpExecutor *executor,
                                        const aclrtStream stream)
 {
-    if (op::GetCurrentPlatformInfo().GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGE(ACLNN_ERR_RUNTIME_ERROR, "Interface aclnnIncreFlashAttention versions V1 to V4 are no longer supported on Ascend950.");
-        return ACLNN_ERR_RUNTIME_ERROR;
-    }
+
     static bool isFirstCall = true;
     if (isFirstCall) {
         OP_LOGW("aclnnIncreFlashAttentionV3 is scheduled to be deprecated in December 2026, "

@@ -25,7 +25,6 @@ constexpr uint64_t LARGE_NK_BAR_BASE = 32;
 constexpr uint64_t SMALL_TILECNT_PAR = 2;
 constexpr uint64_t OPT_TILE_CNT = 8;
 constexpr uint64_t OPT_TILE_LEN_RATIO = 2;
-constexpr uint64_t OPT_TILE_LEN_RATIO_SOC310P = 1;
 constexpr double BACKTILE_ALIGN_RATIO = 0.75;
 constexpr uint64_t LARGE_BACKTILE_COMPARE_PAR = 2;
 constexpr uint64_t SOC310_BASE_M = 256;

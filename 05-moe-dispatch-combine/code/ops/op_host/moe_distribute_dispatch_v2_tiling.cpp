@@ -1388,9 +1388,7 @@ static ge::graphStatus MoeDistributeDispatchA3TilingFuncImpl(gert::TilingContext
     }
     OP_LOGD(nodeName, "socVersion %s", socVersion.c_str());
     OP_LOGD(nodeName, "commAlgPtr %s", commAlgPtr);
-    if (socVersion == "Ascend950") {
-        tilingKey = TILING_KEY_A5_TYPE;
-    } else if (socVersion == "Ascend910B") {
+    if (socVersion == "Ascend910B") {
         tilingKey = TILING_KEY_A2_TYPE;
     }
     uint32_t tpWorldSize = tilingData->moeDistributeDispatchV2Info.tpWorldSize;

@@ -52,9 +52,7 @@ const static int64_t OUTOUT_EXPANDED_ROW_IDX = 1;
 const static int64_t OUTOUT_EXPERT_TOKENS_COUNT_OR_CUMSUM = 2;
 const static int64_t OUTOUT_EXPERT_TOKENS_BEFORE_CAPACITY = 3;
 const static int64_t ONE_CORE_SORT_BUFFER = 6;
-const static int64_t ONE_CORE_SORT_BUFFER_310P = 24;
 const static int64_t REGIONP_ROPOSAL_SIZE = 8;
-const static int64_t REGIONP_ROPOSA_BUFFER_NUM_310P = 2;
 const static int64_t SYNC_WORKSPACE = 8192;
 const static int64_t EXPERT_TOKENS_COUNT = 2;
 const static int64_t SIMT_UB_SIZE_BYTE = 40960;
@@ -98,9 +96,7 @@ ge::graphStatus MoeInitRoutingV2TilingBase::GetPlatformInfo()
     ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubSizePlatForm);
     aicoreParams_.ubSize = ubSizePlatForm - SIMT_UB_SIZE_BYTE;
     mrgSortListMaxElement = 2048; // DAVID下，单词搬运最大元素个数2048
-    regBase = Ops::Transformer::OpTiling::IsRegbaseSocVersion(context_);
-    is310P = (ascendcPlatform.GetSocVersion() == platform_ascendc::SocVersion::ASCEND310P);
-    CHECK_FAIL(context_, (is310P && dropPadMode != 0), "The dropPadMode only support 0 on 310p.");
+    regBase = false;
     if (!regBase) {
         aicoreParams_.ubSize = ubSizePlatForm;
         mrgSortListMaxElement = 2040; // 单词搬运最大元素个数2040
@@ -251,7 +247,7 @@ ge::graphStatus MoeInitRoutingV2TilingBase::GetShapeAttrsInfo()
         expertTokensBeforeCapacityFlag = false;
     }
     size_t expertIdxDimNum = expertIdxShape.GetDimNum();
-    bool isRegbase = Ops::Transformer::OpTiling::IsRegbaseSocVersion(context_);
+    bool isRegbase = false;
     if (isRegbase) {
         CHECK_FAIL(context_, expertIdxDimNum != DIM_ONE && expertIdxDimNum != DIM_TWO,
                    "The dim number of expertIdx should be 1 or 2.");
@@ -346,22 +342,15 @@ void MoeInitRoutingV2TilingBase::ShowTilingData()
 
 ge::graphStatus MoeInitRoutingV2TilingBase::DoOpTiling()
 {
-    if (is310P) {
-        CHECK_FAIL(context_, (moeInitRoutingTilingData.get_cols() % ONE_BLOCK_BYTE) != 0,
-                   "The Last dim of x should be divisible by 32,but got %ld.",
-                   moeInitRoutingTilingData.get_cols());
-    }
+
     if (!regBase) {
         // NUM_TWO sort value and indices
         // NUM_FOUR sort need space
         // SORT32_ALIGN_ELEMENT 32Bytes aligned
         auto oneEleSizeFactor =
-            is310P ? (sizeof(int32_t) * (NUM_TWO * NUM_TWO + REGIONP_ROPOSAL_SIZE * REGIONP_ROPOSA_BUFFER_NUM_310P)) :
-                     (sizeof(int32_t) * NUM_TWO * NUM_FOUR);
+            sizeof(int32_t) * NUM_TWO * NUM_FOUR;
         sortLoopMaxElement = (aicoreParams_.ubSize) / oneEleSizeFactor / SORT32_ALIGN_ELEMENT * SORT32_ALIGN_ELEMENT;
-        mrgSortListMaxElement = is310P ?
-                                    sortLoopMaxElement / MRG_LIST_NUM / SORT32_ALIGN_ELEMENT * SORT32_ALIGN_ELEMENT :
-                                    mrgSortListMaxElement;
+        mrgSortListMaxElement = mrgSortListMaxElement;
         isFullLoad = IsFullLoad();
     } else {
         auto expertIdx = context_->GetInputDesc(INDEX_INPUT_EXPERT_IDX);
@@ -419,8 +408,7 @@ ge::graphStatus MoeInitRoutingV2TilingBase::GetWorkspaceSize()
     size_t expertTokenFlagSize = static_cast<size_t>(aivNum) * 2U * sizeof(int32_t);
     size_t scatterWorkspaceSize = static_cast<size_t>(totalLength * sizeof(int32_t) * NUM_TWO);
     sortWorkspaceSize =
-        is310P ? static_cast<size_t>(totalLength * sizeof(float) * REGIONP_ROPOSAL_SIZE * NUM_THREE + SYNC_WORKSPACE) :
-                 static_cast<size_t>(totalLength * sizeof(float) * NUM_TWO * NUM_THREE);
+        static_cast<size_t>(totalLength * sizeof(float) * NUM_TWO * NUM_THREE);
     if (regBase) {
         size_t expertNumSize = expertNum * sizeof(int32_t);
         workspaceSize_ = sortWorkspaceSize + scatterWorkspaceSize + expertTokenFlagSize + expertNumSize +
@@ -540,8 +528,8 @@ void MoeInitRoutingV2TilingBase::Tiling4SrcToDstCompute()
 {
     auto tilingData = &moeInitRoutingTilingData.srcToDstComputeParamsOp;
 
-    int64_t useCore = is310P ? 1 : aivNum;
-    int64_t perLoopMaxRows = (aicoreParams_.ubSize - is310P * aivNum * ONE_BLOCK_BYTE * ONE_BLOCK_BYTE -
+    int64_t useCore = aivNum;
+    int64_t perLoopMaxRows = (aicoreParams_.ubSize -
                               ASSIST_NUM * sizeof(float) - useCore * SORT32_ALIGN_ELEMENT) /
                              (SORT32_ALIGN_ELEMENT * NUM_TWO) / NUM_TWO;
     int64_t perCoreRows = CeilDiv(totalLength, useCore);
@@ -697,7 +685,7 @@ bool MoeInitRoutingV2TilingBase::IsFullLoad()
         this->dropPadMode == 1) {
         return false;
     }
-    int64_t sortBufferNum = is310P ? ONE_CORE_SORT_BUFFER_310P : ONE_CORE_SORT_BUFFER;
+    int64_t sortBufferNum = ONE_CORE_SORT_BUFFER;
 
     int64_t sortSpace =
         CeilDiv(this->totalLength, SORT32_ALIGN_ELEMENT) * SORT32_ALIGN_ELEMENT * sizeof(int32_t) * sortBufferNum;

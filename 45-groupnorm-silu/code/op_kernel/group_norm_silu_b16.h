@@ -401,7 +401,6 @@ __aicore__ inline void GroupNormSiluB16<T1, T2>::CopyOutYWithPad(
     const float& scale, const float& bias, const int64_t& yOffset, const int64_t& copyNum)
 {
     LocalTensor<T1> outSilu = outQueueSilu.DeQue<T1>();
-#if __CCE_AICORE__ == 220
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
     uint16_t blockLen = dataCount * sizeof(T1);
@@ -410,20 +409,6 @@ __aicore__ inline void GroupNormSiluB16<T1, T2>::CopyOutYWithPad(
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(siluGm[gmXOffset + yOffset], outSilu, dataCopyParams);
     outQueueSilu.FreeTensor(outSilu);
-#else
-    if (tiling->hwNum % elementsPerBlock == 0) {
-        DataCopy(siluGm[gmXOffset + yOffset], outSilu, copyNum);
-        outQueueSilu.FreeTensor(outSilu);
-    } else {
-        if (copyNum >= elementsPerBlock) {
-            DataCopy(siluGm[gmXOffset + yOffset], outSilu, copyNum);
-        }
-        outQueueSilu.FreeTensor(outSilu);
-        CopyInX(yOffset + copyNum - elementsPerBlock, elementsPerBlock);
-        CalcSilu(scale, bias, elementsPerBlock);
-        CopyOutY(yOffset + copyNum - elementsPerBlock, elementsPerBlock);
-    }
-#endif
 }
 
 template <typename T1, typename T2>
@@ -445,7 +430,6 @@ __aicore__ inline void GroupNormSiluB16<T1, T2>::CopyOutMeanAndRstd(const int64_
 {
     LocalTensor<T1> meanOut = outQueueMean.DeQue<T1>();
     LocalTensor<T1> rstdOut = outQueueRstd.DeQue<T1>();
-#if __CCE_AICORE__ == 220
     // when support DataCopyPad, use DataCopyPad
     uint16_t dataCount = static_cast<uint16_t>(copyNum);
     uint16_t blockCount = 1;
@@ -455,7 +439,6 @@ __aicore__ inline void GroupNormSiluB16<T1, T2>::CopyOutMeanAndRstd(const int64_
     DataCopyParams dataCopyParams{blockCount, blockLen, srcStride, dstStride};
     DataCopyPad(meanGm[blockIdx * tiling->numPerCore], meanOut, dataCopyParams);
     DataCopyPad(rstdGm[blockIdx * tiling->numPerCore], rstdOut, dataCopyParams);
-#endif
     outQueueMean.FreeTensor(meanOut);
     outQueueRstd.FreeTensor(rstdOut);
 }

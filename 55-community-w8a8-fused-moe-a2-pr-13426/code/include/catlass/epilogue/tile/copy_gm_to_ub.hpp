@@ -182,65 +182,6 @@ struct CopyGm2UbAligned<Arch::AtlasA2, Gemm::GemmType<Element, layout::RowMajor>
     };
 };
 
-
-//////////////////////////// CopyGm2Ub(Ascend950, No TLA) ////////////////////////////
-// Partial specialization for CopyGm2Ub(Ascend950, No TLA), RowMajor in and RowMajor out.
-template <class Element>
-struct CopyGm2Ub<Arch::Ascend950, Gemm::GemmType<Element, layout::RowMajor>> {
-    using LayoutSrc = layout::RowMajor;
-    using LayoutDst = layout::RowMajor;
-    static constexpr uint32_t ELE_NUM_PER_BLK = BYTE_PER_BLK / sizeof(Element);
-
-    CATLASS_DEVICE
-    CopyGm2Ub() = default;
-
-    CATLASS_DEVICE
-    void operator()(
-        AscendC::LocalTensor<Element> const &dstTensor,
-        AscendC::GlobalTensor<Element> const &srcTensor,
-        layout::RowMajor const &layoutDst,
-        layout::RowMajor const &layoutSrc)
-    {
-        AscendC::DataCopyExtParams dataCopyParams(
-            layoutSrc.shape(0),
-            layoutSrc.shape(1) * sizeof(Element),
-            (layoutSrc.stride(0) - layoutSrc.shape(1)) * sizeof(Element),
-            (layoutDst.stride(0) - layoutDst.shape(1)) / ELE_NUM_PER_BLK,
-            0
-        );
-        AscendC::DataCopyPadExtParams<Element> padParams(false, 0, 0, 0);
-        AscendC::DataCopyPad(dstTensor, srcTensor, dataCopyParams, padParams);
-    }
-};
-
-template <class Element>
-struct CopyGm2Ub<Arch::Ascend950, Gemm::GemmType<Element, layout::VectorLayout>> {
-    using LayoutSrc = layout::VectorLayout;
-    using LayoutDst = layout::VectorLayout;
-    static constexpr uint32_t ELE_NUM_PER_BLK = BYTE_PER_BLK / sizeof(Element);
-
-    CATLASS_DEVICE
-    CopyGm2Ub() = default;
-
-    CATLASS_DEVICE
-    void operator()(
-        AscendC::LocalTensor<Element> const &dstTensor,
-        AscendC::GlobalTensor<Element> const &srcTensor,
-        layout::VectorLayout const &layoutDst,
-        layout::VectorLayout const &layoutSrc)
-    {
-        AscendC::DataCopyExtParams dataCopyParams(
-            1,
-            layoutSrc.shape(0) * sizeof(Element),
-            0,
-            0,
-            0
-        );
-        AscendC::DataCopyPadExtParams<Element> padParams(false, 0, 0, 0);
-        AscendC::DataCopyPad(dstTensor, srcTensor, dataCopyParams, padParams);
-    };
-};
-
 }  // Catlass::Epilogue::Tile
 
 #endif

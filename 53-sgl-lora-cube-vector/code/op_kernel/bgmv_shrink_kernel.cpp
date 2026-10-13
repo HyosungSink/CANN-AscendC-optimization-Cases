@@ -230,8 +230,6 @@ private:
 
 // declare all dtype kernel
 BGMV_SHRINK_TYPE_DECLARE(half)
-#if (__CCE_AICORE__ >= 220)
 BGMV_SHRINK_TYPE_DECLARE(bfloat16_t)
-#endif
 
 #endif  // SGL_KERNEL_NPU_KERNEL_BGMV_SHRINK_H

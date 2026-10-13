@@ -33,7 +33,6 @@
 
 namespace Catlass::Gemm::Tile {
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
 template <
     /// Tag indicating architecture
     class ArchTag,
@@ -296,7 +295,6 @@ struct SparseTileCopyTla {
     using CopyL0CToGm = Gemm::Tile::CopyL0CToGmSparseTla<ArchTag, TensorL0C, TensorC>;
 };
 
-#endif
 
 template <
     /// Tag indicating architecture
@@ -398,14 +396,8 @@ struct PackedTileCopyTla {
     using CopyL1ToBT =
         std::conditional_t<HAS_BIAS, Gemm::Tile::TileCopyTla<ArchTag, TensorL1Bias, TensorL0Bias>, EmptyClass>;
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 3510)
-    template <class TensorC>
-    using CopyL0CToDst = Gemm::Tile::CopyL0CToGmTla<ArchTag, TensorL0C, TensorC, DEQUANT_GRANULARITY, ReluEnable>;
-#endif
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
     template <class TensorC>
     using CopyL0CToGm = Gemm::Tile::CopyL0CToGmTla<ArchTag, TensorL0C, TensorC, DEQUANT_GRANULARITY, ReluEnable>;
-#endif
 };
 
 template <
@@ -475,47 +467,9 @@ struct PaddingPackedTileCopyTla {
 
     using CopyL1ToL0A = Gemm::Tile::TileCopyTla<ArchTag, TensorL1A, TensorL0A>;
     using CopyL1ToL0B = Gemm::Tile::TileCopyTla<ArchTag, TensorL1B, TensorL0B>;
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 3510)
-    using CopyL0CToDst = Gemm::Tile::CopyL0CToGmTla<ArchTag, TensorL0C, TensorC>;
-#endif
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 2201)
     using CopyL0CToGm = Gemm::Tile::CopyL0CToGmTla<ArchTag, TensorL0C, TensorC>;
-#endif
 };
 
-#if (defined(CATLASS_ARCH) && CATLASS_ARCH == 3510)
-template <
-    /// Tag indicating architecture
-    class ArchTag,
-    class ElementA_,
-    class LayoutTagA,
-    class ElementB_,
-    class LayoutTagB,
-    class ElementC_,
-    class LayoutTagC,
-    class ElementBias = void,
-    CopyL0CToUBMode CopyMode_ = CopyL0CToUBMode::NO_SPLIT,
-    bool ReluEnable = false,
-    ScaleGranularity DEQUANT_GRANULARITY = ScaleGranularity::NO_QUANT>
-struct PackedTileCopyTlaToUB
-    : public PackedTileCopyTla<ArchTag, ElementA_, LayoutTagA, ElementB_, LayoutTagB, ElementC_, LayoutTagC, ElementBias> {
-    static constexpr CopyL0CToUBMode CopyMode = CopyMode_;
-    // 重写 CopyL0CToDst
-    using TensorL0C = typename PackedTileCopyTla<
-        ArchTag,
-        ElementA_,
-        LayoutTagA,
-        ElementB_,
-        LayoutTagB,
-        ElementC_,
-        LayoutTagC,
-        ElementBias>::TensorL0C;
-
-    template <class TensorC>
-    using CopyL0CToDst =
-        Gemm::Tile::CopyL0CToUBTla<ArchTag, TensorL0C, TensorC, CopyMode, DEQUANT_GRANULARITY, ReluEnable>;
-};
-#endif
 
 } // namespace Catlass::Gemm::Tile
 

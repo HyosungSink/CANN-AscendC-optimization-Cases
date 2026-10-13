@@ -321,11 +321,6 @@ __aicore__ inline void FFNCompute<T, mm1Type, mm2Type, c1T, c2T, BiasT>::MM1Comp
         mm1.ClearBias();
     }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    GlobalTensor<uint64_t> global;
-    global.SetGlobalBuffer((__gm__ uint64_t *)0);
-    DataCacheCleanAndInvalid<uint64_t, CacheLine::ENTIRE_DATA_CACHE>(global);
-#endif
 
     mm1.template Iterate<false>();
 

@@ -19,7 +19,6 @@
 #include "grouped_matmul.h"
 
 #include "kernel_operator.h"
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 
 #include "grouped_matmul_antiquant_a16w8_msd.h"
 #include "grouped_matmul_antiquant_a8w4_msd_pre.h"
@@ -34,7 +33,6 @@
 #include "a16w4_msd/grouped_matmul_weight_quant_a16w4_msd_controller.h"
 #ifndef __CCE_KT_TEST__
 #include "grouped_matmul_fixaxismove_interface.cpp"
-#endif
 #endif
 
 using namespace AscendC;
@@ -362,7 +360,6 @@ __global__ __aicore__ void grouped_matmul(GM_ADDR x, GM_ADDR weight, GM_ADDR bia
     KERNEL_TASK_TYPE_DEFAULT(KERNEL_TYPE_AIC_ONLY);
     GM_ADDR user1 = GetUserWorkspace(workspace);
 
-#if (defined(__CCE_AICORE__) && __CCE_AICORE__ == 220) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
 #if defined(GMM_ANTI_QUANT_A8W4_MSD)
     // ANTIQUANT_A8W4
     if constexpr (D_T_A == GMM_TPL_INT8 && D_T_B == GMM_TPL_INT4) {
@@ -537,23 +534,5 @@ __global__ __aicore__ void grouped_matmul(GM_ADDR x, GM_ADDR weight, GM_ADDR bia
     }
 
 #endif
-#endif
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-#if defined(GMM_FLOAT)
-    if constexpr (TRANS_A == 0 && TRANS_B == 0) {
-        GMM_CUBE_IMP(GMMProcess, false, false, false, matmulCFG);
-    } else if constexpr (TRANS_A == 0 && TRANS_B == 1) {
-        GMM_CUBE_IMP(GMMProcess, false, true, false, matmulCFG);
-    } else if constexpr (TRANS_A == 1 && TRANS_B == 0) {
-        if ASCEND_IS_AIV {
-            GET_TILING_DATA(tilingData, tiling);
-            EmptyTensorCompute<DTYPE_Y>(groupList, y, &tilingData);
-        }
-        if ASCEND_IS_AIC {
-            GMM_CUBE_IMP(GMMProcess, true, false, false, matmulCFG);
-        }
-    }
-#endif
-#endif
 }

@@ -117,21 +117,9 @@ public:
 
         Ppipe->InitBuffer(xBufFp32, ROUND_UP32(rowStep * numLastDimAligned * sizeof(float)));
         Ppipe->InitBuffer(zBufFp32, ROUND_UP32(rowStep * numLastDimAligned * sizeof(float)));
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         uint32_t brcbRowStep = BlockAlign(rowStep, BRCB_BROADCAST_NUMBER);
         Ppipe->InitBuffer(yBufFp32, ROUND_UP32(brcbRowStep * ELEM_PER_REP_FP32 * sizeof(float)));
-#else
-        Ppipe->InitBuffer(yBufFp32, ROUND_UP32(rowStep * ELEM_PER_REP_FP32 * sizeof(float)));
-#endif
 
-#if __CCE_AICORE__ != 220
-        Ppipe->InitBuffer(orBufINT16, 16 * sizeof(int16_t)); // one block
-
-        if constexpr (IS_NORMAL_SPECIAL_REDUCE_BIG_N_CASE) {
-            Ppipe->InitBuffer(transposeSrcBuf, ROUND_UP32(16 * 16 * 8 * sizeof(half)));
-            Ppipe->InitBuffer(transposeDstBuf, ROUND_UP32(16 * 16 * 8 * sizeof(half)));
-        }
-#endif
 
 #if OUTPUT_MEAN_RSTD == 1
         Ppipe->InitBuffer(meanQue, BUFFER_NUM, ROUND_UP32(rowStep * sizeof(float)));
@@ -444,11 +432,7 @@ private:
     __aicore__ inline void PrecisionComputeBigN(
         int32_t nums, LocalTensor<float>& gammaLocal, LocalTensor<float>& betaLocal)
     {
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         PrecisionComputeBigNBrcb(nums, gammaLocal, betaLocal);
-#else
-        precisionComputeBigNTranspose(nums, gammaLocal, betaLocal);
-#endif
     }
 
     __aicore__ inline void precisionComputeBigNTranspose(
@@ -551,7 +535,6 @@ private:
         yQue.EnQue(yLocal);
     }
 
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
     __aicore__ inline void PrecisionComputeBigNBrcb(
         int32_t nums, LocalTensor<float>& gammaLocal, LocalTensor<float>& betaLocal)
     {
@@ -646,7 +629,6 @@ private:
         rstdQue.EnQue(rstdLocal);
         yQue.EnQue(yLocalBigN);
     }
-#endif
 
     __aicore__ inline void CopyOut(int32_t rowIdx, int32_t rowCount)
     {

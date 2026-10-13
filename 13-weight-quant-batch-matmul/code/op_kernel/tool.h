@@ -45,9 +45,6 @@ using AscendC::TPosition;
 using AscendC::WaitFlag;
 using matmul::MatmulType;
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-using AscendC::VECTOR_REG_WIDTH;
-#endif
 
 #if defined(__CCE_KT_TEST__)
 #include <sys/types.h>
@@ -210,9 +207,6 @@ static constexpr uint64_t MX_GROUPSIZE = 32;
 
 static constexpr int32_t C0_SIZE_B8 = 32;
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-static constexpr uint64_t VEC_MAX_ELEM_B16 = VECTOR_REG_WIDTH / sizeof(half);
-#endif
 
 template <typename T>
 __aicore__ inline T CeilAlign(T a, T b)
@@ -288,15 +282,6 @@ __aicore__ inline void DataCopyPad2D(
         padParams.rightPadding = CeilAlign(blockLen, static_cast<uint32_t>(32 / sizeof(T))) - blockLen;
         padParams.paddingValue = 0;
     }
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-    if constexpr (IsSameType<T, int4b_t>::value || IsSameType<T, fp4x2_e2m1_t>::value) {
-        // 4bit场景下， 跳转的步长、数据长度等需要除2
-        params.blockLen = params.blockLen >> 1;
-        params.srcStride = params.srcStride >> 1;
-        params.dstStride = params.dstStride >> 1;
-        padParams.rightPadding = padParams.rightPadding >> 1;
-    }
-#else
     if constexpr (IsSameType<T, int4b_t>::value) {
         // int4场景下， 跳转的步长、数据长度等需要除2
         params.blockLen = params.blockLen >> 1;
@@ -304,7 +289,6 @@ __aicore__ inline void DataCopyPad2D(
         params.dstStride = params.dstStride >> 1;
         padParams.rightPadding = padParams.rightPadding >> 1;
     }
-#endif
     DataCopyPad(dst, src, params, padParams);
 }
 
@@ -317,21 +301,12 @@ __aicore__ inline void DataCopyPad2D(
     params.blockLen = dim0 * sizeof(T);
     params.srcStride = 0;
     params.dstStride = (dstFullDim0 - dim0) * sizeof(T);
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-    if constexpr (IsSameType<T, int4b_t>::value || IsSameType<T, fp4x2_e2m1_t>::value) {
-        // int4场景下， 跳转的步长、数据长度等需要除2
-        params.blockLen = params.blockLen >> 1;
-        params.srcStride = params.srcStride >> 1;
-        params.dstStride = params.dstStride >> 1;
-    }
-#else
     if constexpr (IsSameType<T, int4b_t>::value) {
         // int4场景下， 跳转的步长、数据长度等需要除2
         params.blockLen = params.blockLen >> 1;
         params.srcStride = params.srcStride >> 1;
         params.dstStride = params.dstStride >> 1;
     }
-#endif
     DataCopyPad(dst, src, params);
 }
 

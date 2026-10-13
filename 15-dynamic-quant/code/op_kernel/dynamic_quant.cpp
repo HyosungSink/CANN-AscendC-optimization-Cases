@@ -13,18 +13,12 @@
  */
 #include "kernel_operator.h"
 #include "dynamic_quant.h"
-#if __CCE_AICORE__ < 220
-#include "dynamic_quant_align_310p.h"
-#include "dynamic_quant_unalign_310p.h"
-#include "dynamic_quant_unalign_large_310p.h"
-#else
 #include "dynamic_quant_single_row.h"
 #include "dynamic_quant_multi_row.h"
 #include "dynamic_quant_db.h"
 #include "dynamic_quant_large_shape_opt.h"
 #include "dynamic_quant_moe.h"
 #include "dynamic_quant_moe_large_shape.h"
-#endif
 
 #ifdef __CCE_KT_TEST__
 #define KERNEL_LINKAGE static
@@ -35,13 +29,6 @@
 using namespace AscendC;
 using namespace DynamicQuantNDOpt;
 
-#if __CCE_AICORE__ < 220
-#define INIT_AND_PROCESS_310P                       \
-    do {                                            \
-        op.Init(x, y, scale, nullptr, &tilingData); \
-        op.Process();                               \
-    } while (0)
-#else
 #define INIT_AND_PROCESS                                                      \
     do {                                                                      \
         op.Init(x, smooth_scales, y, scale, nullptr, workSpace, &tilingData); \
@@ -53,7 +40,6 @@ using namespace DynamicQuantNDOpt;
         op.Init(x, smooth_scales, group_index, y, scale, nullptr, workSpace, &tilingData); \
         op.Process();                                                                      \
     } while (0)
-#endif
 
 KERNEL_LINKAGE __global__ __aicore__ void dynamic_quant(
     GM_ADDR x, GM_ADDR smooth_scales, GM_ADDR group_index, GM_ADDR y, GM_ADDR scale, GM_ADDR workSpace, GM_ADDR tiling)
@@ -73,18 +59,6 @@ KERNEL_LINKAGE __global__ __aicore__ void dynamic_quant(
     }
 
     TPipe pipe;
-#if __CCE_AICORE__ < 220
-    if (TILING_KEY_IS(10100)) {
-        DynamicQuantAlign310p op;
-        INIT_AND_PROCESS_310P;
-    } else if (TILING_KEY_IS(11000)) {
-        DynamicQuantUnalign310P op;
-        INIT_AND_PROCESS_310P;
-    } else if (TILING_KEY_IS(11001)) {
-        DynamicQuantUnalignLarge310P op;
-        INIT_AND_PROCESS_310P;
-    }
-#else
     if (TILING_KEY_IS(0) || TILING_KEY_IS(1)) {
         DynamicQuant<DTYPE_X, DTYPE_Y> op(&pipe);
         INIT_AND_PROCESS;
@@ -107,5 +81,4 @@ KERNEL_LINKAGE __global__ __aicore__ void dynamic_quant(
         DynamicQuantSingleRow<DTYPE_X, DTYPE_Y> op(&pipe);
         INIT_AND_PROCESS;
     }
-#endif
 }

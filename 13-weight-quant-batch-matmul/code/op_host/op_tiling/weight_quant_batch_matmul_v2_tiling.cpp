@@ -629,17 +629,13 @@ bool CheckBiasShape(WeightQuantBatchMatmulInfo* inputParams, const gert::Storage
 
 bool CheckShapeDims(WeightQuantBatchMatmulInfo* inputParams, NpuArch npuArch)
 {
-    OP_TILING_CHECK(
-        (npuArch != NpuArch::DAV_3510 ||
-         (inputParams->bDtype == ge::DT_INT8 && inputParams->bFormat == ge::FORMAT_FRACTAL_NZ)) &&
-            (inputParams->kSize > MAX_SHAPE_DIM || inputParams->nSize > MAX_SHAPE_DIM),
+    OP_TILING_CHECK(((inputParams->kSize > MAX_SHAPE_DIM) || (inputParams->nSize > MAX_SHAPE_DIM)),
         VECTOR_INNER_ERR_REPORT_TILIING(
             inputParams->opName, "Dim of k or n should not more than 65535, but they are [%lu] and [%lu]",
             inputParams->kSize, inputParams->nSize),
         return false);
     uint64_t batchMax = inputParams->transA ? MAX_SHAPE_DIM : MAX_INT32;
-    OP_TILING_CHECK(
-        npuArch != NpuArch::DAV_3510 && (inputParams->mSize > batchMax),
+    OP_TILING_CHECK(inputParams->mSize > batchMax,
         VECTOR_INNER_ERR_REPORT_TILIING(
             inputParams->opName, "Dim of m should not more than [%lu], but is [%lu]", batchMax, inputParams->mSize),
         return false);
@@ -734,9 +730,7 @@ bool CheckBiasDtype(
     NpuArch npuArch = ascendcPlatform.GetCurNpuArch();
     auto biasDtype = biasDesc->GetDataType();
     if (inputParams->aDtype == ge::DT_BF16) {
-        if (socVersion == platform_ascendc::SocVersion::ASCEND910B ||
-            (npuArch == NpuArch::DAV_3510 && inputParams->bDtype == ge::DT_INT8 &&
-             inputParams->bFormat == ge::FORMAT_FRACTAL_NZ)) {
+        if (socVersion == platform_ascendc::SocVersion::ASCEND910B) {
             OP_TILING_CHECK(
                 biasDtype != ge::DT_FLOAT,
                 VECTOR_INNER_ERR_REPORT_TILIING(
@@ -744,16 +738,7 @@ bool CheckBiasDtype(
                     ge::TypeUtils::DataTypeToAscendString(biasDtype).GetString()),
                 return false);
         } else {
-            if (npuArch == NpuArch::DAV_3510 &&
-                (inputParams->bDtype == ge::DT_FLOAT4_E2M1 || inputParams->bDtype == ge::DT_FLOAT ||
-                 inputParams->bDtype == ge::DT_FLOAT8_E4M3FN || inputParams->bDtype == ge::DT_HIFLOAT8)) {
-                OP_TILING_CHECK(
-                    biasDtype != inputParams->aDtype,
-                    VECTOR_INNER_ERR_REPORT_TILIING(
-                        inputParams->opName, "Bias dtype must be bf16 when x dtype is bf16, but is [%s]",
-                        ge::TypeUtils::DataTypeToAscendString(biasDtype).GetString()),
-                    return false);
-            } else {
+            {
                 OP_TILING_CHECK(
                     biasDtype != ge::DT_FLOAT && biasDtype != ge::DT_BF16,
                     VECTOR_INNER_ERR_REPORT_TILIING(
@@ -984,58 +969,9 @@ bool CheckTempLimit(WeightQuantBatchMatmulInfo* inputParams)
     return true;
 }
 
-bool CheckDav3510NzSupported(WeightQuantBatchMatmulInfo* inputParams)
-{
-    // not support transA and c8 and per-tensor
-    if (inputParams->transA || inputParams->cDtype == ge::DT_INT8 ||
-        inputParams->antiQuantType == QuantType::PER_TENSOR) {
-        return false;
-    }
-
-    // int8 per-group not support transB
-    if (inputParams->bDtype == ge::DT_INT8) {
-        if (inputParams->antiQuantType == QuantType::PER_GROUP) {
-            return !inputParams->transB;
-        } else if (inputParams->antiQuantType == QuantType::PER_CHANNEL) {
-            return true;
-        }
-    }
-
-    // int4 not support transB
-    if (inputParams->bDtype == ge::DT_INT4 || inputParams->bDtype == ge::DT_INT32) {
-        if (inputParams->antiQuantType == QuantType::PER_GROUP ||
-            inputParams->antiQuantType == QuantType::PER_CHANNEL) {
-            return !inputParams->transB;
-        }
-    }
-
-    // fp4 not support transB
-    if (inputParams->bDtype == ge::DT_FLOAT4_E2M1 || inputParams->bDtype == ge::DT_FLOAT) {
-        if (inputParams->antiQuantType == QuantType::MX || inputParams->antiQuantType == QuantType::PER_GROUP) {
-            return !inputParams->transB;
-        }
-    }
-
-    return false;
-}
-
 bool CheckNzSupportedScenarios(WeightQuantBatchMatmulInfo* inputParams, NpuArch npuArch)
 {
-    if (npuArch == NpuArch::DAV_3510) {
-        // WeightNZ only support the following scenarios:
-        // (1) Weight in int4 dtype with per-channel or per-group quantization without transA, transB or C8.
-        // (2) Weight in fp4 dtype with per-group or MX quantization without transA, transB or C8.
-        // (3) Weight in int8 dtype with per-channel quantization without transA or C8, with per-group
-        //     quantization without transA , transB or C8.
-        OP_TILING_CHECK(
-            !CheckDav3510NzSupported(inputParams),
-            VECTOR_INNER_ERR_REPORT_TILIING(
-                inputParams->opName,
-                "WeightNZ supports S4/FP4_E2M1/FP4_E1M2 weights with non-transposed A/B, "
-                "and supports INT8 per-channel quantization with non-transposed A, INT8 per-group quantization with "
-                "non-transposed A/B. WeightNZ cannot support int8 output or per-tensor quantization"),
-            return ge::GRAPH_FAILED);
-    } else {
+    {
         OP_TILING_CHECK(
             (inputParams->antiQuantType == QuantType::PER_GROUP && inputParams->transA &&
              inputParams->bDtype != ge::DT_INT4) ||
@@ -1091,12 +1027,7 @@ ge::graphStatus CheckPara(gert::TilingContext* context, platform_ascendc::SocVer
                 "Weight FP8_E4M3/HIFLOAT8 input cannot support transA, int8 output or weightNz"),
             return ge::GRAPH_FAILED);
     }
-    if (npuArch == NpuArch::DAV_3510) {
-        OP_TILING_CHECK(
-            !CheckTempLimit(&inputParams),
-            VECTOR_INNER_ERR_REPORT_TILIING(inputParams.opName, "Input cannot meet the condition of this version"),
-            return ge::GRAPH_FAILED);
-    }
+
     return ge::GRAPH_SUCCESS;
 }
 } // namespace optiling

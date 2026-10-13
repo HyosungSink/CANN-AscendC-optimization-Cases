@@ -57,11 +57,6 @@ const uint64_t AIC_SYNC_AIV_FLAG = 6;
 
 constexpr uint64_t BLOCK_BYTE_SIZE = 32;
 
-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
-const uint8_t AIC_SYNC_AIV_MODE_4 = 4;
-const uint64_t VEC0_FLAG_ID_OFFSET = 0;
-const uint64_t VEC1_FLAG_ID_OFFSET = 16;
-#endif
 // common MDL config
 constexpr MatmulConfig MM_CFG_MDL = GetMDLConfig();
 // set isVecND2Nz
@@ -166,7 +161,6 @@ __aicore__ inline uint64_t GetCurrentBlockIdx()
     return GetBlockIdx();
 }
 
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510))
 __aicore__ inline uint64_t MMLcm(uint64_t m, uint64_t n) {
     if (m == 0 || n == 0) {
         return 0; // 处理输入为0的情况
@@ -187,7 +181,6 @@ __aicore__ inline void WaitFlagDevLocal(int64_t flagID)
 }
 
 //supportMmadS8S4平台无L2cacheUseInfo，用宏隔离
-#if !(defined(__NPU_ARCH__) && (__NPU_ARCH__ == 5102))
 template <class A_T, class B_T, class C_T, class BiasT>
 __aicore__ inline void SetL2CacheEnable(const Mc2L2cacheUseInfo& l2EnableInfo,
     GlobalTensor<A_T> &aGlobal, GlobalTensor<B_T> &bGlobal,
@@ -199,7 +192,6 @@ __aicore__ inline void SetL2CacheEnable(const Mc2L2cacheUseInfo& l2EnableInfo,
         }
     }
 }
-#endif
 
 template <class T>
 __aicore__ inline void CopyGmToUbufAlign(const LocalTensor<T>& dst, const GlobalTensor<T>& src,
@@ -451,5 +443,4 @@ __aicore__ inline void RemovePaddingImpl(GlobalTensor<T2> outputGlobal, GlobalTe
     }
 }
 
-#endif
 #endif // __OP_KERNEL_MATMUL_V3_H__

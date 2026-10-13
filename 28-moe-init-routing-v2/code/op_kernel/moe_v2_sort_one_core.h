@@ -29,10 +29,6 @@ public:
                                 GM_ADDR expertTokensBeforeCapacity, GM_ADDR workspace, const TilingData *tilingData,
                                 TPipe *tPipe);
     __aicore__ inline void Process();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    __aicore__ inline void ResetIO(GM_ADDR expandedRowIdx, GM_ADDR workspace);
-    bool needCopy = true;
-#endif
 
 private:
     __aicore__ inline void CopyIn();
@@ -51,11 +47,7 @@ __aicore__ inline void MoeV2SortOneCore::CopyIn()
     DataCopyExtParams dataCopyParams{static_cast<uint16_t>(1),
                                      static_cast<uint32_t>(this->totalLength * sizeof(int32_t)), 0, 0, 0};
     DataCopyPadExtParams<int32_t> dataCopyPadParams{false, 0, 0, 0};
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyPadCustom(inLocal[0], expertIdxGm, dataCopyParams, dataCopyPadParams);
-#else
     DataCopyPad(inLocal[0], expertIdxGm, dataCopyParams, dataCopyPadParams);
-#endif
     LocalTensor<int32_t> rowIdxLocal = inLocal[this->sortNum];
     ArithProgression<int32_t>(rowIdxLocal, 0, 1, this->sortNum);
     sortDataCopyInQueue.EnQue(inLocal);
@@ -66,11 +58,7 @@ __aicore__ inline void MoeV2SortOneCore::SortCompute()
     LocalTensor<int32_t> inLocal = sortDataCopyInQueue.DeQue<int32_t>();
     LocalTensor<int32_t> expertForSourceRowLocal = inLocal[0];
     LocalTensor<float> expertForSourceRowLocalFp32 = expertForSourceRowLocal.ReinterpretCast<float>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    Cast(expertForSourceRowLocalFp32, expertForSourceRowLocal, RoundMode::CAST_NONE, this->tileLength);
-#else
     Cast(expertForSourceRowLocalFp32, expertForSourceRowLocal, RoundMode::CAST_ROUND, this->tileLength);
-#endif
     PipeBarrier<PIPE_V>();
     Muls(expertForSourceRowLocalFp32, expertForSourceRowLocalFp32, (float)-1, this->tileLength);
     PipeBarrier<PIPE_V>();
@@ -119,29 +107,11 @@ __aicore__ inline void MoeV2SortOneCore::CopyOut()
     DataCopyParams intriParams;
     intriParams.blockCount = 1;
     intriParams.blockLen = this->totalLength * sizeof(int32_t);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    DataCopyCustom<int32_t,true,false>(expandDstToSrcRowGm, outLocal[this->sortNum], intriParams.blockCount, intriParams.blockLen);
-    if (this->needCopy) {
-        DataCopyCustom<int32_t,true,false>(sortedexpertIdxGm, outLocal[0], intriParams.blockCount, intriParams.blockLen);
-    }
-#else
     DataCopyPad(sortedexpertIdxGm, outLocal[0], intriParams);
     DataCopyPad(expandDstToSrcRowGm, outLocal[this->sortNum], intriParams);
-#endif
     sortDataCopyOutQueue.FreeTensor(outLocal);
 }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-__aicore__ inline void MoeV2SortOneCore::ResetIO(GM_ADDR expandedRowIdx, GM_ADDR workspace)
-{
-    sortedexpertIdxGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(expandedRowIdx), this->tileLength);
-    expandDstToSrcRowGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(expandedRowIdx), this->tileLength);
-    expertIdxGm.SetGlobalBuffer(reinterpret_cast<__gm__ int32_t *>(workspace) + this->tileLength, this->tileLength);
-    this->expertTokensCountOrCumsumFlag = 0;
-    this->expertTokensBeforeCapacityFlag = 0;
-    this->needCopy = false;
-}
-#endif
 
 template <typename TilingData>
 __aicore__ inline void MoeV2SortOneCore::Init(GM_ADDR expertIdx, GM_ADDR expertTokensCountOrCumsum,
@@ -170,20 +140,12 @@ __aicore__ inline void MoeV2SortOneCore::Init(GM_ADDR expertIdx, GM_ADDR expertT
         if (this->expertTokensCountOrCumsumFlag > 0) {
             expertTokensCountOrCumsumGm.SetGlobalBuffer((__gm__ int32_t *)expertTokensCountOrCumsum,
                                                         Align(this->expertNum, sizeof(int32_t)));
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            InitGlobalMemory(expertTokensCountOrCumsumGm, Align(this->expertNum, sizeof(int32_t)), 0);
-#else
             InitGlobalMemory(expertTokensCountOrCumsumGm, this->expertNum, 0);
-#endif
         }
         if (this->expertTokensBeforeCapacityFlag == 1) {
             expertTokensBeforeCapacityGm.SetGlobalBuffer((__gm__ int32_t *)expertTokensBeforeCapacity,
                                                          Align(this->expertNum, sizeof(int32_t)));
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-            InitGlobalMemory(expertTokensBeforeCapacityGm, Align(this->expertNum, sizeof(int32_t)), 0);
-#else
             InitGlobalMemory(expertTokensBeforeCapacityGm, this->expertNum, 0);
-#endif
         }
     }
     // key and value
@@ -191,20 +153,8 @@ __aicore__ inline void MoeV2SortOneCore::Init(GM_ADDR expertIdx, GM_ADDR expertT
     int64_t buffSize = this->sortNum * sizeof(int32_t) * kvFactor;
     pipe->InitBuffer(sortDataCopyInQueue, bufferNum, buffSize);
     pipe->InitBuffer(sortDataCopyOutQueue, bufferNum, buffSize);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    syncTmpSpaceGm_.SetGlobalBuffer((__gm__ int32_t *)workspace + 2 * this->tileLength, SYNC_LEN);
-    buffSize = GetSortLen<float>(this->sortNum) * sizeof(int32_t);
     pipe->InitBuffer(tempBuffer, buffSize);
     pipe->InitBuffer(sortedBuffer, buffSize);
-    LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-    Duplicate<int32_t>(syncLocal, 0, SYNC_LEN);
-    SetWaitFlag<HardEvent::V_MTE3>(HardEvent::V_MTE3);
-    DataCopy(syncTmpSpaceGm_, syncLocal, SYNC_LEN);
-    PipeBarrier<PIPE_ALL>();
-#else
-    pipe->InitBuffer(tempBuffer, buffSize);
-    pipe->InitBuffer(sortedBuffer, buffSize);
-#endif
 }
 
 __aicore__ inline void MoeV2SortOneCore::Process()
@@ -214,12 +164,7 @@ __aicore__ inline void MoeV2SortOneCore::Process()
         SortCompute();
         CopyOut();
     }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-    LocalTensor<int32_t> syncLocal = tempBuffer.Get<int32_t>();
-    AscendC::SyncAll(syncTmpSpaceGm_, syncLocal, GetBlockNum());
-#else
     this->SyncAll();
-#endif
 }
 } // namespace MoeInitRoutingV2
 #endif // MOE_V2_SORT_ONE_CORE_H

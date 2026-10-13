@@ -325,9 +325,7 @@ inline bool GluSingleTilingCalculator::isValidTailCol(uint32_t baseRowlen_, uint
 
 inline bool GluSingleTilingCalculator::isSupportSocV(uint32_t dtype, NpuArch npuArch) const
 {
-    if ((npuArch == NpuArch::DAV_2002) && (dtype == ge::DT_BF16)) {
-        return false; //310p dont support BF16
-    } else {
+    {
         return true;
     }
 }
@@ -401,10 +399,7 @@ bool GluSingleTilingCalculator::CalcTiling(uint32_t totalCore, uint64_t ubSize, 
     tilingData->set_is32BAligned(tilingData->get_colLen() % ubMinBlockLen == 0);
     // 310p not support Non-64B
     uint32_t blockSizeOf64B = BLOCK_SIZE_OF_64B / inputDTypeLen;
-    if (((npuArch == NpuArch::DAV_2002)) && (tilingData->get_colLen() % blockSizeOf64B != 0)) {
-        OP_LOGE(opName_, "input shape is not support Non-64B aligned");
-        return false;
-    }
+
     // 先计算开启double buffer的tiling参数
     tilingData->set_isDoubleBuffer(1);
     GluSingleTilingOptParam optTilingDb;
@@ -473,11 +468,7 @@ ge::graphStatus Tiling4SwiGlu(gert::TilingContext* context) {
     auto platformInfo = platform_ascendc::PlatformAscendC(context->GetPlatformInfo());
     uint32_t totalCore = platformInfo.GetCoreNumAiv();
     auto npuArch = platformInfo.GetCurNpuArch();
-    if ((IsRegbaseSocVersion(context)) && GetSelfIdx<Glu_Flag>() == 1) {
-        OP_LOGD(context->GetNodeName(), "Tiling SwiGluGrad RegBase start");
-        GluBaseTiling4RegBase tilingObj(context);
-        return tilingObj.DoTiling();
-    }
+
     uint64_t ubSize = 0;
     platformInfo.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubSize);
     OP_TILING_CHECK((static_cast<int>(totalCore) < 0 || ubSize <= UB_RESERVED_BUFF),
@@ -488,9 +479,7 @@ ge::graphStatus Tiling4SwiGlu(gert::TilingContext* context) {
     auto inputShape = context->GetInputShape(INPUT_OUTPUT_IDX);
     OPS_CHECK_NULL_WITH_CONTEXT(context, inputShape);
     auto xTotalLength = inputShape->GetStorageShape().GetShapeSize();
-    if (xTotalLength == 0 && IsRegbaseSocVersion(context) && Glu_Flag == GLU_FLAG::SWIGLU_SINGLE) {
-        return processEmptyTensor(context, totalCore);
-    }
+
 
     SwiGluTilingData tilingData;
     auto inputDesc = context->GetInputDesc(0);

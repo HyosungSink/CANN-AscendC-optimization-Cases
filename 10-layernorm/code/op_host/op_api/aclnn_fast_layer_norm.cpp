@@ -42,10 +42,8 @@ constexpr int64_t MAX_V4_REDUCE_AXIS = 4096;
 constexpr int64_t B16_BLOCK_ALIGN_NUM = 16;
 constexpr int64_t B32_BLOCK_ALIGN_NUM = 8;
 constexpr int32_t KEEP_FP16 = 2;
-constexpr int64_t V4_TRANSPOSE_310P_REDUCE_AXIS_MAX = 40;
 constexpr int64_t V4_TRANSPOSE_REDUCE_AXIS_LIMIT = 64;
 constexpr int64_t LN_DIM_ONE = 1;
-constexpr int64_t V4_TRANSPOSE_310P_REDUCE_AXIS_MIN = 20;
 
 static const std::initializer_list<DataType> ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST = {
     DataType::DT_FLOAT16, DataType::DT_FLOAT, DataType::DT_BF16};

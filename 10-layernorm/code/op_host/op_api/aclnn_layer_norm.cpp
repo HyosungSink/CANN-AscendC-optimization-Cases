@@ -45,8 +45,6 @@ constexpr int64_t MAX_V4_REDUCE_AXIS = 4096;
 constexpr int64_t B16_BLOCK_ALIGN_NUM = 16;
 constexpr int64_t B32_BLOCK_ALIGN_NUM = 8;
 constexpr int64_t V4_TRANSPOSE_REDUCE_AXIS_LIMIT = 64;
-constexpr int64_t V4_TRANSPOSE_310P_REDUCE_AXIS_MAX = 40;
-constexpr int64_t V4_TRANSPOSE_310P_REDUCE_AXIS_MIN = 20;
 constexpr int64_t LN_DIM_ONE = 1;
 
 // 根据API定义，需要列出所能支持的所有dtype
@@ -59,7 +57,7 @@ static const std::initializer_list<DataType> ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST
 static const std::initializer_list<DataType>& GetDtypeSupportList()
 {
     auto curArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    if (curArch == NpuArch::DAV_2201 || Ops::NN::AclnnUtil::IsRegbase(curArch)) {
+    if (curArch == NpuArch::DAV_2201) {
         return ASCEND910B_DTYPE_DTYPE_SUPPORT_LIST;
     } else {
         return ASCEND910_DTYPE_DTYPE_SUPPORT_LIST;
@@ -235,23 +233,17 @@ static bool CheckImplMode(
 
 inline static bool IsV4SocCheck(const aclTensor* input, const aclTensor* weight, int64_t reduceAxis)
 {
-    if (Ops::NN::AclnnUtil::IsRegbase()) {
-        return true;
-    }
+
     auto curArch = GetCurrentPlatformInfo().GetCurNpuArch();
     bool v4SingleReadTemplateSup = input->GetDataType() == weight->GetDataType() &&
                                    input->GetDataType() == DataType::DT_BF16 &&
                                    (reduceAxis == MIN_V4_REDUCE_AXIS || reduceAxis == MAX_V4_REDUCE_AXIS) &&
                                    (curArch == NpuArch::DAV_2201);
-    bool v4TransposeTemplate310pSup =
-        (input->GetDataType() == DataType::DT_FLOAT16) &&
-        (reduceAxis == V4_TRANSPOSE_310P_REDUCE_AXIS_MIN || reduceAxis == V4_TRANSPOSE_310P_REDUCE_AXIS_MAX) &&
-        (curArch == NpuArch::DAV_2002);
     int64_t inputBlockAlign = (input->GetDataType() == DataType::DT_FLOAT ? B32_BLOCK_ALIGN_NUM : B16_BLOCK_ALIGN_NUM);
     bool v4TransposeTemplate910bSup = ((reduceAxis % inputBlockAlign) != 0) &&
                                       (reduceAxis < V4_TRANSPOSE_REDUCE_AXIS_LIMIT) &&
                                       (curArch == NpuArch::DAV_2201);
-    return (v4SingleReadTemplateSup || v4TransposeTemplate310pSup || v4TransposeTemplate910bSup);
+    return (v4SingleReadTemplateSup || v4TransposeTemplate910bSup);
 }
 
 static aclnnStatus CheckParamsWithImplMode(
@@ -332,7 +324,7 @@ aclnnStatus aclnnLayerNormWithImplModeGetWorkspaceSize(
     CHECK_RET(inputContiguous != nullptr, ACLNN_ERR_INNER_NULLPTR);
 
     // 判定设备类型，后续做不同处理
-    bool forwardV4Compute = Ops::NN::AclnnUtil::IsRegbase();
+    bool forwardV4Compute = false;
 
     // 构造新的weightContiguous
     const aclTensor* weightContiguous = nullptr;

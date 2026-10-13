@@ -44,9 +44,6 @@ public:
         yGm.SetGlobalBuffer((__gm__ T*)y + blockIdx_ * block_factor * num_col, row_work * num_col);
         gammaGm.SetGlobalBuffer((__gm__ T_GAMMA*)gamma, num_col);
         rstdGm.SetGlobalBuffer((__gm__ float*)rstd + blockIdx_ * block_factor, block_factor);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        InitRstdData();
-#endif
 
         // pipe alloc memory to queue, the unit is Bytes
         pipe.InitBuffer(inQueueGamma, BUFFER_NUM, ub_factor * sizeof(T_GAMMA));
@@ -104,12 +101,6 @@ public:
         uint32_t rowTail = row_work - (iOuterMax - 1) * row_factor;
         uint32_t jMax = CeilDiv(num_col, (uint64_t)ub_factor);
         uint32_t jTail = num_col - (jMax - 1) * ub_factor;
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 100
-        for (uint32_t iOuter = 0; iOuter < iOuterMax - 1; iOuter++) {
-            SubProcess(iOuter, row_factor, jMax, jTail);
-        }
-        SubProcess(iOuterMax - 1, rowTail, jMax, jTail);
-#else
         uint32_t jFactor = ub_factor * row_factor;
         uint32_t jOuterMax = CeilDiv(num_col, (uint64_t)jFactor);
         uint32_t jOuterTail = num_col - (jOuterMax - 1) * jFactor;
@@ -118,31 +109,8 @@ public:
             SubProcess(iOuter, row_factor, jMax, jTail, jOuterMax, jInnerMax);
         }
         SubProcess(iOuterMax - 1, rowTail, jMax, jTail, jOuterMax, jInnerMax);
-#endif
     }
 
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 100
-    __aicore__ inline void SubProcess(uint32_t i_o, uint32_t calc_row_num, uint32_t j_max, uint32_t col_tail)
-    {
-        LocalTensor<float> sumLocal = sum_buf.Get<float>();
-        LocalTensor<float> rstdLocal = outQueueRstd.AllocTensor<float>();
-        Duplicate(rstdLocal, (float)0.0, ROUND_UP(calc_row_num, NUM_PER_BLK_FP32));
-        PipeBarrier<PIPE_V>();
-        for (uint32_t j = 0; j < j_max - 1; j++) {
-            ComputeFormer(i_o, calc_row_num, j, rstdLocal, sumLocal, ub_factor, left_num, reduce_mask);
-        }
-        // do tail
-        ComputeFormer(i_o, calc_row_num, j_max - 1, rstdLocal, sumLocal, col_tail, last_left_num, last_reduce_mask);
-        ComputeRstd(rstdLocal, calc_row_num);
-        ComputeLatter(i_o, calc_row_num, j_max - 1, rstdLocal, col_tail);
-        for (uint32_t j = 0; j < j_max - 1; j++) {
-            ComputeLatter(i_o, calc_row_num, j, rstdLocal, ub_factor);
-        }
-        outQueueRstd.EnQue<float>(rstdLocal);
-        CopyOutRstd(i_o, calc_row_num);
-    }
-
-#else
     __aicore__ inline void SubProcess(
         uint32_t iOuter, uint32_t calcRowNum, uint32_t jMax, uint32_t jTail, uint32_t jOuterMax, uint32_t jInnerMax)
     {
@@ -159,7 +127,6 @@ public:
         outQueueRstd.EnQue<float>(rstdLocal);
         CopyOutRstd(iOuter, calcRowNum);
     }
-#endif
 
 private:
     __aicore__ inline void CopyIn(uint32_t i_idx, uint32_t j_idx, uint32_t num)
@@ -249,11 +216,7 @@ private:
             CopyIn(i_o_idx * row_factor + i_i, j_idx, num);
             ComputeSum(i_i, sumLocal, num, left_num, reduce_mask);
         }
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 100
-        WholeReduceSum<float>(sumLocal, sumLocal, NUM_PER_BLK_FP32, calc_row_num, 1, 1, 1);
-#else
         BlockReduceSumFP32(sumLocal, sumLocal, calc_row_num * NUM_PER_BLK_FP32);
-#endif
         Add(rstdLocal, rstdLocal, sumLocal, calc_row_num);
         PipeBarrier<PIPE_V>();
     }
@@ -277,20 +240,14 @@ private:
         PipeBarrier<PIPE_V>();
         Muls(sqx, sqx, avg_factor, num);
         PipeBarrier<PIPE_V>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 100
-        ReduceSumHalfIntervalToRepeat(sumLocal[i_i_idx * NUM_PER_BLK_FP32], sqx, num, left_num);
-#else
         ReduceSumFP32ToBlock(sumLocal[i_i_idx * MULTI_8], sqx, reduce_buf_local, num);
-#endif
     }
 
     __aicore__ inline void ComputeRstd(LocalTensor<float> rstdLocal, uint32_t num)
     {
         LocalTensor<float> reduce_buf_local = reduce_fp32_buf.Get<float>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ != 100
         Muls(rstdLocal, rstdLocal, avg_factor, num);
         PipeBarrier<PIPE_V>();
-#endif
         Adds(rstdLocal, rstdLocal, epsilon, num);
         PipeBarrier<PIPE_V>();
         Sqrt(rstdLocal, rstdLocal, num);
@@ -384,14 +341,7 @@ private:
     __aicore__ inline void CopyOutRstd(uint32_t i_o_idx, uint32_t num)
     {
         LocalTensor<float> rstdLocal = outQueueRstd.DeQue<float>();
-#if (__CCE_AICORE__ == 220) || (__CCE_AICORE__ == 100) || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         DataCopyCustom<float>(rstdGm[i_o_idx * row_factor], rstdLocal, num);
-#else
-        uint32_t copyRstd_num = ROUND_UP(num, NUM_PER_BLK_FP32);
-        SetAtomicAdd<float>();
-        DataCopy(rstdGm[i_o_idx * row_factor], rstdLocal, copyRstd_num);
-        SetAtomicNone();
-#endif
         outQueueRstd.FreeTensor(rstdLocal);
     }
 

@@ -1197,7 +1197,6 @@ __aicore__ inline void IncreFlashAttentionAttenPreloadDD<IFAT>::AttenMaskCopyIn(
     attenMaskSizeAlign = Align(actualColumnCount, 32U);
     maskUb.SetSize(dealRowCount * attenMaskSizeAlign);
     WaitFlag<AscendC::HardEvent::V_MTE2>(SYNC_INPUT_BUF1_FLAG);
-#if (__CCE_AICORE__ > 200)
     if (actualColumnCount % 32 == 0) {
         DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
     } else {
@@ -1214,9 +1213,6 @@ __aicore__ inline void IncreFlashAttentionAttenPreloadDD<IFAT>::AttenMaskCopyIn(
         padParams.paddingValue = 0;
         DataCopyPad(maskUb, attenMaskBoolGm[offset], intriParams, padParams);
     }
-#else
-    DataCopy(maskUb, attenMaskBoolGm[offset], attenMaskSizeAlign);
-#endif
     SetFlag<AscendC::HardEvent::MTE2_V>(SYNC_INPUT_BUF1_FLAG);
 }
 

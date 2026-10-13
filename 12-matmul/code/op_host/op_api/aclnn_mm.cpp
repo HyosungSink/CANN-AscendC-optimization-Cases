@@ -58,7 +58,7 @@ static inline bool CheckKEqual1Support(void)
 static inline bool CheckNpuArchIsSupportBf16(void)
 {
     auto npuArch = GetCurrentPlatformInfo().GetCurNpuArch();
-    return (npuArch == NpuArch::DAV_2201) || (npuArch == NpuArch::DAV_3510);
+    return npuArch == NpuArch::DAV_2201;
 }
 
 static bool CheckDtypeValid(

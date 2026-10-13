@@ -40,9 +40,6 @@ public:
         gammaGm.SetGlobalBuffer((__gm__ T_GAMMA*)gamma, num_col);
         yGm.SetGlobalBuffer((__gm__ T*)y + blockIdx_ * block_factor * num_col, row_work * num_col);
         rstdGm.SetGlobalBuffer((__gm__ float*)rstd + blockIdx_ * block_factor, block_factor);
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        InitRstdData();
-#endif
         // pipe alloc memory to queue, the unit is Bytes
         pipe.InitBuffer(inQueueX, BUFFER_NUM, ub_factor * sizeof(T));
         pipe.InitBuffer(inQueueGamma, BUFFER_NUM, ub_factor * sizeof(T_GAMMA));
@@ -108,9 +105,6 @@ public:
     __aicore__ inline void SubProcess(uint32_t i_o, uint32_t calc_row_num, LocalTensor<T_GAMMA>& gammaLocal)
     {
         LocalTensor<float> rstdLocal = outQueueRstd.AllocTensor<float>();
-#if defined(__CCE_AICORE__) && __CCE_AICORE__ == 200
-        Duplicate(rstdLocal, (float)0.0, ROUND_UP(calc_row_num, NUM_PER_BLK_FP32));
-#endif
 
         for (uint32_t i_i = 0; i_i < calc_row_num; i_i++) {
             uint32_t gm_bias = (i_o * row_factor + i_i) * num_col;
@@ -221,13 +215,7 @@ private:
     {
         LocalTensor<float> rstdLocal = outQueueRstd.DeQue<float>();
         uint32_t copyRstdNumAlgin32 = ROUND_UP(num, NUM_PER_BLK_FP32);
-#if __CCE_AICORE__ == 220 || (defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113))
         DataCopyCustom<float>(rstdGm[outer_progress * row_factor], rstdLocal, num);
-#else
-        SetAtomicAdd<float>();
-        DataCopy(rstdGm[outer_progress * row_factor], rstdLocal, copyRstdNumAlgin32);
-        SetAtomicNone();
-#endif
         outQueueRstd.FreeTensor(rstdLocal);
     }
 

@@ -66,7 +66,7 @@ ge::graphStatus QkvRmsNormRopeCacheTilingBase::GetPlatformInfo()
         uint64_t ubSizePlatForm;
         ascendcPlatform.GetCoreMemSize(platform_ascendc::CoreMemType::UB, ubSizePlatForm);
         ubSize_ = ubSizePlatForm;
-        isRegbase_ = IsRegbaseSocVersion(context_);
+        isRegbase_ = false;
         OP_LOGD(context_->GetNodeName(), "GetPlatformInfo : platformInfo != nullptr");
     }
     return ge::GRAPH_SUCCESS;

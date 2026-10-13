@@ -26,7 +26,7 @@ constexpr static int64_t WELFORD_B16_SIZE = 2;
 
 bool LayerNormV4WelfordTiling::IsCapable()
 {
-    return commonParams.isRegBase;
+    return false;
 }
 
 ge::graphStatus LayerNormV4WelfordTiling::DoOpTiling()

@@ -152,9 +152,7 @@ QUANT_MODE MlaPrologTiling::GetQuantizationModeV3Mxfp8() const
 QUANT_MODE MlaPrologTiling::GetQuantizationMode() const
 {
     if (std::strncmp(context_->opType, V3_OP_NAME, OP_NAME_LEN) == 0) {
-        if (GetCurNpuArch() == NpuArch::DAV_3510){
-            return GetQuantizationModeV3Mxfp8();
-        } else {
+        {
             return GetQuantizationModeV3();
         }
     } else {
@@ -568,11 +566,6 @@ ge::graphStatus MlaPrologTiling::GenTilingKey() const
     uint8_t cvMode = ASCENDC_TPL_MIX_AIC_1_2; // 默认cv 1:2模式
     if (aivNum_ == aicNum_) {
         cvMode = ASCENDC_TPL_MIX_AIC_1_1; // cv 1:1模式
-    }
-
-    if (cvMode == ASCENDC_TPL_MIX_AIC_1_1 && GetCurNpuArch() == NpuArch::DAV_3510) {
-        OP_LOGE(context_->opName, "CV1:1 mode is not support on Ascend 950PR/Ascend 950DT.");
-        return ge::GRAPH_FAILED;
     }
 
     if (cvMode == ASCENDC_TPL_MIX_AIC_1_1 &&
