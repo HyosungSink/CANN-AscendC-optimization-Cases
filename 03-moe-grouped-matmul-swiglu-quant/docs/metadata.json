@@ -1,0 +1,59 @@
+{
+  "id": "03-moe-grouped-matmul-swiglu-quant",
+  "title": "MoE GroupedMatmul + SwiGLU + INT8 动态量化的 CV 流水",
+  "language": "zh-CN",
+  "retrieved_at": "2026-10-08",
+  "scope": "operator-level",
+  "upstream": {
+    "repository": "https://gitcode.com/cann/ops-transformer.git",
+    "tag": "v9.0.0",
+    "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+    "operator": "grouped_matmul_swiglu_quant_v2",
+    "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+    "release_evidence_commit": "c847330e202fbe9e724ef36c6219e49f42cda312"
+  },
+  "compatibility": {
+    "cann_version": "9.0.0",
+    "cann_evidence": "Official 9.0.0 release notes map cann-ops-transformer to v9.0.0",
+    "supported_products": [
+      "Atlas A2 training/inference series",
+      "Atlas A3 training/inference series"
+    ],
+    "soc_targets": [
+      "ascend910b",
+      "ascend910_93"
+    ],
+    "excluded_soc": [
+      "ascend950"
+    ],
+    "hardware_evidence": {
+      "file": "gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_def.cpp",
+      "lines": [
+        82,
+        83
+      ]
+    },
+    "future_cann_versions": "Use matching release source; no blanket ABI guarantee"
+  },
+  "analysis_focus": "A8W8 + NZ 权重、TilingKey=3；Cube 128×256×128 基本块，整行就绪后的 Vector dequant/SwiGLU/RowMax/quant。",
+  "source_snapshot": {
+    "files": 42,
+    "standalone_buildable": false
+  },
+  "benchmark": {
+    "public_ab_latency_available": false,
+    "public_ab_latency_us": null,
+    "end_to_end_numbers_used": false,
+    "note": "No fixed-version public operator A/B latency located in inspected sources"
+  },
+  "validation": {
+    "source_hashes_verified": true,
+    "shell_syntax_checked": true,
+    "npu_compiled": false,
+    "npu_accuracy_tested": false,
+    "npu_benchmarked": false,
+    "host": "macOS without NPU"
+  },
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "implementation_language": "Ascend C"
+}

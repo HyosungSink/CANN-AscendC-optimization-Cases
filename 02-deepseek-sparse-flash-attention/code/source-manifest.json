@@ -1,0 +1,205 @@
+{
+  "repository": "https://gitcode.com/cann/ops-transformer.git",
+  "ref": "v9.0.0",
+  "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "0ae52202fc6a5163d84c26b0e5443b83f4f5d0c20630c9ac6921806842fb9f33",
+      "bytes": 22489,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/CMakeLists.txt"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b6e3724d8f6425ec2e604dfa43cb296c0f0a40d54f071803088aceb7fa250a74",
+      "bytes": 8244,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/README.md"
+    },
+    {
+      "path": "attention/sparse_flash_attention/CMakeLists.txt",
+      "sha256": "716dd07dd44379e61a2c5b2cf77b7d131fb7596847706b04d70c17c18c72b684",
+      "bytes": 1197,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/README.md",
+      "sha256": "0502476ff6039fba2a3b6f8c83fa88d85c228f646abaaf74c97fc96b3c3da509",
+      "bytes": 14744,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/README.md"
+    },
+    {
+      "path": "attention/sparse_flash_attention/docs/aclnnSparseFlashAttention.md",
+      "sha256": "0f496264d160ecd17509291f55603d851eb974bcd9697ab300075e55844a8ea0",
+      "bytes": 31767,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/docs/aclnnSparseFlashAttention.md"
+    },
+    {
+      "path": "attention/sparse_flash_attention/examples/test_aclnn_sparse_flash_attention.cpp",
+      "sha256": "dc1ce44676bafc2c11d7ba91ace7464c7151da7075c6690543d41072d14553da",
+      "bytes": 14493,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/examples/test_aclnn_sparse_flash_attention.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/CMakeLists.txt",
+      "sha256": "77c3e2f9a92cecf25b7019cba69cf8ebdeb692652cd66a733bdeb606e4f9afa5",
+      "bytes": 1371,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/op_api/aclnn_sparse_flash_attention.cpp",
+      "sha256": "56f6ad73d593e07fb10818fe67025a28ab83c351d0540d15244b498f6a666be9",
+      "bytes": 5778,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/op_api/aclnn_sparse_flash_attention.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/op_api/aclnn_sparse_flash_attention.h",
+      "sha256": "c25bcd687c94b324344307bdff8f5831b4ccb60498d9b5d9d05a4128e1b088aa",
+      "bytes": 2505,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/op_api/aclnn_sparse_flash_attention.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/sparse_flash_attention_def.cpp",
+      "sha256": "e38f748989b4a143b7be9ec11d9f10c2b3046265e2644f8e8601de6794085300",
+      "bytes": 4379,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/sparse_flash_attention_def.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/sparse_flash_attention_infershape.cpp",
+      "sha256": "49789eaa5a6115335f20450bc19fb8ff8c51f6c3a350bc9decec77fe05e2656b",
+      "bytes": 5022,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/sparse_flash_attention_infershape.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/sparse_flash_attention_tiling.cpp",
+      "sha256": "e3fe448c1e9a789804a9548bf703f29fd7540fa2cd3adcbc79ffcc81fb8d7244",
+      "bytes": 79015,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/sparse_flash_attention_tiling.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_host/sparse_flash_attention_tiling.h",
+      "sha256": "fd1305d10eb477fad3d726961e96c4bb9420c5761f73c9d5bd6dd142ef40d6a8",
+      "bytes": 23546,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_host/sparse_flash_attention_tiling.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention.cpp",
+      "sha256": "6a5dc0293c7118672b4686f1db966d892e0efb09443113d7afa6457570eb5858",
+      "bytes": 3091,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention_common.h",
+      "sha256": "5549e6a85832132d7ecdcd7025afb0a521055cf3165567d4a1034a00e74504b8",
+      "bytes": 7116,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_common.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention_kernel_mla.h",
+      "sha256": "70d97224fb74c31bd031f815facf3b80f9b725430d6c8da48ccc981a56d96956",
+      "bytes": 46178,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_kernel_mla.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention_service_cube_mla.h",
+      "sha256": "d95b92a8bb76acbffba2a9c10d77bc13b140911b8d37126b894d8619ff29c43a",
+      "bytes": 58426,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_service_cube_mla.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention_service_vector_mla.h",
+      "sha256": "e3aad0cbed428dab2e8d11504060e3d78e6cab0cab27e82f39480abd7ebfae87",
+      "bytes": 75793,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_service_vector_mla.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/op_kernel/sparse_flash_attention_template_tiling_key.h",
+      "sha256": "263b8d66f387902ec8d06b63a0b165c71b199715b9fc602486ffd862115a0f42",
+      "bytes": 3003,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_template_tiling_key.h"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/CMakeLists.txt",
+      "sha256": "d6e6bafd5eeb792059674b6fe515eef311da47ed41554189efcbe9af4cbf64ba",
+      "bytes": 1279,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/CMakeLists.txt",
+      "sha256": "8ffe240d5668a4e4c8a1bd19ae3e8a546e1bb3dc27bb60e143c3606b17331745",
+      "bytes": 1284,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_api/CMakeLists.txt",
+      "sha256": "bfb2e310edb637996cc22217d4020063ba28ca00fc8bf39554230a2bb75b0a7b",
+      "bytes": 994,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_api/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_api/test_aclnn_sparse_flash_attention.cpp",
+      "sha256": "3ffad530b8d44591bb0b813a04ad9d7cb75bcc63f3d484a304b146307715444e",
+      "bytes": 4538,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_api/test_aclnn_sparse_flash_attention.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_host/CMakeLists.txt",
+      "sha256": "998bfa77273a242fd45695aef67ffbe8a3b481c4b0b68a6181ddbd7639aa9aab",
+      "bytes": 1261,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_host/arch32/CMakeLists.txt",
+      "sha256": "f2f1e07d3933bbe3a114d90f32c218996b30cce7d6c6a299fdad630c661a7428",
+      "bytes": 1000,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_host/arch32/CMakeLists.txt"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_host/arch32/test_sparse_flash_attention_tiling.cpp",
+      "sha256": "d961ccc282d44a13954cd290498a27bc425465496a5e29e19ac6ca2aea47ccaf",
+      "bytes": 50607,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_host/arch32/test_sparse_flash_attention_tiling.cpp"
+    },
+    {
+      "path": "attention/sparse_flash_attention/tests/ut/op_host/test_sparse_flash_attention_infershape.cpp",
+      "sha256": "c524458d2eca720b35f0611154f2f59bea0b095a9b8eb7075a14b51995b950c3",
+      "bytes": 11628,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/attention/sparse_flash_attention/tests/ut/op_host/test_sparse_flash_attention_infershape.cpp"
+    },
+    {
+      "path": "build.sh",
+      "sha256": "ecab49da274ee68909b0efd4a093d2fed820554752289cbed5ed6205865af166",
+      "bytes": 62111,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "sha256": "c98561d8e22c936de3620c45ff4fd647a178716b7e8974c747b524badc6075ff",
+      "bytes": 2101,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "docs/zh/context/build.md",
+      "sha256": "612d75b790f120a50ef4da05f707e0686378eadb5386ca6f2457ee2a574fc1e6",
+      "bytes": 5702,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/docs/zh/context/build.md"
+    },
+    {
+      "path": "docs/zh/debug/op_debug_prof.md",
+      "sha256": "23907dc9f5454f3e8f6b38b08a8e97ad2a11076c700901e5f6b87eae3d893928",
+      "bytes": 6592,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/docs/zh/debug/op_debug_prof.md"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "sha256": "f21bf8f46de11d11d34e4febb3a4ed27e40c7a9ca081b671d0bbd20ae03e649a",
+      "bytes": 18409,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/docs/zh/invocation/quick_op_invocation.md"
+    }
+  ]
+}

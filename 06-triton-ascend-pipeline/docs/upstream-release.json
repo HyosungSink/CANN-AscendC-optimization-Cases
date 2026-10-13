@@ -1,0 +1,13 @@
+{
+  "api_url": "https://api.github.com/repos/triton-lang/triton-ascend/releases/tags/v3.2.1",
+  "collected_date": "2026-10-08",
+  "release": {
+    "id": 325220571,
+    "tag_name": "v3.2.1",
+    "target_commitish": "main",
+    "name": "Triton Ascend 3.2.1 release",
+    "html_url": "https://github.com/triton-lang/triton-ascend/releases/tag/v3.2.1",
+    "published_at": "2026-05-19T17:57:10Z",
+    "body": "# Release Notes\r\n\r\nThis release enhances support for Triton 3.2.0, supporting 950PR basic functionality.\r\n\r\n## Version Compatibility\r\n\r\nSupported Ascend Hardware and Software Environments:\r\n\r\n- CANN: 9.0.0\r\n- PyTorch: 2.7.1, 2.8.0, 2.9.1, 2.10.0\r\n- Python: 3.9 (X86 only) / 3.10 / 3.11 / 3.12 / 3.13\r\n- Ascend Hardware: Atlas 800 A2 series / Atlas 800 A3 / 950PR series\r\n\r\n## New Features\r\n\r\n### Feature Enhancements\r\n\r\n- Supports 111 basic triton op functions (950PR)\r\n- AutoTune (trial version) supports automatic optimization (supports Vector class operators, no configuration required)\r\n- Supports debugging and tuning tools such as msprof, msOpProf, and Interpreter\r\n\r\n### Bug Fixes\r\n\r\n- Fixed boundary checks, mask analysis, and ifOp parsing issues in TritonToUnstructure/TritonToLinalg/TritonToStructured conversions\r\n- Fixed driver memory allocation issues\r\n- Fixed unsigned/signed Type conversion and overflow handling.\r\n- Fixed support for fp8, bf16, and half types in dot/cast/pow operations.- \r\n- Fixed exception handling for multi-threaded and asynchronous compilation.\r\n- Fixed installation overwrite issue between Triton and Triton-Ascend.\r\n\r\nFull changelog: https://github.com/triton-lang/triton-ascend/compare/v3.2.0...v3.2.1"
+  }
+}

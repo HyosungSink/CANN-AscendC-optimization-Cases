@@ -1,0 +1,65 @@
+{
+  "title": "页面索引生成的 Triton 实际改写：缩小 UB 工作集，去掉无用 padding 依赖",
+  "slug": "06-triton-ascend-pipeline",
+  "collected_date": "2026-10-08",
+  "scope": "alloc_extend_kernel Part 2 full-page index mapping",
+  "repository": "https://github.com/triton-lang/triton-ascend",
+  "tag": "v3.2.1",
+  "commit": "2badfc89e70a9b7a5e88463a116c2feddce4b101",
+  "license": "MIT",
+  "cann_versions": [
+    "9.0.0"
+  ],
+  "hardware": [
+    "Atlas A2 / Ascend 910B",
+    "Atlas A3"
+  ],
+  "excluded_hardware": [
+    "Ascend 950"
+  ],
+  "version_evidence": [
+    "https://github.com/triton-lang/triton-ascend/releases/tag/v3.2.1"
+  ],
+  "performance": {
+    "type": "upstream before/after source rewrite plus adapted on-device benchmark; no measured result",
+    "published_before_after_numbers": null,
+    "locally_reproduced": false,
+    "variants": [
+      "single_tile",
+      "loop_no_multibuffer",
+      "loop_multibuffer",
+      "loop_multibuffer_unpadded"
+    ]
+  },
+  "local_validation": [
+    "7 CPU scalar-reference tests passed",
+    "15 A2/A3 device-name acceptance/rejection subcases passed",
+    "benchmark --help passed without NPU/Triton imports",
+    "Python AST validation",
+    "source snapshot SHA-256 validation",
+    "reproduce.sh bash syntax check"
+  ],
+  "limitations": [
+    "No NPU/CANN runtime present locally",
+    "Only Part 2 complete-page mapping, not full allocator",
+    "multi-buffer option enabled does not prove actual overlap",
+    "Fixed quick_start retains old CANN8.5 instructions; release notes are version evidence",
+    "Adapted benchmark is uncompiled and unmeasured on NPU"
+  ],
+  "runtime_device_guard": {
+    "accepted_name_families": [
+      "Ascend910B and numeric model suffixes",
+      "Ascend910_93xx",
+      "Ascend910C and numeric model suffixes"
+    ],
+    "unknown_names": "rejected; no bypass option",
+    "excluded_examples": [
+      "Ascend310P",
+      "Ascend910",
+      "Ascend910A",
+      "Ascend910_9599",
+      "Ascend950",
+      "Ascend950PR_9599"
+    ]
+  }
+}

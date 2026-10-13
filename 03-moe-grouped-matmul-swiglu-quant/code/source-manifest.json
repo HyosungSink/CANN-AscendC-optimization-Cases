@@ -1,0 +1,266 @@
+{
+  "repository": "https://gitcode.com/cann/ops-transformer.git",
+  "tag": "v9.0.0",
+  "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+  "retrieved_date": "2026-10-08",
+  "files": [
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_spilit_fusion.h",
+      "sha256": "05f24cba5dfd520e116284f2715b352d33a78c5180443d180bc592a524fba25b",
+      "bytes": 27853,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_spilit_fusion.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2.cpp",
+      "sha256": "efecf499efa360da5c595454858ee04a0e768a63a9504b7f7131e1f4eeae7a03",
+      "bytes": 5915,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_mid.h",
+      "sha256": "3fba33286858d9517197520c31b0a622c15267458c70f25559fdae9c6e2415dd",
+      "bytes": 12534,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_mid.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_pipeline.h",
+      "sha256": "ee2d94df15da5c602aba3ac0d859ad73ed8c4eb4d96eba6089aff2ff148f5e23",
+      "bytes": 10703,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_pipeline.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_post.h",
+      "sha256": "05f4bbc6f7ddd3a83c96b26109e67f53eeb9b49d44ab4c018da068b0130c011c",
+      "bytes": 20464,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_post.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_mid.h",
+      "sha256": "1881d03e65258e846fe9bbfb736f4cbbcd770b84a6730319dd0c9d00abdc4087",
+      "bytes": 13221,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_mid.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_pipeline.h",
+      "sha256": "e7398287dcc06dd2a70d7c658cd4b3839367f32f34a9c6a5a6f68a8bf0077ae9",
+      "bytes": 11184,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_pipeline.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_post.h",
+      "sha256": "5137d99c5df2b7287d3f6c78b288ccc9f34fab68971e4b71217f524136fc46f9",
+      "bytes": 23347,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_post.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_pre.h",
+      "sha256": "b87eda2542700e1800412f9775360552b5c6ae6e38e2afcbd77da677d60f8332",
+      "bytes": 10797,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a8w4_msd_pre.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_apt.cpp",
+      "sha256": "9d1f448f5b128553d89381b9f5b0e068312be93fc065e0c9fda9d5bcaa0d53fa",
+      "bytes": 3816,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_apt.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_utils.h",
+      "sha256": "114eb710ba0a4f51e718a9e229b1e90c9b4ebdb41b50ebca88c9c7a8ddcf7039",
+      "bytes": 11654,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_utils.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/CMakeLists.txt",
+      "sha256": "139b5b9e7406ba86caee07ec2f808046d58db0bea150d536f4cd2cc0768ec4cf",
+      "bytes": 1599,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/fallback_grouped_matmul_swiglu_quant_v2.cpp",
+      "sha256": "29c18c940e05a0ae562d5128d77b55f3391239a5fa028fcc9745c3ed4ea346da",
+      "bytes": 13811,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/fallback_grouped_matmul_swiglu_quant_v2.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_def.cpp",
+      "sha256": "8f1a7b623d2422a68f7f2c6e15119a5d723d62ddbed92f2c35e9072bb8844aa3",
+      "bytes": 19744,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_def.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_host_utils.h",
+      "sha256": "c56a324703fdb78dc1aac3fa4e73fac9f907d339d0640c2791bde349f60f8507",
+      "bytes": 1954,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_host_utils.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_infershape.cpp",
+      "sha256": "78d73792d99665ef90d8d3bb35e0b2893f268529c8233b981f7bfe69ab9b730a",
+      "bytes": 6818,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/grouped_matmul_swiglu_quant_v2_infershape.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_v2.cpp",
+      "sha256": "9a48f23215a1da68459908ee1cf1c2874b3a34c7848d05b7c5ac6e6269933a4f",
+      "bytes": 8985,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_v2.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_v2.h",
+      "sha256": "999fb9ef470821cf5a58407bdac74948d133762cb2f9b40268d326385a364b91",
+      "bytes": 4609,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_v2.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_weight_nz_v2.h",
+      "sha256": "6567aa04c03abb72b3dabdae2a1ab3d4a836509b67066b5ea8922a49a0049bef",
+      "bytes": 4522,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/aclnn_grouped_matmul_swiglu_quant_weight_nz_v2.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/gmm_dsq_base.h",
+      "sha256": "1199a916a94e99e6b885420482fd00685a560dad3317955618f9d61110c51c5a",
+      "bytes": 34726,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/gmm_dsq_base.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_utils.h",
+      "sha256": "b7090d02133f7f3181cffe4f9687183dacbde1b4ac4832455a365538982a2154",
+      "bytes": 15555,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_utils.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2.cpp",
+      "sha256": "7be9ff7058db2d68eeaa7570e40b84ce1ba27ebfefb977422200c97ea34933be",
+      "bytes": 4752,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2.h",
+      "sha256": "bc281106e82cc261aa8346be26b33dc03c42e48ce9a9249d9dfee998a0e58f92",
+      "bytes": 1476,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2_utils.h",
+      "sha256": "3981f321e69c3163672239e65f247e064aa9d9b62529b61ba32ce2660d764be8",
+      "bytes": 41782,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_api/grouped_matmul_swiglu_quant_v2_utils.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_base_tiling.cpp",
+      "sha256": "60a1f243be8a21d3e6e512567c53a11a9515667fb5329f5d440d49579b8f6541",
+      "bytes": 22962,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_base_tiling.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_base_tiling.h",
+      "sha256": "3fdeb02c4592f4470286b7c341e214fef46867b1d3a87b189cfcc5993d499253",
+      "bytes": 2861,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_base_tiling.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_fusion_tiling.cpp",
+      "sha256": "c8c65e355bcae16f7d35e79a25eeddc40428de3a3e824ef0183fe5171dde0c08",
+      "bytes": 8797,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_fusion_tiling.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_fusion_tiling.h",
+      "sha256": "a6b5fa60f6a9cf815e21bd08d9065787686f849aeec169b9ecd6992aed4133c2",
+      "bytes": 2058,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_fusion_tiling.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_tiling.cpp",
+      "sha256": "07a6646da6097aa964a5cabfe02bbb88f75288016bc876d173581d2a2abfe862",
+      "bytes": 3677,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_tiling.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_tiling.h",
+      "sha256": "f71a4e1100853d0fa1b52005315383f53d7d96b6c1e84445abfecda4addc848a",
+      "bytes": 6872,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/op_host/op_tiling/grouped_matmul_swiglu_quant_v2_tiling.h"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a4w4.cpp",
+      "sha256": "6b109526972e2b71c65e688c4a641bf2faa185944fdde64a4ef65efbcfdbb5f2",
+      "bytes": 11915,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a4w4.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w4_weight_nd.cpp",
+      "sha256": "59b14235ed3713ade14a4278f83a0afc09ac6906994142344a0ed3b4c82fe556",
+      "bytes": 11967,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w4_weight_nd.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w4_weight_nz.cpp",
+      "sha256": "4d8d07abf9244cd0e2acaaae366d03ecbefdf9e3d8490b3d50af79c055dd0655",
+      "bytes": 12051,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w4_weight_nz.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w8.cpp",
+      "sha256": "89d0b27be5466bdb31e42863cdf54cc573e9de81154d42df704e7d3691af518a",
+      "bytes": 11466,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w8.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w8_multi.cpp",
+      "sha256": "0cee4b0222dc871a53fd1a69874d513e3f052968f035c3a3ba37dd947aab1fa3",
+      "bytes": 12705,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/examples/test_aclnn_grouped_matmul_swiglu_quant_v2_a8w8_multi.cpp"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/CMakeLists.txt",
+      "sha256": "8ffbfe510afe6ebda9fb42d2aed4da607bbf36f49ca3662d0f8e9087289a7b0d",
+      "bytes": 1270,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/CMakeLists.txt"
+    },
+    {
+      "path": "gmm/grouped_matmul_swiglu_quant_v2/README.md",
+      "sha256": "c51e642ddcbea6545c58efa201dad2554e508ef1dc0a1b469cde450c3419cff1",
+      "bytes": 19116,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/gmm/grouped_matmul_swiglu_quant_v2/README.md"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b6e3724d8f6425ec2e604dfa43cb296c0f0a40d54f071803088aceb7fa250a74",
+      "bytes": 8244,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/README.md"
+    },
+    {
+      "path": "build.sh",
+      "sha256": "ecab49da274ee68909b0efd4a093d2fed820554752289cbed5ed6205865af166",
+      "bytes": 62111,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "sha256": "c98561d8e22c936de3620c45ff4fd647a178716b7e8974c747b524badc6075ff",
+      "bytes": 2101,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "sha256": "f21bf8f46de11d11d34e4febb3a4ed27e40c7a9ca081b671d0bbd20ae03e649a",
+      "bytes": 18409,
+      "source_url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/docs/zh/invocation/quick_op_invocation.md"
+    }
+  ],
+  "omitted": [
+    "950-specific arch35 directories",
+    "tests",
+    "other operators and root build dependencies"
+  ],
+  "standalone_buildable": false
+}

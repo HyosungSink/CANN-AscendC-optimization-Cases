@@ -1,0 +1,38 @@
+{
+  "title": "LightningIndexer 的 Cube Vector 流水与 TopK 归并",
+  "post_id": "01-deepseek-lightning-indexer",
+  "case_type": "源码实战解析",
+  "scope": "单算子内核与 Tiling",
+  "cann_version": "9.0.0",
+  "cann_release": "正式版",
+  "repository": "https://gitcode.com/cann/ops-transformer.git",
+  "ref": "v9.0.0",
+  "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+  "operator": "lightning_indexer",
+  "hardware": [
+    "Atlas A2 / Ascend 910B",
+    "Atlas A3 / Ascend 910_93"
+  ],
+  "hardware_documented": [
+    "Atlas A2 训练及推理",
+    "Atlas A3 训练及推理"
+  ],
+  "hardware_source_check": "GetNpuInfo accepts ASCEND910B and ASCEND910_93",
+  "version_evidence": {
+    "repository": "https://gitcode.com/cann/release-management.git",
+    "commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+    "path": "9.0.0/release-notes.md",
+    "url": "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+    "claim": "cann-ops-transformer 9.0.0 uses v9.0.0 and supports CANN 9.0.0"
+  },
+  "opbase_dependency_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+  "performance_evidence": {
+    "public_ab_benchmark": false,
+    "status": "No matched operator-level before/after benchmark with full CANN 9.0.0 and shape conditions was verified.",
+    "measured_locally": false,
+    "reproduction_host": "macOS without Ascend NPU/CANN toolchain"
+  },
+  "checked_on": "2026-10-08",
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "implementation_language": "Ascend C"
+}
