@@ -11,7 +11,7 @@
 #include "aclnn_weight_quant_batch_matmul_v2.h"
 #include "aclnn_weight_quant_batch_matmul_v3.h"
 #include "aclnn_weight_quant_batch_matmul_nz.h"
-#include "matmul/common/op_host/op_api/matmul_util.h"
+#include "common/op_host/op_api/matmul_util.h"
 #include "weight_quant_batch_matmul_v2.h"
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/transdata.h"

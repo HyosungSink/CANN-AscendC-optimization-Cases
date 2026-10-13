@@ -17,13 +17,13 @@
 #define _FLASH_ATTENTION_SCORE_GRAD_S1S2_BASIC_DET_H_
 
 #include "kernel_operator.h"
-#include "./basic_modules/common_header.h"
-#include "./basic_modules/vec_modules/vec_post_det.h"
-#include "./basic_modules/vec_modules/vec_pre_det.h"
-#include "./basic_modules/vec_modules/vec_sfmg_det.h"
-#include "./basic_modules/addr_compute_det.h"
-#include "./basic_modules/cube_op_det.h"
-#include "./basic_modules/vec_op_det.h"
+#include "basic_modules/common_header.h"
+#include "basic_modules/vec_modules/vec_post_det.h"
+#include "basic_modules/vec_modules/vec_pre_det.h"
+#include "basic_modules/vec_modules/vec_sfmg_det.h"
+#include "basic_modules/addr_compute_det.h"
+#include "basic_modules/cube_op_det.h"
+#include "basic_modules/vec_op_det.h"
 using namespace AscendC;
 
 template <typename INPUT_TYPE, class TILING_CLASS, typename SEQLEN_TYPE, bool DROP_ENABLE, bool DETERMINISTIC_ENABLE>

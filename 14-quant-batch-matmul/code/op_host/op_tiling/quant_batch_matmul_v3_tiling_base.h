@@ -22,7 +22,7 @@
 #include "quant_batch_matmul_v3_compile_info.h"
 #include "op_host/tiling_base.h"
 #include "op_cache_tiling.h"
-#include "matmul/common/op_host/math_util.h"
+#include "common/op_host/math_util.h"
 
 namespace optiling {
 

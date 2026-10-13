@@ -16,14 +16,14 @@
 #define _FLASH_ATTENTION_SCORE_GRAD_S1S2_BASIC_H_
 
 #include "kernel_operator.h"
-#include "./basic_modules/common_header.h"
-#include "./basic_modules/cube_modules/cube_addr.h"
-#include "./basic_modules/vec_modules/vec_pre.h"
-#include "./basic_modules/vec_modules/vec_sfmg.h"
-#include "./basic_modules/vec_modules/vec_post.h"
-#include "./basic_modules/vec_modules/vec_addr.h"
-#include "./basic_modules/cube_op.h"
-#include "./basic_modules/vec_op.h"
+#include "basic_modules/common_header.h"
+#include "basic_modules/cube_modules/cube_addr.h"
+#include "basic_modules/vec_modules/vec_pre.h"
+#include "basic_modules/vec_modules/vec_sfmg.h"
+#include "basic_modules/vec_modules/vec_post.h"
+#include "basic_modules/vec_modules/vec_addr.h"
+#include "basic_modules/cube_op.h"
+#include "basic_modules/vec_op.h"
 using namespace AscendC;
 
 template <typename TYPE, class TILING_CLASS>

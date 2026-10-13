@@ -16,7 +16,7 @@
 #ifndef MLA_PROLOG_V3_INFERSHAPE_H
 #define MLA_PROLOG_V3_INFERSHAPE_H
 
-#include "../../mla_prolog/op_host/mla_prolog_infershape.h"
+#include "../mla_prolog/op_host/mla_prolog_infershape.h"
 
 using namespace ge;
 

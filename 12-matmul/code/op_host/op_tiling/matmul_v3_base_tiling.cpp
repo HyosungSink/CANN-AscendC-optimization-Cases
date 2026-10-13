@@ -25,8 +25,8 @@
 #include "op_cache_tiling.h"
 #include "runtime_kb_api.h"
 #include "matmul_v3_tuning.h"
-#include "matmul/common/op_host/math_util.h"
-#include "matmul/common/op_host/op_tiling/debug_tiling.h"
+#include "common/op_host/math_util.h"
+#include "common/op_host/op_tiling/debug_tiling.h"
 #include "platform/platform_infos_def.h"
 
 using namespace optiling::matmul_v3;

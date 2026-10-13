@@ -14,7 +14,7 @@
  */
 
 #include "weight_quant_batch_matmul_v2_compute_matmul_tiling.h"
-#include "matmul/common/op_host/math_util.h"
+#include "common/op_host/math_util.h"
 
 using Ops::NN::GenTiling;
 

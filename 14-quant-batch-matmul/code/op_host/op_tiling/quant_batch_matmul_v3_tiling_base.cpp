@@ -16,7 +16,7 @@
 #include "quant_batch_matmul_v3_tiling_base.h"
 #include "quant_batch_matmul_info_factory.h"
 #include "error_util.h"
-#include "matmul/common/op_host/op_tiling/debug_tiling.h"
+#include "common/op_host/op_tiling/debug_tiling.h"
 #include "platform/platform_infos_def.h"
 
 using Ops::NN::TilingPrepareForOpCache;

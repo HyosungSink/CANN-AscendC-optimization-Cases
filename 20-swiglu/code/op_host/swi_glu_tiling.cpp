@@ -16,7 +16,7 @@
 #include "error_util.h"
 #include "op_host/tiling_util.h"
 #include <chrono>
-#include "../../swi_glu_grad/op_host/swi_glu_grad_tiling_regbase.h"
+#include "../swi_glu_grad/op_host/swi_glu_grad_tiling_regbase.h"
 #include "register/op_impl_registry.h"
 
 namespace optiling {

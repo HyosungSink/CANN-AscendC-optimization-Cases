@@ -8,7 +8,7 @@
 
 English | [中文](#中文)
 
-[Normal API](doc/NORMAL_API.md) · [Low-Latency API](doc/LOW_LATENCY_API.md) · [Fused MoE](doc/FUSED_DEEP_MOE.md) · [A2 Guide](doc/A2_DEEPEP.md)
+[Normal API](doc/NORMAL_API.md) · [Low-Latency API](LOW_LATENCY_API.md) · [Fused MoE](doc/FUSED_DEEP_MOE.md) · [A2 Guide](A2_DEEPEP.md)
 
 </div>
 
@@ -133,7 +133,7 @@ The `Buffer` class is the primary interface. Below is a summary of the core APIs
 
 For detailed API documentation, see:
 - [Normal Mode API (dispatch/combine)](doc/NORMAL_API.md)
-- [Low-Latency Mode API](doc/LOW_LATENCY_API.md)
+- [Low-Latency Mode API](LOW_LATENCY_API.md)
 - [get_dispatch_layout API](doc/GET_DISPATCH_LAYOUT_API.md)
 - [Fused Deep MoE API](doc/FUSED_DEEP_MOE.md)
 
@@ -243,7 +243,7 @@ See [Fused Deep MoE API](doc/FUSED_DEEP_MOE.md) for details.
 - **Must set** `HCCL_BUFFSIZE` (e.g., `export HCCL_BUFFSIZE=1024`).
 - **Must disable** `HCCL_OP_EXPANSION_MODE`.
 
-For detailed A2 usage, see [A2_DEEPEP](doc/A2_DEEPEP.md).
+For detailed A2 usage, see [A2_DEEPEP](A2_DEEPEP.md).
 
 #### A2 Dual Node
 
@@ -290,7 +290,7 @@ bash tests/python/deepep/run_test_internode.sh
 
 ### CI coverage and A2 multi-node status
 
-- The [PR workflow](../../.github/workflows/pr-test-deepep-npu.yml) validates A2/A3 on CANN 9.0.0 and 9.1.0, and A5 on 9.1.0. The [daily workflow](../../.github/workflows/daily-build-test.yml) covers A2/A3 on 9.0.0 and 9.1.0.
+- The [PR workflow](.github/workflows/pr-test-deepep-npu.yml) validates A2/A3 on CANN 9.0.0 and 9.1.0, and A5 on 9.1.0. The [daily workflow](.github/workflows/daily-build-test.yml) covers A2/A3 on 9.0.0 and 9.1.0.
 - CANN 8.5.0 runners were retired and its test matrices removed in August 2026. Compatibility with 8.5.0 is no longer verified.
 - **A2 multi-node CI has been disabled since September 2, 2026**. The node pool shrank from four to two nodes, leaving insufficient capacity for CI. The dedicated `a2-internode-test.yml` and daily `multi-node-internode` job were removed.
 - `test_internode_a2.py`, `run_test_internode.sh`, the reusable `internode.yml`, and hierarchical/non-hierarchical communication and HCCL tuning instructions remain available for manual validation and future restoration. They do not imply active A2 multi-node CI coverage.
@@ -438,7 +438,7 @@ DeepEP-Ascend 采用**策略式架构**，通信实现被抽象为可互换的�
 
 详细 API 文档请参考：
 - [Normal 模式 API（dispatch/combine）](doc/NORMAL_API.md)
-- [Low-Latency 模式 API](doc/LOW_LATENCY_API.md)
+- [Low-Latency 模式 API](LOW_LATENCY_API.md)
 - [get_dispatch_layout API](doc/GET_DISPATCH_LAYOUT_API.md)
 - [融合 Deep MoE API](doc/FUSED_DEEP_MOE.md)
 
@@ -527,7 +527,7 @@ normal_dispatch 量化模式（通过 `quant_mode` 参数指定）：
 - **必须设置** `HCCL_BUFFSIZE`（如 `export HCCL_BUFFSIZE=1024`）。
 - **必须禁用** `HCCL_OP_EXPANSION_MODE`。
 
-详细 A2 使用说明请参考 [A2_DEEPEP](doc/A2_DEEPEP.md)。
+详细 A2 使用说明请参考 [A2_DEEPEP](A2_DEEPEP.md)。
 
 #### A2 双机
 
@@ -574,7 +574,7 @@ bash tests/python/deepep/run_test_internode.sh
 
 ### CI 覆盖范围与 A2 多机状态
 
-- [PR 工作流](../../.github/workflows/pr-test-deepep-npu.yml) 在 A2/A3 上验证 CANN 9.0.0、9.1.0，在 A5 上验证 9.1.0；[每日工作流](../../.github/workflows/daily-build-test.yml) 覆盖 A2/A3 的 9.0.0、9.1.0。
+- [PR 工作流](.github/workflows/pr-test-deepep-npu.yml) 在 A2/A3 上验证 CANN 9.0.0、9.1.0，在 A5 上验证 9.1.0；[每日工作流](.github/workflows/daily-build-test.yml) 覆盖 A2/A3 的 9.0.0、9.1.0。
 - CANN 8.5.0 runner 已下线，测试矩阵于 2026 年 8 月移除，不再验证 8.5.0 的兼容性。
 - **A2 多机 CI 自 2026-09-02 起停用**。节点池从 4 个缩减为 2 个，资源不足以支撑 CI，已删除独立的 `a2-internode-test.yml` 和每日流水线的 `multi-node-internode` job。
 - 保留 `test_internode_a2.py`、`run_test_internode.sh`、可复用的 `internode.yml`，以及分层/不分层通信、HCCL 调优说明，供手动验证及后续恢复使用；这些资料不代表 A2 多机仍有 CI 覆盖。

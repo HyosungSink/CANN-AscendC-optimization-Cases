@@ -12,7 +12,7 @@
 #define MLA_PROLOG_V3_TILING_H
 
 #include "register/tilingdata_base.h"
-#include "../../mla_prolog/op_host/mla_prolog_tiling.h"
+#include "../mla_prolog/op_host/mla_prolog_tiling.h"
 
 #ifdef ASCENDC_OP_TEST
 #define MLA_EXTERN_C extern "C"

@@ -18,7 +18,7 @@
 #include "level0/fill.h"
 #include "level0/padv3.h"
 #include "level0/mul.h"
-#include "matmul/common/op_host/op_api/matmul_v2tov3.h"
+#include "common/op_host/op_api/matmul_v2tov3.h"
 #include "opdev/tensor_view_utils.h"
 #include "opdev/op_dfx.h"
 #include "opdev/op_executor.h"
@@ -29,9 +29,9 @@
 #include "opdev/op_log.h"
 #include "opdev/shape_utils.h"
 #include "op_api/op_api_def.h"
-#include "matmul/common/op_host/op_api/cube_util.h"
-#include "matmul/common/op_host/math_util.h"
-#include "matmul/common/op_host/op_api/matmul.h"
+#include "common/op_host/op_api/cube_util.h"
+#include "common/op_host/math_util.h"
+#include "common/op_host/op_api/matmul.h"
 
 using namespace std;
 using namespace op;

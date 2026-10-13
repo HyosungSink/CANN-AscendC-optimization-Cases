@@ -8,10 +8,10 @@
  * See LICENSE in the root of the software repository for the full text of the License.
 */
 #include "aclnn_dynamic_quant.h"
-#include "quant/dynamic_quant_v2/op_host/op_api/dynamic_quant_v2.h"
+#include "dynamic_quant_v2/op_host/op_api/dynamic_quant_v2.h"
 #include "aclnn_dynamic_quant_v3.h"
 #include "dynamic_quant.h"
-#include "quant/dynamic_quant_v2/op_host/op_api/aclnn_dynamic_quant_v2.h"
+#include "dynamic_quant_v2/op_host/op_api/aclnn_dynamic_quant_v2.h"
 #include "level0/fault_injection.h"
 #include "aclnn_kernels/contiguous.h"
 #include "aclnn_kernels/reshape.h"

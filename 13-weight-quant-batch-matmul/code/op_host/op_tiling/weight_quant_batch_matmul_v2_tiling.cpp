@@ -16,8 +16,8 @@
 #include "weight_quant_batch_matmul_v2_tiling.h"
 
 #include "op_cache_tiling.h"
-#include "matmul/common/op_host/math_util.h"
-#include "matmul/common/op_host/op_tiling/debug_tiling.h"
+#include "common/op_host/math_util.h"
+#include "common/op_host/op_tiling/debug_tiling.h"
 #include "platform/platform_infos_def.h"
 
 using Ops::NN::TilingPrepareForOpCache;

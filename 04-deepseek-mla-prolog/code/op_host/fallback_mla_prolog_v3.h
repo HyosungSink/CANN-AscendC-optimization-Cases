@@ -15,7 +15,7 @@
 #include "log/log.h"
 #include "fallback/fallback_comm.h"
 #include "fallback/fallback.h"
-#include "../../mla_prolog/op_host/fallback_mla_prolog.h"
+#include "../mla_prolog/op_host/fallback_mla_prolog.h"
 
 #ifdef __cplusplus
 extern "C" {

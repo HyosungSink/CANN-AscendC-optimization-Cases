@@ -172,7 +172,7 @@
 
   - 输入张量x、cos、sin及输出张量y的最后一维大小必须相同，且小于等于1024。对于half、interleave和interleave-half模式，最后一维必须能被2整除，对于quarter模式，最后一维必须能被4整除。
   - 输入张量x和输出张量y的shape必须完全相同。
-  - 输入张量cos和sin的shape必须完全相同，cos和sin的shape需要与x满足[broadcast关系](../../docs/zh/context/broadcast关系.md)，且广播后的shape必须等于x的shape。
+  - 输入张量cos和sin的shape必须完全相同，cos和sin的shape需要与x满足[broadcast关系](docs/zh/context/broadcast关系.md)，且广播后的shape必须等于x的shape。
 
 - <term>Atlas A3 训练系列产品/Atlas A3 推理系列产品</term>、<term>Atlas A2 训练系列产品/Atlas A2 推理系列产品</term>：
   
@@ -198,4 +198,4 @@
 
 | 调用方式           | 调用样例                                                                                    | 说明                                                                                                  |
 |----------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| aclnn调用 | [test_aclnn_rotary_position_embedding](./examples/test_aclnn_rotary_position_embedding.cpp) | 通过[aclnnRotaryPositionEmbedding](./docs/aclnnRotaryPositionEmbedding.md)接口方式调用RotaryPositionEmbedding算子。             |
+| aclnn调用 | [test_aclnn_rotary_position_embedding](examples/test_aclnn_rotary_position_embedding.cpp) | 通过[aclnnRotaryPositionEmbedding](aclnnRotaryPositionEmbedding.md)接口方式调用RotaryPositionEmbedding算子。             |

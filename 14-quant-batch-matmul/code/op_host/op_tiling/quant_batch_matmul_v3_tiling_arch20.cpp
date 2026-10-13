@@ -16,11 +16,11 @@
 #include <vector>
 #include <cmath>
 #include "log/log.h"
-#include "matmul/common/op_host/math_util.h"
+#include "common/op_host/math_util.h"
 #include "error_util.h"
 #include "quant_batch_matmul_v3_tiling_arch20.h"
 #include "quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_tiling_key.h"
-#include "../../../transpose_batch_mat_mul/op_host/op_tiling/pp_matmul_default.h"
+#include "../../transpose_batch_mat_mul/op_host/op_tiling/pp_matmul_default.h"
 using Ops::NN::MathUtil;
 
 namespace optiling {

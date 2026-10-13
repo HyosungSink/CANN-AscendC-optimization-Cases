@@ -26,15 +26,15 @@
 #include "aclnn_kernels/contiguous.h"
 #include "level0/dot.h"
 #include "level0/fill.h"
-#include "matmul/common/op_host/op_api/matmul.h"
+#include "common/op_host/op_api/matmul.h"
 #include "aclnn_kernels/reshape.h"
 #include "aclnn_kernels/transdata.h"
 #include "level0/unsqueeze.h"
 
 #include "util/math_util.h"
-#include "matmul/common/op_host/op_api/cube_util.h"
-#include "matmul/common/op_host/op_api/matmul_util.h"
-#include "matmul/common/op_host/op_api/batch_matmul_util.h"
+#include "common/op_host/op_api/cube_util.h"
+#include "common/op_host/op_api/matmul_util.h"
+#include "common/op_host/op_api/batch_matmul_util.h"
 #include "op_api/op_api_def.h"
 
 using Ops::Base::CeilDiv;

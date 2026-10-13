@@ -18,7 +18,7 @@
 
 #include "op_host/tiling_base.h"
 #include "tiling/tiling_api.h"
-#include "../../../transpose_batch_mat_mul/op_host/op_tiling/pp_matmul_default.h"
+#include "../../transpose_batch_mat_mul/op_host/op_tiling/pp_matmul_default.h"
 #include "../../op_kernel/quant_batch_matmul_v3_kernel_tiling_data.h"
 
 namespace optiling {

@@ -15,7 +15,7 @@
 
 #define MLA_PROLOG_VERSION 3
 #if __has_include("../../mla_prolog/op_kernel/kernel_mla_prolog_split_n.h")
-#include "../../mla_prolog/op_kernel/kernel_mla_prolog_split_n.h"
+#include "../mla_prolog/op_kernel/kernel_mla_prolog_split_n.h"
 #else
 #include "../mla_prolog/kernel_mla_prolog_split_n.h"
 #endif

@@ -77,5 +77,5 @@
 
 | 调用方式 | 调用样例                                                                   | 说明                                                             |
 |--------------|------------------------------------------------------------------------|----------------------------------------------------------------|
-| aclnn调用 | [test_aclnn_swi_glu](./examples/test_aclnn_swi_glu.cpp) | 通过[aclnnSwiGlu](./docs/aclnnSwiGlu.md)接口方式调用SwiGlu算子。    |
-| 图模式调用 | -   | 通过[算子IR](./op_graph/swi_glu_proto.h)构图方式调用SwiGlu算子。 |
+| aclnn调用 | [test_aclnn_swi_glu](examples/test_aclnn_swi_glu.cpp) | 通过[aclnnSwiGlu](aclnnSwiGlu.md)接口方式调用SwiGlu算子。    |
+| 图模式调用 | -   | 通过[算子IR](../code/op_graph/swi_glu_proto.h)构图方式调用SwiGlu算子。 |

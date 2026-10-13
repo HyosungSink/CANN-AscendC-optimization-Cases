@@ -20,7 +20,7 @@
 #include "aclnn/aclnn_base.h"
 #include "aclnn_kernels/common/op_error_check.h"
 #include "op_api/aclnn_util.h"
-#include "norm/norm_common/op_host/op_api/norm_tensor_util.h"
+#include "norm_common/op_host/op_api/norm_tensor_util.h"
 #include "level0/fill.h"
 #include "layer_norm_v3.h"
 #include "layer_norm_v4.h"

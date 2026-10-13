@@ -156,10 +156,10 @@
 ## 约束说明
 
 - 不支持空tensor。
-- 支持连续tensor，[非连续tensor](../../docs/zh/context/非连续的Tensor.md)只支持转置场景。
+- 支持连续tensor，[非连续tensor](docs/zh/context/非连续的Tensor.md)只支持转置场景。
 
 ## 调用说明
 
 | 调用方式   | 样例代码           | 说明                                         |
 | ---------------- | --------------------------- | --------------------------------------------------- |
-| aclnn接口  | [test_aclnn_quant_matmul_v3](examples/test_aclnn_quant_matmul_v3_at.cpp) | 通过<br>[aclnnQuantMatmulV3](docs/aclnnQuantMatmulV3.md)<br>[aclnnQuantMatmulV4](docs/aclnnQuantMatmulV4.md)<br>[aclnnQuantMatmulWeightNz](docs/aclnnQuantMatmulWeightNz.md)<br>[aclnnQuantMatmulV5](../quant_batch_matmul_v4/docs/aclnnQuantMatmulV5.md)<br>等方式调用QuantBatchMatmulV3算子。 |
+| aclnn接口  | [test_aclnn_quant_matmul_v3](examples/test_aclnn_quant_matmul_v3_at.cpp) | 通过<br>[aclnnQuantMatmulV3](docs/aclnnQuantMatmulV3.md)<br>[aclnnQuantMatmulV4](docs/aclnnQuantMatmulV4.md)<br>[aclnnQuantMatmulWeightNz](docs/aclnnQuantMatmulWeightNz.md)<br>[aclnnQuantMatmulV5](quant_batch_matmul_v4/docs/aclnnQuantMatmulV5.md)<br>等方式调用QuantBatchMatmulV3算子。 |

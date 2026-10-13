@@ -87,5 +87,5 @@
 
 | 调用方式   | 样例代码           | 说明                                         |
 | ---------------- | --------------------------- | --------------------------------------------------- |
-| aclnn接口  | [test_aclnn_rms_norm](examples/test_aclnn_rms_norm.cpp) | 通过[aclnnRmsNorm](docs/aclnnRmsNorm.md)接口方式调用RmsNorm算子。 |
-| 图模式 | -  | 通过[算子IR](op_graph/rms_norm_proto.h)构图方式调用RmsNorm算子。         |
+| aclnn接口  | [test_aclnn_rms_norm](examples/test_aclnn_rms_norm.cpp) | 通过[aclnnRmsNorm](aclnnRmsNorm.md)接口方式调用RmsNorm算子。 |
+| 图模式 | -  | 通过[算子IR](../code/op_graph/rms_norm_proto.h)构图方式调用RmsNorm算子。         |

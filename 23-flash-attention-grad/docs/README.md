@@ -200,8 +200,8 @@
 
 | 调用方式           | 调用样例                                                                                                              | 说明                                                                                                                    |
 |----------------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| aclnn调用 | [test_aclnn_flash_attention_score_grad_v2](./examples/test_aclnn_flash_attention_score_grad_v2.cpp)                     | 非TND场景，通过[aclnnFlashAttentionScoreGradV2](./docs/aclnnFlashAttentionScoreGradV2.md)接口方式调用FlashAttentionGrad算子。                   |
+| aclnn调用 | [test_aclnn_flash_attention_score_grad_v2](examples/test_aclnn_flash_attention_score_grad_v2.cpp)                     | 非TND场景，通过[aclnnFlashAttentionScoreGradV2](docs/aclnnFlashAttentionScoreGradV2.md)接口方式调用FlashAttentionGrad算子。                   |
 
 ## 参考资源
 
-- [FAG算子设计介绍](./docs/FAG算子设计介绍.md)
+- [FAG算子设计介绍](docs/FAG算子设计介绍.md)

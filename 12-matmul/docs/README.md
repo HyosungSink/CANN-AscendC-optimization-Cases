@@ -81,10 +81,10 @@
 ## 约束说明
 
 - 支持空tensor，空tensor场景下不支持bias。
-- 支持连续tensor，[非连续tensor](../../docs/zh/context/非连续的Tensor.md)只支持转置场景。
+- 支持连续tensor，[非连续tensor](docs/zh/context/非连续的Tensor.md)只支持转置场景。
 
 ## 调用说明
 
 | 调用方式   | 样例代码           | 说明                                         |
 | ---------------- | --------------------------- | --------------------------------------------------- |
-| aclnn接口  | [test_aclnn_addmm](examples/test_aclnn_addmm_aclnninplace_addmm.cpp) | 通过<br> - [aclnnAddmm&aclnnInplaceAddmm](./docs/aclnnAddmm&aclnnInplaceAddmm.md)<br> - [aclnnMatmul](docs/aclnnMatmul.md)<br> - [aclnnMatmulWeightNz](docs/aclnnMatmulWeightNz.md)<br> - [aclnnMm](docs/aclnnMm.md)<br>- [aclnnAddmmWeightNz](docs/aclnnAddmmWeightNz.md)<br>等方式调用MatMulV3算子。 |
+| aclnn接口  | [test_aclnn_addmm](examples/test_aclnn_addmm_aclnninplace_addmm.cpp) | 通过<br> - [aclnnAddmm&aclnnInplaceAddmm](docs/aclnnAddmm&aclnnInplaceAddmm.md)<br> - [aclnnMatmul](docs/aclnnMatmul.md)<br> - [aclnnMatmulWeightNz](docs/aclnnMatmulWeightNz.md)<br> - [aclnnMm](docs/aclnnMm.md)<br>- [aclnnAddmmWeightNz](docs/aclnnAddmmWeightNz.md)<br>等方式调用MatMulV3算子。 |

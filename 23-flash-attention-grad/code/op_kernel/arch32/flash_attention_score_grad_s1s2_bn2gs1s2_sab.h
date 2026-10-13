@@ -20,7 +20,7 @@
 #include "lib/matmul_intf.h"
 #include "pse.h"
 #include "dropmask.h"
-#include "./basic_modules/common_header.h"
+#include "basic_modules/common_header.h"
 
 
 using namespace matmul;

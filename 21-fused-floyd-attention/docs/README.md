@@ -127,4 +127,4 @@
 
 | 调用方式           | 调用样例                                                                                    | 说明                                                                                                  |
 |----------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| aclnn调用 | [test_aclnn_fused_floyd_attention](./examples/test_aclnn_fused_floyd_attention.cpp) | 通过[aclnnFusedFloydAttention](./docs/aclnnFusedFloydAttention.md)接口方式调用FusedFloydAttention算子。 |
+| aclnn调用 | [test_aclnn_fused_floyd_attention](examples/test_aclnn_fused_floyd_attention.cpp) | 通过[aclnnFusedFloydAttention](aclnnFusedFloydAttention.md)接口方式调用FusedFloydAttention算子。 |

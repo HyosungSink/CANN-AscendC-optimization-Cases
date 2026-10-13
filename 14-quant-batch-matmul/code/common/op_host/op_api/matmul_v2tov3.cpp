@@ -12,7 +12,7 @@
 // 子包场景：通过适配层dlopen方式找到libophost_comm_legacy.so里的C接口实现，向本仓算子侧提供Ops::NN namepsace的接口调用
 // 整包和静态库场景：只做l0op namespace下的接口声明，向本仓算子侧提供Ops::NN namepsace的接口调用
 #ifdef NN_ENABLE_DLOPEN_LEGACY
-#include "matmul/common/op_host/op_api/matmul_v2tov3.h"
+#include "common/op_host/op_api/matmul_v2tov3.h"
 #include "opdev/platform.h"
 #include "legacy_common_manager.h"
 

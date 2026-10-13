@@ -106,7 +106,7 @@
 
 ## 函数原型
 
-每个算子分为[两段式接口](../../../docs/zh/context/两段式接口.md)，必须先调用“aclnnRotaryPositionEmbeddingGetWorkspaceSize”接口获取入参并根据流程计算所需workspace大小，再调用“aclnnRotaryPositionEmbedding”接口执行计算。
+每个算子分为[两段式接口](zh/context/两段式接口.md)，必须先调用“aclnnRotaryPositionEmbeddingGetWorkspaceSize”接口获取入参并根据流程计算所需workspace大小，再调用“aclnnRotaryPositionEmbedding”接口执行计算。
 
 ```c++
 aclnnStatus aclnnRotaryPositionEmbeddingGetWorkspaceSize(
@@ -236,7 +236,7 @@ aclnnStatus aclnnRotaryPositionEmbedding(
 
 - **返回值：**
 
-  返回aclnnStatus状态码，具体参见[aclnn返回码](../../../docs/zh/context/aclnn返回码.md)。
+  返回aclnnStatus状态码，具体参见[aclnn返回码](zh/context/aclnn返回码.md)。
 
   第一段接口完成入参校验，出现以下场景时报错：
 
@@ -315,7 +315,7 @@ aclnnStatus aclnnRotaryPositionEmbedding(
 
 - **返回值：**
 
-  返回aclnnStatus状态码，具体参见[aclnn返回码](../../../docs/zh/context/aclnn返回码.md)。
+  返回aclnnStatus状态码，具体参见[aclnn返回码](zh/context/aclnn返回码.md)。
 
 ## 约束说明
 
@@ -327,7 +327,7 @@ aclnnStatus aclnnRotaryPositionEmbedding(
   输入张量x共有四维，各参数的shape约束可以描述如下：
   - 输入张量x、cos、sin及输出张量y的最后一维大小必须相同，且小于等于1024。对于half、interleave和interleave-half模式，最后一维必须能被2整除，对于quarter模式，最后一维必须能被4整除。
   - 输入张量x和输出张量y的shape必须完全相同。
-  - 输入张量cos和sin的shape必须完全相同，cos和sin的shape需要与x满足[broadcast关系](../../../docs/zh/context/broadcast关系.md)，且广播后的shape必须等于x的shape。
+  - 输入张量cos和sin的shape必须完全相同，cos和sin的shape需要与x满足[broadcast关系](zh/context/broadcast关系.md)，且广播后的shape必须等于x的shape。
 
 - <term>Atlas A3 训练系列产品/Atlas A3 推理系列产品</term>、<term>Atlas A2 训练系列产品/Atlas A2 推理系列产品</term>：
   
@@ -368,7 +368,7 @@ aclnnStatus aclnnRotaryPositionEmbedding(
 
 ## 调用示例
 
-示例代码如下，仅供参考，具体编译和执行过程请参考[编译与运行样例](../../../docs/zh/context/编译与运行样例.md)。
+示例代码如下，仅供参考，具体编译和执行过程请参考[编译与运行样例](zh/context/编译与运行样例.md)。
 
 ```Cpp
 #include "acl/acl.h"
