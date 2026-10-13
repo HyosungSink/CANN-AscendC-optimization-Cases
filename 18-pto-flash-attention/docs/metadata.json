@@ -1,0 +1,73 @@
+{
+  "title": "PTO Flash Attention：四阶段CV流水与在线Softmax",
+  "slug": "18-pto-flash-attention",
+  "collected_date": "2026-10-08",
+  "scope": "operator-level kernel",
+  "repository": "https://gitcode.com/cann/pto-isa",
+  "tag": "v9.0.0",
+  "commit": "377526952e95c39f9149cb94d261eba9e394f0d4",
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "cann_versions": [
+    "9.0.0"
+  ],
+  "hardware": [
+    "Atlas A2 / Ascend 910B",
+    "Atlas A3 / Ascend 910C"
+  ],
+  "excluded_hardware": [
+    "Ascend 950"
+  ],
+  "version_evidence": [
+    "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+    "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/version.cmake"
+  ],
+  "hardware_evidence": [
+    "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/common/flash_atten/README_zh.md"
+  ],
+  "performance": {
+    "type": "upstream A2/A3 absolute task spans; normalized throughput is extrapolation",
+    "source": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/common/flash_atten/README_zh.md",
+    "values": [
+      {
+        "cores": 1,
+        "s0": 128,
+        "s1": 1024,
+        "us": 42.08
+      },
+      {
+        "cores": 2,
+        "s0": 256,
+        "s1": 1024,
+        "us": 33.201
+      },
+      {
+        "cores": 4,
+        "s0": 512,
+        "s1": 1024,
+        "us": 41.721
+      },
+      {
+        "cores": 8,
+        "s0": 1024,
+        "s1": 1024,
+        "us": 63.72
+      }
+    ],
+    "measured_cann_version": null,
+    "measured_commit": null,
+    "locally_reproduced": false,
+    "unit_caveat": "upstream gops variable divides by 1e6 and is MOp despite GOps label",
+    "exact_measured_board_model": null,
+    "normalized_tflops_is_full_chip_measurement": false,
+    "normalized_tflops_formula": "measured TFLOPS * 24 / cores_used; linear extrapolation only"
+  },
+  "local_validation": [
+    "source and release-evidence SHA-256 checks",
+    "reproduce.sh bash syntax check"
+  ],
+  "limitations": [
+    "No local CANN/NPU build, correctness or performance run",
+    "Selected source snapshot is for reading; full fixed repository needed to build",
+    "Published performance measurement CANN and exact historical commit are not stated"
+  ]
+}

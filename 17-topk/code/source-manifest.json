@@ -1,0 +1,83 @@
+{
+  "repository": "https://gitcode.com/cann/pto-isa",
+  "tag": "v9.0.0",
+  "commit": "377526952e95c39f9149cb94d261eba9e394f0d4",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278
+    },
+    {
+      "path": "README.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/README.md",
+      "sha256": "29e2d9eba4f50cfb3554ea814e87fbaa9260d72755896fc868d19ae1595fa115",
+      "bytes": 12369
+    },
+    {
+      "path": "README_zh.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/README_zh.md",
+      "sha256": "6e0bd448d0e7928425d1c7e951df551effc1959dc9ac2dc840b1793d6dc312b7",
+      "bytes": 11053
+    },
+    {
+      "path": "version.cmake",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/version.cmake",
+      "sha256": "ed1172209ad05075a4e28fdb593b669c94afee9a1367078f70fcf74c2cae005d",
+      "bytes": 1328
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/CMakeLists.txt",
+      "sha256": "17ac08ec697e80dfd2416fdc640968e14d4790313cd2fd9c456acc5af37e8ea5",
+      "bytes": 3553
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/run.sh",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/run.sh",
+      "sha256": "648a5fe7165549adcca4dd5daa51f6ca083e2b1cc193ebe906f45800aff13cbd",
+      "bytes": 1837
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/README.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/README.md",
+      "sha256": "9448cca399eefdc7fc3bf0d3416d37ef9dee1085899fab9e7dd8f4895e8e80cd",
+      "bytes": 3793
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/topk_kernel.cpp",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/topk_kernel.cpp",
+      "sha256": "ab20a96e0c5df6df32404911a5af42efb47672e9573de5bae117c806169661c5",
+      "bytes": 19735
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/README_zh.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/README_zh.md",
+      "sha256": "d297a43e70542545def6ba7af51df1d0283da1f2554bc9a9f95c3cd65df62bed",
+      "bytes": 3552
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/main.cpp",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/main.cpp",
+      "sha256": "9f7bb04b84d2ba8fd5f21729c0d1801b7b021ad11bea2e131326b49cb9b4f363",
+      "bytes": 4931
+    },
+    {
+      "path": "kernels/manual/a2a3/topk/scripts/gen_data.py",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/topk/scripts/gen_data.py",
+      "sha256": "c98a0524502b90eb0d41702f4067f8efa624022cd4f6fafa18ee56915a853371",
+      "bytes": 3638
+    }
+  ],
+  "evidence_sources": [
+    {
+      "repository": "https://gitcode.com/cann/release-management",
+      "commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+      "path": "9.0.0/release-notes.md",
+      "url": "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+      "local_path": "../docs/evidence/release-notes-9.0.0.md",
+      "sha256": "fa37f8c02107f25aa42ee4f5bbe12160a7035ce660a1a58a150cc0d6f2622950"
+    }
+  ]
+}

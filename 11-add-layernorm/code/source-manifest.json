@@ -1,0 +1,306 @@
+{
+  "repository": "https://gitcode.com/cann/ops-nn.git",
+  "ref": "v9.0.0",
+  "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+  "scope": "non-arch35 A2/A3 operator paths plus selected shared dependencies; full fixed repository required for build",
+  "omitted_dedicated_paths": [
+    "norm/add_layer_norm/op_host/add_layer_norm_tiling_arch35.cpp",
+    "norm/add_layer_norm/op_host/config/ascend310p/add_layer_norm_binary.json",
+    "norm/add_layer_norm/op_host/config/ascend310p/add_layer_norm_simplified_key.ini",
+    "norm/add_layer_norm/op_host/config/ascend950/add_layer_norm_binary.json",
+    "norm/add_layer_norm/op_host/config/ascend950/add_layer_norm_simplified_key.ini",
+    "norm/add_layer_norm/op_host/config/kirin9030/add_layer_norm_binary.json",
+    "norm/add_layer_norm/op_host/config/kirinx90/add_layer_norm_binary.json",
+    "norm/add_layer_norm/op_host/config/kirinx90/add_layer_norm_simplified_key.ini",
+    "norm/add_layer_norm/op_kernel/add_layer_norm_apt.cpp",
+    "norm/add_layer_norm/op_kernel/arch35/add_layer_norm_regbase_common.h",
+    "norm/add_layer_norm/op_kernel/arch35/add_layer_norm_regbase_full_load.h",
+    "norm/add_layer_norm/op_kernel/arch35/add_layer_norm_regbase_welford.h",
+    "norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_regbase_tiling.h",
+    "norm/add_layer_norm/tests/ut/op_kernel/test_add_layer_norm_regbase.cpp"
+  ],
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "c65c631d93400b33f751f4e4c92a3686928884e6389411686ac6216c22163498",
+      "bytes": 6315,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/CMakeLists.txt"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e3031e0aaf12ebadeffc647ac38b96689d0aa671f545d3ddefcf29a2e797f792",
+      "bytes": 7386,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/README.md"
+    },
+    {
+      "path": "build.sh",
+      "sha256": "a9209d5e2a7fbe9ba5846867cb3429fab5a630ee9614d137178539d5e5dc2a6f",
+      "bytes": 55207,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "sha256": "6fa751c303865da8e5c503ab2df0f61644a1dbe01d291554748abd076ed0832d",
+      "bytes": 2346,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "common/inc/error_util.h",
+      "sha256": "11b9a3905a1515fcd9dbb5a5c9659977fbd9bd3df65e0c2e7b5faf3c9470eee3",
+      "bytes": 5855,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/error_util.h"
+    },
+    {
+      "path": "common/inc/op_api/aclnn_util.h",
+      "sha256": "4109a4c5196ce92795f58d2f9d14bcfd26540132259d2f24028bd57cc41793ae",
+      "bytes": 1531,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_api/aclnn_util.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_base.h",
+      "sha256": "59ab849460fcf7b2896f8cac6d31ca30276d8f3f52a1b24f61a19b8404232f96",
+      "bytes": 7617,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_base.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_templates_registry.h",
+      "sha256": "ce0ee3d78dab55722ef98513a419bcc0c06cd687daeca50116b9d6d5808a7c14",
+      "bytes": 20504,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_templates_registry.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_util.h",
+      "sha256": "28ae8041ed979715a2305f9da29172110410597ab6ba2c23a2dbaad5243c4afe",
+      "bytes": 2066,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_util.h"
+    },
+    {
+      "path": "docs/zh/debug/op_debug_prof.md",
+      "sha256": "cc251c1e9e97754ca02de19ea50dd37130938d728188488d4902846d35c4c4fa",
+      "bytes": 8058,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/debug/op_debug_prof.md"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "sha256": "93d778753f7a5414e70befaac37a6ff5c92c94dc6a99c32b167acd6c4317288c",
+      "bytes": 18240,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/invocation/quick_op_invocation.md"
+    },
+    {
+      "path": "norm/add_layer_norm/CMakeLists.txt",
+      "sha256": "37f67355c04096b4dee57de4c2d11e9f1710b3e312d6e85a9f105a8a780a7341",
+      "bytes": 982,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/README.md",
+      "sha256": "da41bf964522949f8561b9cf149a9d75caa5dca20360162db855b78497607840",
+      "bytes": 5626,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/README.md"
+    },
+    {
+      "path": "norm/add_layer_norm/docs/aclnnAddLayerNorm.md",
+      "sha256": "34fca4ed26b229213e9a647d6c42e840c64c93575654c55977fe52ac347482d1",
+      "bytes": 31620,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/docs/aclnnAddLayerNorm.md"
+    },
+    {
+      "path": "norm/add_layer_norm/examples/test_aclnn_add_layer_norm.cpp",
+      "sha256": "6502c148be21d701f0b39a1be2deefa818a041b6cb6fb5f699557efe9ba7bfa4",
+      "bytes": 18422,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/examples/test_aclnn_add_layer_norm.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/op_graph/CMakeLists.txt",
+      "sha256": "e732e495e4199dc4b8c4d8469a42d60e4648068ee48c82958012ea7d317aac41",
+      "bytes": 753,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_graph/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/op_graph/add_layer_norm_proto.h",
+      "sha256": "b950edfcfd77449ec89e5fbbb142ea64d1f2dc642c75e12401b2fd5089afee5a",
+      "bytes": 2655,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_graph/add_layer_norm_proto.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/CMakeLists.txt",
+      "sha256": "7710fcb7a5cb9667201bf19cbdde0d6e685db545e5e4cd87e52c155a48122757",
+      "bytes": 850,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/add_layer_norm_def.cpp",
+      "sha256": "18e13cbcea9b4e5fbf6a66ca5a856e6be1b6761d89f9c2545bdc14f4f3452172",
+      "bytes": 10548,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/add_layer_norm_def.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/add_layer_norm_infershape.cpp",
+      "sha256": "58e2c930142ec165d3bd2ebd563e618687e44951593cc10b4ec682ed6a49f757",
+      "bytes": 4253,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/add_layer_norm_infershape.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/add_layer_norm_tiling.cpp",
+      "sha256": "1f8413511becc3924dbd1703d15ad63b07f4ef755aac15399c9df1ba934318a4",
+      "bytes": 36945,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/add_layer_norm_tiling.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/add_layer_norm_tiling.h",
+      "sha256": "20831b9888a8bfc5508d8103c59371ff87a0a5ff06656680211f0ed277d56b00",
+      "bytes": 5668,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/add_layer_norm_tiling.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/config/ascend910_93/add_layer_norm_binary.json",
+      "sha256": "94fd71a161568e1baa8163f98ce2312e05054a936adc8f25f28bb00947a457d5",
+      "bytes": 24178,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/config/ascend910_93/add_layer_norm_binary.json"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/config/ascend910_93/add_layer_norm_simplified_key.ini",
+      "sha256": "4c70d3c898872f3fd69e30a93e10fbfc2fff8ac6fa9d3fd4b982660e10509d21",
+      "bytes": 1236,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/config/ascend910_93/add_layer_norm_simplified_key.ini"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/config/ascend910b/add_layer_norm_binary.json",
+      "sha256": "94fd71a161568e1baa8163f98ce2312e05054a936adc8f25f28bb00947a457d5",
+      "bytes": 24178,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/config/ascend910b/add_layer_norm_binary.json"
+    },
+    {
+      "path": "norm/add_layer_norm/op_host/config/ascend910b/add_layer_norm_simplified_key.ini",
+      "sha256": "4c70d3c898872f3fd69e30a93e10fbfc2fff8ac6fa9d3fd4b982660e10509d21",
+      "bytes": 1236,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_host/config/ascend910b/add_layer_norm_simplified_key.ini"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm.cpp",
+      "sha256": "feebc2c9c6c7d80689765daf4ffff772f73f371346f05c855a25d27d3a273f85",
+      "bytes": 8983,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm_base.h",
+      "sha256": "68fd77a770f8baef2d22592672699fc14ebf93c32d92fddaded43cb7901ca8ec",
+      "bytes": 16381,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm_base.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm_kernel.h",
+      "sha256": "9c7aeb640c3116985f91ada526531685865fbf5f50f8507da55db12c32c316e3",
+      "bytes": 68972,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm_kernel.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm_normal_special_reduce.h",
+      "sha256": "3032cef2519b37a27013ac2af3021a3af6003b43721d61661d719bcdfa6731f1",
+      "bytes": 31088,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm_normal_special_reduce.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm_single_row_less_tensor.h",
+      "sha256": "ccd6d8887193de7cf3fb96a637a37a8549a9e91891d6987a06536d5cc6ff91b4",
+      "bytes": 22016,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm_single_row_less_tensor.h"
+    },
+    {
+      "path": "norm/add_layer_norm/op_kernel/add_layer_norm_special_kernel.h",
+      "sha256": "d5fbe0d74159bf10705399618ff2bf80751f4e09e4e151c393fd1f73dd6f6b62",
+      "bytes": 17160,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/op_kernel/add_layer_norm_special_kernel.h"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/CMakeLists.txt",
+      "sha256": "266818a7bbb1ce4eb25a7825d8e37a2cd4bed19b779afdfec354aeaca4d5f8e5",
+      "bytes": 1037,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/st/aclnnAddLayerNorm/all_aclnnAddLayerNorm.json",
+      "sha256": "5e627cb6b6b542b939523f2d19e7117bf3f37e89172e0a9df34cfba1cba38f28",
+      "bytes": 387402,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/st/aclnnAddLayerNorm/all_aclnnAddLayerNorm.json"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/st/aclnnAddLayerNorm/executor_aclnnAddLayerNorm.py",
+      "sha256": "3e03cf9c5ab363f82db8210097389208a607ffb09151565f3d6362d0d571cee4",
+      "bytes": 4604,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/st/aclnnAddLayerNorm/executor_aclnnAddLayerNorm.py"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/CMakeLists.txt",
+      "sha256": "6bb96f3658ec9ec3b8fcf0d2b15863731aadb2fec8ecd4ef0420240995ae395f",
+      "bytes": 1063,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_host/CMakeLists.txt",
+      "sha256": "88868e22c92b425d7a001b388f5f10bf91a1cbf283d8310b2fe0b6f41c6210da",
+      "bytes": 1129,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_host/test_AddLayerNorm_infershape.cpp",
+      "sha256": "c2163b837b6cbaa229f4c0c909c01b678556c09246d80dd5c8c609928d0283f1",
+      "bytes": 4255,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_host/test_AddLayerNorm_infershape.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_host/test_add_layer_norm_tiling.cpp",
+      "sha256": "76ceb15cf95d084279d3410085e8e2d73531c31978b5963fcb62e5b579bd8dc6",
+      "bytes": 177090,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_host/test_add_layer_norm_tiling.cpp"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_kernel/CMakeLists.txt",
+      "sha256": "ca870400e8c15a02489764eaff116132fc9de4a797b1433f381985d7c1edd905",
+      "bytes": 748,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_kernel/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_data/compare_data.py",
+      "sha256": "53b77ccaa4b07e17c93f6e659bf7c668ab527eb53581efdad9d10552f55b8b02",
+      "bytes": 2276,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_data/compare_data.py"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_data/gen_data.py",
+      "sha256": "a55f96f4701c3d0a9f8fc0ed7d8fbdce8580e2005d2aef4664e64147636bdf54",
+      "bytes": 4539,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_data/gen_data.py"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_tiling_def.h",
+      "sha256": "3c19dde2ddb25cd253ac65d5f0fa83e118254df8a6f1be3734b850971f6fd74f",
+      "bytes": 3028,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_kernel/add_layer_norm_tiling_def.h"
+    },
+    {
+      "path": "norm/add_layer_norm/tests/ut/op_kernel/test_add_layer_norm.cpp",
+      "sha256": "398ffa9c0935ee1bf2eb25f1b9922bc0e24a9ea527d9eabc8baa01b85334e987",
+      "bytes": 19304,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_layer_norm/tests/ut/op_kernel/test_add_layer_norm.cpp"
+    },
+    {
+      "path": "norm/norm_common/op_host/op_api/norm_tensor_util.cpp",
+      "sha256": "2d8b4664359eb7f3e1df8a39547cec451544bc71a2aa5c432b4a589983fea771",
+      "bytes": 9097,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/norm_common/op_host/op_api/norm_tensor_util.cpp"
+    },
+    {
+      "path": "norm/norm_common/op_host/op_api/norm_tensor_util.h",
+      "sha256": "3ba2432f6c9139a6138b66abad277ee689e6d70da0925395714b688d8265cff7",
+      "bytes": 2251,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/norm_common/op_host/op_api/norm_tensor_util.h"
+    }
+  ]
+}

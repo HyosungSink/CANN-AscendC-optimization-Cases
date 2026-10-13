@@ -1,0 +1,334 @@
+{
+  "repository": "https://gitcode.com/cann/ops-nn.git",
+  "ref": "v9.0.0",
+  "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+  "scope": "non-arch35 A2/A3 operator paths plus selected shared dependencies; full fixed repository required for build",
+  "omitted_dedicated_paths": [
+    "norm/add_rms_norm_quant/op_host/add_rms_norm_quant_tiling_arch35.cpp",
+    "norm/add_rms_norm_quant/op_host/config/ascend310p/add_rms_norm_quant_binary.json",
+    "norm/add_rms_norm_quant/op_host/config/ascend310p/add_rms_norm_quant_simplified_key.ini",
+    "norm/add_rms_norm_quant/op_host/config/ascend950/add_rms_norm_quant_binary.json",
+    "norm/add_rms_norm_quant/op_host/config/ascend950/add_rms_norm_quant_simplified_key.ini",
+    "norm/add_rms_norm_quant/op_host/config/kirin9030/add_rms_norm_quant_binary.json",
+    "norm/add_rms_norm_quant/op_host/config/kirinx90/add_rms_norm_quant_binary.json",
+    "norm/add_rms_norm_quant/op_host/config/kirinx90/add_rms_norm_quant_simplified_key.ini",
+    "norm/add_rms_norm_quant/op_kernel/arch35/add_rms_norm_quant_regbase.h",
+    "norm/add_rms_norm_quant/op_kernel/arch35/add_rms_norm_quant_regbase_common.h",
+    "norm/add_rms_norm_quant/op_kernel/arch35/add_rms_norm_quant_regbase_perf.h",
+    "norm/add_rms_norm_quant/op_kernel/arch35/add_rms_norm_quant_regbase_split_reduce.h"
+  ],
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "c65c631d93400b33f751f4e4c92a3686928884e6389411686ac6216c22163498",
+      "bytes": 6315,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/CMakeLists.txt"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e3031e0aaf12ebadeffc647ac38b96689d0aa671f545d3ddefcf29a2e797f792",
+      "bytes": 7386,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/README.md"
+    },
+    {
+      "path": "build.sh",
+      "sha256": "a9209d5e2a7fbe9ba5846867cb3429fab5a630ee9614d137178539d5e5dc2a6f",
+      "bytes": 55207,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "sha256": "6fa751c303865da8e5c503ab2df0f61644a1dbe01d291554748abd076ed0832d",
+      "bytes": 2346,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "common/inc/error_util.h",
+      "sha256": "11b9a3905a1515fcd9dbb5a5c9659977fbd9bd3df65e0c2e7b5faf3c9470eee3",
+      "bytes": 5855,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/error_util.h"
+    },
+    {
+      "path": "common/inc/op_api/aclnn_util.h",
+      "sha256": "4109a4c5196ce92795f58d2f9d14bcfd26540132259d2f24028bd57cc41793ae",
+      "bytes": 1531,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_api/aclnn_util.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_base.h",
+      "sha256": "59ab849460fcf7b2896f8cac6d31ca30276d8f3f52a1b24f61a19b8404232f96",
+      "bytes": 7617,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_base.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_templates_registry.h",
+      "sha256": "ce0ee3d78dab55722ef98513a419bcc0c06cd687daeca50116b9d6d5808a7c14",
+      "bytes": 20504,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_templates_registry.h"
+    },
+    {
+      "path": "common/inc/op_host/tiling_util.h",
+      "sha256": "28ae8041ed979715a2305f9da29172110410597ab6ba2c23a2dbaad5243c4afe",
+      "bytes": 2066,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/common/inc/op_host/tiling_util.h"
+    },
+    {
+      "path": "docs/zh/debug/op_debug_prof.md",
+      "sha256": "cc251c1e9e97754ca02de19ea50dd37130938d728188488d4902846d35c4c4fa",
+      "bytes": 8058,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/debug/op_debug_prof.md"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "sha256": "93d778753f7a5414e70befaac37a6ff5c92c94dc6a99c32b167acd6c4317288c",
+      "bytes": 18240,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/invocation/quick_op_invocation.md"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/CMakeLists.txt",
+      "sha256": "b57c0db3eed946384dd2929652da5edb676a0b8445406a31bbd07153f73aac86",
+      "bytes": 1006,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/README.md",
+      "sha256": "8621890a7768369149908b736448e63552230ff8a9657c2d736dd684a238ab02",
+      "bytes": 6681,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/README.md"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/docs/aclnnAddRmsNormQuant.md",
+      "sha256": "5dc511482db8c90528584609e3e429f861d6473155780fbb44bf340b3d89a08e",
+      "bytes": 24771,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/docs/aclnnAddRmsNormQuant.md"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/examples/test_aclnn_add_rms_norm_quant.cpp",
+      "sha256": "85ce58678afce2ca27a60fb3b57c12267a556b3a8145a1f479b9d9d2559001ec",
+      "bytes": 8735,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/examples/test_aclnn_add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_graph/CMakeLists.txt",
+      "sha256": "4e7a827305b85db928d5e47943b6dda1acce88d66131c30e26c912fdb8ecaaaa",
+      "bytes": 780,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_graph/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_graph/add_rms_norm_quant_proto.h",
+      "sha256": "63c25c3164fceadf6e39f94c11cee63c089f1853d9d89b7cc4ab26756cdb94f0",
+      "bytes": 4668,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_graph/add_rms_norm_quant_proto.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/CMakeLists.txt",
+      "sha256": "d53ce33d44132b12d43d41da66737599c0bcbcd8698447ff3cd47fa2de3bb968",
+      "bytes": 836,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/add_rms_norm_quant_def.cpp",
+      "sha256": "849ff3373d6187117cef8607b7d7a3a7ed6cec49f88531705c9d26dc9dfcf982",
+      "bytes": 12675,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/add_rms_norm_quant_def.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/add_rms_norm_quant_infershape.cpp",
+      "sha256": "3919d18e6274c097613e580bcf542756404ee5db2956278d4f233bafc7fd2f12",
+      "bytes": 3486,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/add_rms_norm_quant_infershape.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/add_rms_norm_quant_tiling.cpp",
+      "sha256": "8d2c024840e02d797d07f606f27c96a49d3ad01c39c7b4d57a1d420869a61c91",
+      "bytes": 17402,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/add_rms_norm_quant_tiling.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/add_rms_norm_quant_tiling.h",
+      "sha256": "0ff46d48658de148dd316a413a8c6e61999462ccb5ced6b6eab5ce818efd1371",
+      "bytes": 10724,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/add_rms_norm_quant_tiling.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/config/ascend910_93/add_rms_norm_quant_binary.json",
+      "sha256": "0327d4dc38d9090a3336ee18d71b435e40e78915b8715b6e125ce7bf955bd621",
+      "bytes": 9403,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/config/ascend910_93/add_rms_norm_quant_binary.json"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/config/ascend910_93/add_rms_norm_quant_simplified_key.ini",
+      "sha256": "a74fa445dc994b1e0b5f5130fe987e5569f3960261f4d67ab345c0047d11f129",
+      "bytes": 1239,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/config/ascend910_93/add_rms_norm_quant_simplified_key.ini"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/config/ascend910b/add_rms_norm_quant_binary.json",
+      "sha256": "0327d4dc38d9090a3336ee18d71b435e40e78915b8715b6e125ce7bf955bd621",
+      "bytes": 9403,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/config/ascend910b/add_rms_norm_quant_binary.json"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/config/ascend910b/add_rms_norm_quant_simplified_key.ini",
+      "sha256": "a74fa445dc994b1e0b5f5130fe987e5569f3960261f4d67ab345c0047d11f129",
+      "bytes": 1239,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/config/ascend910b/add_rms_norm_quant_simplified_key.ini"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant.cpp",
+      "sha256": "cec8ff605e75ad79b587014822b4a9b30a40e1103b074e4e6bc9333be707a221",
+      "bytes": 12651,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant.h",
+      "sha256": "f43070cc6eb843d4d156cc1ede4205b21270d606fce59fe3a7d8b85f716e59be",
+      "bytes": 5091,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant_v2.h",
+      "sha256": "ec8e4b4986040a453e5c97049e9a4ccd0d30c2233c3a22f3e16e4c7ce6e7f2fb",
+      "bytes": 5513,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/op_api/aclnn_add_rms_norm_quant_v2.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/op_api/add_rms_norm_quant.cpp",
+      "sha256": "b0b92b46babf155e9c7bc5f9a254ec5eb38cafb8a1348bc490e423038c67c122",
+      "bytes": 6215,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/op_api/add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_host/op_api/add_rms_norm_quant.h",
+      "sha256": "2b22384c2eb2c36aada5523d647db909d18ec8b6b4f9222d8956edd7d9369ce1",
+      "bytes": 2230,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_host/op_api/add_rms_norm_quant.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.cpp",
+      "sha256": "640ad38d276e8facb1fc807ac4ab23d6c1e26225a19d1ec62765e7822c492063",
+      "bytes": 2214,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.h",
+      "sha256": "32251d60b335043fc48c146111a010277475f5d0331e308e33d7d2061c93ae3c",
+      "bytes": 16560,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_apt.cpp",
+      "sha256": "081f08de5826ec20b3ca075a605683f718d1e2ea25abb67a067a03cb62df4233",
+      "bytes": 12960,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_apt.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_base.h",
+      "sha256": "14f701d8a68e93bc7b018ab122c07c06b65fc287845d1f54f6c19f29a9816907",
+      "bytes": 11276,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_base.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_single_n.h",
+      "sha256": "4f2681690a2e426b9a5309f49d6f46e943554845da3be8cf383dc06ed06c3633",
+      "bytes": 22475,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_single_n.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_split_d.h",
+      "sha256": "cdd45eba2043e21d06066e2579e6589a7a2b938d63208c420a73e31337ebb2a2",
+      "bytes": 19832,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_split_d.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/op_kernel/reduce_common.h",
+      "sha256": "40ad56b201d52e264d2ec4f72af8816eb815e479e5d3fafa4f7cb4dbd673d526",
+      "bytes": 7122,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/op_kernel/reduce_common.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/CMakeLists.txt",
+      "sha256": "d427a6b248a156491ead5773e0d1c1e5767d0ef7cadb7032ae4c57742ea99659",
+      "bytes": 1065,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/st/aclnnAddRmsNormQuant/all_aclnnAddRmsNormQuant.json",
+      "sha256": "8936383465489e043c41fc164a58f310efbf5cf56fbe5e3eb3d1c8728673c85c",
+      "bytes": 520904,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/st/aclnnAddRmsNormQuant/all_aclnnAddRmsNormQuant.json"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/st/aclnnAddRmsNormQuant/executor_aclnnAddRmsNormQuant.py",
+      "sha256": "e753dd9a9e7ded14e6c4c931c4d687e50f98f7b95ed37d520500882bcc23bef0",
+      "bytes": 8049,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/st/aclnnAddRmsNormQuant/executor_aclnnAddRmsNormQuant.py"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/CMakeLists.txt",
+      "sha256": "08fb6c6f758a9d49c816d4b4504567eb90acbaed80a2847510ae4bbd4f316422",
+      "bytes": 1087,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_host/CMakeLists.txt",
+      "sha256": "28bddb7e6af0a1d9830d1035e58ec49d22fba2c086f13c1712e9ae94a42befed",
+      "bytes": 1152,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_host/test_AddRmsNormQuant_infershape.cpp",
+      "sha256": "ca07332368e1f3b901984a3d27fe6e1a7f7030be4384da8675fb514a362a221c",
+      "bytes": 18855,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_host/test_AddRmsNormQuant_infershape.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_host/test_aclnn_add_rms_norm_quant.cpp",
+      "sha256": "373a87d7dd6fb8b1324ad127945b59c07a39ba854e360a6879f1c8bb435db128",
+      "bytes": 13607,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_host/test_aclnn_add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_host/test_add_rms_norm_quant_tiling.cpp",
+      "sha256": "14a64bdd6baaf8210dfe71722ef7f546d61e93bd0aefd5fce99483f67d66171a",
+      "bytes": 123801,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_host/test_add_rms_norm_quant_tiling.cpp"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_kernel/CMakeLists.txt",
+      "sha256": "2287f65f3505bd7c21ed3e409de66357cd80e3f13e967a884455dabffe14c0e4",
+      "bytes": 776,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_kernel/CMakeLists.txt"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_kernel/add_rms_norm_quant_tiling_def.h",
+      "sha256": "e0c920d9e8274fcbff1caa4f965e7dc1ffd4de13a5c215b4083cf25c996e7ab2",
+      "bytes": 2973,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_kernel/add_rms_norm_quant_tiling_def.h"
+    },
+    {
+      "path": "norm/add_rms_norm_quant/tests/ut/op_kernel/test_add_rms_norm_quant.cpp",
+      "sha256": "7ceb648a0bab3cb1c2400e5668ad96ca5c094bf59531084a16e503a9381a1842",
+      "bytes": 10449,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/add_rms_norm_quant/tests/ut/op_kernel/test_add_rms_norm_quant.cpp"
+    },
+    {
+      "path": "norm/norm_common/op_host/op_api/norm_tensor_util.cpp",
+      "sha256": "2d8b4664359eb7f3e1df8a39547cec451544bc71a2aa5c432b4a589983fea771",
+      "bytes": 9097,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/norm_common/op_host/op_api/norm_tensor_util.cpp"
+    },
+    {
+      "path": "norm/norm_common/op_host/op_api/norm_tensor_util.h",
+      "sha256": "3ba2432f6c9139a6138b66abad277ee689e6d70da0925395714b688d8265cff7",
+      "bytes": 2251,
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/norm_common/op_host/op_api/norm_tensor_util.h"
+    }
+  ]
+}

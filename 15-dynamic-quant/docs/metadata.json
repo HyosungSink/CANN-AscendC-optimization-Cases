@@ -1,0 +1,54 @@
+{
+  "id": "15-dynamic-quant",
+  "title": "DynamicQuant 的DeepSeek尺寸批量行与长行两遍扫描",
+  "language": "zh-CN",
+  "retrieved_at": "2026-10-08",
+  "scope": "operator-level",
+  "upstream": {
+    "repository": "https://gitcode.com/cann/ops-nn.git",
+    "tag": "v9.0.0",
+    "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+    "operator": "dynamic_quant",
+    "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+    "release_evidence_commit": "c847330e202fbe9e724ef36c6219e49f42cda312"
+  },
+  "compatibility": {
+    "cann_version": "9.0.0",
+    "soc_targets": [
+      "ascend910b",
+      "ascend910_93"
+    ],
+    "excluded_soc": [
+      "ascend950",
+      "ascend310p"
+    ],
+    "hardware_evidence": {
+      "file": "quant/dynamic_quant/op_host/dynamic_quant_def.cpp",
+      "lines": [
+        51,
+        52
+      ]
+    },
+    "future_cann_versions": "Use matching release source; no blanket ABI guarantee"
+  },
+  "analysis_focus": "SetSpecialTilingForDs/TilingKey100，通用多行UB预算与超长行两遍扫描。",
+  "source_snapshot": {
+    "files": 28,
+    "standalone_buildable": false
+  },
+  "benchmark": {
+    "public_ab_latency_available": false,
+    "public_ab_latency_us": null,
+    "end_to_end_numbers_used": false
+  },
+  "validation": {
+    "source_hashes_verified": true,
+    "shell_syntax_checked": true,
+    "npu_compiled": false,
+    "npu_accuracy_tested": false,
+    "npu_benchmarked": false,
+    "host": "macOS without NPU"
+  },
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "implementation_language": "Ascend C"
+}

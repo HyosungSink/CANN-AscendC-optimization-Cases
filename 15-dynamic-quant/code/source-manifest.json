@@ -1,0 +1,184 @@
+{
+  "repository": "https://gitcode.com/cann/ops-nn.git",
+  "tag": "v9.0.0",
+  "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+  "retrieved_date": "2026-10-08",
+  "files": [
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant.cpp",
+      "bytes": 4044,
+      "sha256": "782586e96ac0958b2adfc1406ff965fb5cea7bce0049f44f700d239f519c71c1",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant.h",
+      "bytes": 12370,
+      "sha256": "71b84ee68fee7cb3d36196dff49b31676211a5b35038da39a7350bdab350a2f0",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_apt.cpp",
+      "bytes": 3557,
+      "sha256": "0225ae5dbd5e9142a3e77bccafa0adca64d2a2de29d9bd261da898037d3ac760",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_apt.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_base.h",
+      "bytes": 11890,
+      "sha256": "6adbf77494d68434e8b633850b909bafac502b6ca833275feea72a576af19555",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_base.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_db.h",
+      "bytes": 15762,
+      "sha256": "446cd1b48e260d7a27eff797e68be5b6ff54e909b00a8470c6da3834a79dd407",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_db.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_large_shape_opt.h",
+      "bytes": 21510,
+      "sha256": "7a1d6b365ffedffe3cc0f5dd552704ad191733601c6df042880c7d582387c357",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_large_shape_opt.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_moe.h",
+      "bytes": 14677,
+      "sha256": "de44a1c7c285e3f6741bd1cd22a15aec87634f59780d198ff2cde9f6859b4a6c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_moe.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_moe_large_shape.h",
+      "bytes": 22838,
+      "sha256": "733f457946ddd7796b4113258bbe3fddf23ea0a190cc4dbbae596384a3fb4721",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_moe_large_shape.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_multi_row.h",
+      "bytes": 13025,
+      "sha256": "597ce221729405c4df25d1034ebdbd1713122f0af148f261de06c36be653a4da",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_multi_row.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_kernel/dynamic_quant_single_row.h",
+      "bytes": 15284,
+      "sha256": "b97aabed0843619362d04e5d193d021921dc54d5c4e78e391ae708d37d8b8378",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_kernel/dynamic_quant_single_row.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/CMakeLists.txt",
+      "bytes": 1033,
+      "sha256": "36b48f8e55b9edcd48b6d6fc774d031e1de1a51274ee10fc5bef409bc355d4a3",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/dynamic_quant_def.cpp",
+      "bytes": 8261,
+      "sha256": "c7cf0bc68298d6947de0fadac8f4c515dc7ba08852d8f14d60a1f47f90e26ae0",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/dynamic_quant_def.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/dynamic_quant_infershape.cpp",
+      "bytes": 3492,
+      "sha256": "e887679e9ebb2771d592a0e51659ae1f10b1974b507569a3e285954551e75970",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/dynamic_quant_infershape.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/dynamic_quant_tiling.cpp",
+      "bytes": 30122,
+      "sha256": "de353b6b8a423ed5855801d5b3a6e2e8a015331d0a335112f070805195d043a4",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/dynamic_quant_tiling.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/dynamic_quant_tiling.h",
+      "bytes": 4015,
+      "sha256": "b33443a4bcea03a882f985bcc64d6a37c358601f512e2e05cd3eeb40224d756c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/dynamic_quant_tiling.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant.cpp",
+      "bytes": 24795,
+      "sha256": "9d46b1c6fd5870201da4f2c4dd68c163291b59a3649ae14d1daacfa15131ec46",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant.h",
+      "bytes": 1491,
+      "sha256": "8dc3d2df6498c559800b4ca4255f97274ac6fe4ccde35b94786876598c0b2dc8",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant_v3.h",
+      "bytes": 4388,
+      "sha256": "5079a8a0a4d777f4c7e48a156f5f715e113c88dc86905dad67f52b8396184124",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/op_api/aclnn_dynamic_quant_v3.h"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/op_api/dynamic_quant.cpp",
+      "bytes": 2135,
+      "sha256": "2985afef78d7d4b10e6bd92b60603c9083d889b0af9ae08021f474dbb470ea1b",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/op_api/dynamic_quant.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/op_host/op_api/dynamic_quant.h",
+      "bytes": 1000,
+      "sha256": "4f6da8bde2acd6335c6c4b9b05abe8067d054081c6feb53547446978ea2a7220",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/op_host/op_api/dynamic_quant.h"
+    },
+    {
+      "path": "quant/dynamic_quant/examples/test_aclnn_dynamic_quant.cpp",
+      "bytes": 7502,
+      "sha256": "6f34bf889caecd30e633091f926a9597aca42a8e28234356ed5050dd31e85b5d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/examples/test_aclnn_dynamic_quant.cpp"
+    },
+    {
+      "path": "quant/dynamic_quant/README.md",
+      "bytes": 4570,
+      "sha256": "98d9e5e3e805ee504d2d7845b025b2ed15fec60406c3d835b8e913554fc74f8e",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/README.md"
+    },
+    {
+      "path": "quant/dynamic_quant/CMakeLists.txt",
+      "bytes": 1212,
+      "sha256": "a5cd4f1a6f1927d1d296e19023ae6ac30e313ee6aaf5ebdb032d3badc39da07b",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/quant/dynamic_quant/CMakeLists.txt"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 5278,
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7386,
+      "sha256": "e3031e0aaf12ebadeffc647ac38b96689d0aa671f545d3ddefcf29a2e797f792",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/README.md"
+    },
+    {
+      "path": "build.sh",
+      "bytes": 55207,
+      "sha256": "a9209d5e2a7fbe9ba5846867cb3429fab5a630ee9614d137178539d5e5dc2a6f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "bytes": 2346,
+      "sha256": "6fa751c303865da8e5c503ab2df0f61644a1dbe01d291554748abd076ed0832d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "bytes": 18240,
+      "sha256": "93d778753f7a5414e70befaac37a6ff5c92c94dc6a99c32b167acd6c4317288c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/invocation/quick_op_invocation.md"
+    }
+  ],
+  "omitted": [
+    "arch35/950 implementations",
+    "arch20/310P implementations",
+    "tests",
+    "configuration JSON knowledge bases",
+    "other build dependencies"
+  ],
+  "standalone_buildable": false
+}

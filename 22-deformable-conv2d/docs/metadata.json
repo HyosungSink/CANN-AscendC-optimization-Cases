@@ -1,0 +1,58 @@
+{
+  "id": "22-deformable-conv2d",
+  "title": "可变形卷积的坐标复用、相邻访存合并与Cube融合",
+  "language": "zh-CN",
+  "retrieved_at": "2026-10-08",
+  "scope": "operator-level",
+  "upstream": {
+    "repository": "https://gitcode.com/cann/ops-nn.git",
+    "tag": "v9.0.0",
+    "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+    "operator": "deformable_conv2d",
+    "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+    "release_evidence_commit": "c847330e202fbe9e724ef36c6219e49f42cda312"
+  },
+  "compatibility": {
+    "cann_version": "9.0.0",
+    "soc_targets": [
+      "ascend910b",
+      "ascend910_93"
+    ],
+    "supported_products": [
+      "Atlas A2 training/inference series",
+      "Atlas A3 training/inference series"
+    ],
+    "excluded_soc": [
+      "ascend950"
+    ],
+    "hardware_evidence": {
+      "file": "conv/deformable_conv2d/op_host/deformable_conv2d_def.cpp",
+      "lines": [
+        60,
+        61
+      ]
+    },
+    "future_cann_versions": "Use matching release source; no blanket ABI guarantee"
+  },
+  "analysis_focus": "A2/A3的FP32主路径；2048采样点预算、小C二维DMA、标准坐标Adds复用、插值输入重排和GEMM。",
+  "source_snapshot": {
+    "files": 19,
+    "standalone_buildable": false
+  },
+  "benchmark": {
+    "public_ab_latency_available": false,
+    "public_ab_latency_us": null,
+    "public_version_summary_claims": [],
+    "end_to_end_numbers_used": false
+  },
+  "validation": {
+    "source_hashes_verified": true,
+    "shell_syntax_checked": true,
+    "npu_compiled": false,
+    "npu_accuracy_tested": false,
+    "npu_benchmarked": false,
+    "host": "macOS without NPU"
+  },
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "implementation_language": "Ascend C"
+}

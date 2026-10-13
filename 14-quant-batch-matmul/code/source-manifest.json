@@ -1,0 +1,460 @@
+{
+  "repository": "https://gitcode.com/cann/ops-nn.git",
+  "tag": "v9.0.0",
+  "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+  "retrieved_date": "2026-10-08",
+  "files": [
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.cpp",
+      "bytes": 35027,
+      "sha256": "24dd59978aed5de81be6d033064355f1de70bbbca1fcdeaa9a897775fb568602",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.h",
+      "bytes": 12403,
+      "sha256": "f99e455ff3471ff0eb42be60864173baedbb04725114b22b0498d18f26cb9557",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_apt.cpp",
+      "bytes": 22662,
+      "sha256": "6f8eaff0e2fe3c9c73fb7385501d1787591ffd942229d7512e6818026515ee6e",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_apt.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_base.h",
+      "bytes": 16302,
+      "sha256": "e2a1736b2ce09e5575df04a05f97bb6ccaff1e80b2d2509d85bf422874d8f0e1",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_base.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_basic_epilogue.h",
+      "bytes": 22401,
+      "sha256": "cf73f82a0818272f261e7ee41eb5d04e95fb59453aa8576988c5d42e581e5a9e",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_basic_epilogue.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16.h",
+      "bytes": 26200,
+      "sha256": "0e976010ef6a1ee4009f9830e4e6ff7debb7b8dcf332e1ed885bf1d2ce2a7709",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16_basic.h",
+      "bytes": 18437,
+      "sha256": "14ae19d51828ed3624654278fc063f37efee991ecfd103417603fd71f17282a2",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16_basic.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16_opt.h",
+      "bytes": 26882,
+      "sha256": "10cd5eb068f59fa9bdca1223cafd5cb48588f3034c17efbbcea2fddc6908064f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_bf16_opt.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_block.h",
+      "bytes": 9069,
+      "sha256": "ea14a572780c9342ea22767d22b792ef15eeef94fc6dbe668a11873367be8aa7",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_block.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_cube_basic.h",
+      "bytes": 6819,
+      "sha256": "25e26d3c9e3f885a68c1471ee160fbc88b99d1c3d2a1c89b144bbcc30d29f5e8",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_cube_basic.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_init_output.h",
+      "bytes": 6903,
+      "sha256": "3a4f81dabf58306d7da2d8b1786a69173e37b91e981890d9bae6c2dfec21bdd8",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_init_output.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_kernel_tiling_data.h",
+      "bytes": 2954,
+      "sha256": "3663052c9c867d0687bb902dd053bd7e7e5a99e58a2579d79d79dfac5bcb4603",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_kernel_tiling_data.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken.h",
+      "bytes": 27410,
+      "sha256": "d1123a4e8ca3e1c1d3e8f5424975cadc03125be18b402bccb81dc6ce7553618d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_arch20.h",
+      "bytes": 31232,
+      "sha256": "ede0eac961cad3075acbe7b2cc3880f13a3832da3091d5ac5126998b9bf780f9",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_arch20.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_basic.h",
+      "bytes": 13570,
+      "sha256": "4f72dd1a885acfd375b590b5137d217a90a44b62cdf3c4880fe8e6b9432865fe",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_basic.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_opt.h",
+      "bytes": 28322,
+      "sha256": "093ddea819cd04af2de1cb24f2d57749cfe22e568cc51234af76bfe9b883bab9",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_pertoken_opt.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_tiling_key.h",
+      "bytes": 20253,
+      "sha256": "582c9c76c8e0f61d2d9c9ff316108eb120b094778a3fe3be7ddd76fa71126cf9",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_tiling_key.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_update.h",
+      "bytes": 7282,
+      "sha256": "c111a9b8209520c2c51f6eac1fa85e1d1bb2b1d7fe44af7a266caedbd62ae0e4",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_update.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/platform_util.cpp",
+      "bytes": 2145,
+      "sha256": "931c0adbbf7a4fc62b35a1b9d15e430ee6bb06a6bf86230bc8fa0b0f5b89a3f2",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/platform_util.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/platform_util.h",
+      "bytes": 1207,
+      "sha256": "0b3888c82d40e362ddc0f9eb15280789d7570042712945aac69134eeb8c25c7f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/platform_util.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_info_factory.h",
+      "bytes": 1871,
+      "sha256": "9867f772671bac030b80b99710535c2a6aa30babd5dd5d814e6eac3d83af102d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_info_factory.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_basic_tiling.cpp",
+      "bytes": 67006,
+      "sha256": "bd864f6fd4fdb3375a6e251a200c68622432e1af61432e1cab251d00b69461d0",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_basic_tiling.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_basic_tiling.h",
+      "bytes": 7036,
+      "sha256": "ce801fa61e8fd78f44329ede84e7855a501a250714dbcee52d73a2975e3d34eb",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_basic_tiling.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_compile_info.h",
+      "bytes": 1356,
+      "sha256": "9e253fa70bd0ed8ebf463dd5c9ff78a7e82cbf3873611ccd076b6fd032f2f08c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_compile_info.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling.cpp",
+      "bytes": 81928,
+      "sha256": "66e0107de9264fb148e8431a36f42b089925af646ca4a120482d83f4d23fadde",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling.h",
+      "bytes": 5152,
+      "sha256": "cdfa5ca40a50144d0edd195622169b96c376323cfcc5e1b49d3eb3ae0bfe1821",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_arch20.cpp",
+      "bytes": 7358,
+      "sha256": "56dcbd38e526a5a2a7c1e3b45feaa59e3ea8425fccfec8a485bdff3c1a388056",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_arch20.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_arch20.h",
+      "bytes": 2025,
+      "sha256": "56a4c2591ef3c63d3a8443e4fe01033a12ade37decb1dc373e6455f6e06091b3",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_arch20.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_base.cpp",
+      "bytes": 42779,
+      "sha256": "d27ea9bbea01655d6da973a60feb558799658ec4f78a60794e6d7e1ed88d1d55",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_base.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_base.h",
+      "bytes": 10898,
+      "sha256": "1f756c7272d4550db1e71934fc87d080b8fdc4591eec09b25dfa4f9794c3ad42",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_base.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_cache.cpp",
+      "bytes": 2421,
+      "sha256": "21aaf47572283dc9f75aacd4e9126f2d58d0db0f9db8231f860e94d6a1c7dba2",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_cache.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_cache.h",
+      "bytes": 2950,
+      "sha256": "d8fa43bc37b1e8c7874c074f66395c6ad06a88b77d40219b4c395465348034c7",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/op_tiling/quant_batch_matmul_v3_tiling_cache.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/quant_batch_matmul_v3_def.cpp",
+      "bytes": 106400,
+      "sha256": "01a4e4f6114265daaf78114c82077abb3c91b410f0c20ca263639b8d3a511c59",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/quant_batch_matmul_v3_def.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_host/quant_batch_matmul_v3_infershape.cpp",
+      "bytes": 2602,
+      "sha256": "d1b0249b634827c2bd207cdaad3d7c145ca2fcf31b5f5c94af98e57e6bc57b9f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_host/quant_batch_matmul_v3_infershape.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/examples/test_aclnn_quant_matmul_v3_at2_at3.cpp",
+      "bytes": 13816,
+      "sha256": "34190ec7f31d54fc1c9391cdb9a8555a090677e8d5a27fd4914d8047ebfc4da1",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/examples/test_aclnn_quant_matmul_v3_at2_at3.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/README.md",
+      "bytes": 9535,
+      "sha256": "fc98797092e435045d30665c13e14abf7594b42c3d928aa16a26f56169cab85a",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/README.md"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/CMakeLists.txt",
+      "bytes": 1085,
+      "sha256": "28b5a41eb86c5b0767c6175669900d3f88a8d3c4979518f0637464844610d6c3",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/CMakeLists.txt"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 5278,
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7386,
+      "sha256": "e3031e0aaf12ebadeffc647ac38b96689d0aa671f545d3ddefcf29a2e797f792",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/README.md"
+    },
+    {
+      "path": "build.sh",
+      "bytes": 55207,
+      "sha256": "a9209d5e2a7fbe9ba5846867cb3429fab5a630ee9614d137178539d5e5dc2a6f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/build.sh"
+    },
+    {
+      "path": "cmake/third_party/opbase.cmake",
+      "bytes": 2346,
+      "sha256": "6fa751c303865da8e5c503ab2df0f61644a1dbe01d291554748abd076ed0832d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/cmake/third_party/opbase.cmake"
+    },
+    {
+      "path": "docs/zh/invocation/quick_op_invocation.md",
+      "bytes": 18240,
+      "sha256": "93d778753f7a5414e70befaac37a6ff5c92c94dc6a99c32b167acd6c4317288c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/docs/zh/invocation/quick_op_invocation.md"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v3.h",
+      "bytes": 3663,
+      "sha256": "62564bf2a560696bffffc081ede542e9a4b500ef50616f8c63b9d0fdd4195b6d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v3.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v4.cpp",
+      "bytes": 103549,
+      "sha256": "5c63ab3ac2565cd83968869c80b128ae5eece7415100b5dffc298c76009614cb",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v4.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v4.h",
+      "bytes": 3835,
+      "sha256": "4d88526334fec9e62264fa5be4d7a41278a9068416ffbb57be3654f097001b1d",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_v4.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_weight_nz.h",
+      "bytes": 3775,
+      "sha256": "eed138dfeac2e19020e9497363b1ca0ec6fb6c69984eef235ccba947b33afc25",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/aclnn_quant_matmul_weight_nz.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/quant_matmul_checker.cpp",
+      "bytes": 71716,
+      "sha256": "988d81d47694ea1fb338a259b342adc2855a42aa15f3a0555fc7454c9218b305",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/quant_matmul_checker.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/quant_matmul_checker.h",
+      "bytes": 4651,
+      "sha256": "855f7feb64627994461b67bcc9938112a05581cae0e1fe1a44adf2596edfb528",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/quant_matmul_checker.h"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/quant_matmul_v3.cpp",
+      "bytes": 3653,
+      "sha256": "747bfe750dc0618dee9dca1e177471ce8317ff16674f956edd24801599de8d79",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/quant_matmul_v3.cpp"
+    },
+    {
+      "path": "matmul/quant_batch_matmul_v3/op_api/quant_matmul_v3.h",
+      "bytes": 1325,
+      "sha256": "f1c4f786363af0b1f52be80096770a6cb68c77d1b5aa994bad7849dc8b0a041c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/quant_batch_matmul_v3/op_api/quant_matmul_v3.h"
+    },
+    {
+      "path": "matmul/common/op_host/CMakeLists.txt",
+      "bytes": 766,
+      "sha256": "325d1f35b41fa3c18f48ae3dcf710fd06e66748a7cb3ecc5e54b20bc9ca179d2",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/CMakeLists.txt"
+    },
+    {
+      "path": "matmul/common/op_host/math_util.h",
+      "bytes": 1728,
+      "sha256": "f5f2bc937dbe9f0f281425a312a4f18a23e53e280bffc94e8724de09afb53009",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/math_util.h"
+    },
+    {
+      "path": "matmul/common/op_host/matmul_common_infershape.cpp",
+      "bytes": 31920,
+      "sha256": "ef1f5251c4fad7cd17b930e4b927e55004501e81c5faac61684302c495a3ce6f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/matmul_common_infershape.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/matmul_common_infershape.h",
+      "bytes": 1482,
+      "sha256": "25c62540eb0f91e806c42b7b0a58dd224ea3e9a3ee7cfb2948f60d9d6671f9fc",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/matmul_common_infershape.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/batch_matmul.cpp",
+      "bytes": 7739,
+      "sha256": "fa9d129836fba1b5f7041233f132265e3da4bcd956beea36c67b8ef0e7f74593",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/batch_matmul.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/batch_matmul.h",
+      "bytes": 2379,
+      "sha256": "b9ce40e6ca933f1e398ef511b3f5f66a026da7a713b7e9808cf8f9f8c9ddab8b",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/batch_matmul.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/batch_matmul_util.cpp",
+      "bytes": 60153,
+      "sha256": "bc75fe9a4f850b4890c60dcc20291b2c126b30ce4d6afc809b7646d34313115c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/batch_matmul_util.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/batch_matmul_util.h",
+      "bytes": 3206,
+      "sha256": "e2d5f0b6ef9ac09ded6eb613a7920deef5e952b7918be1706ce0132f2039f126",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/batch_matmul_util.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/cube_util.cpp",
+      "bytes": 14957,
+      "sha256": "e17b5261564b823820e180da873a7e9ba9da1b03bcc4733636199a4e55e537ed",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/cube_util.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/cube_util.h",
+      "bytes": 3187,
+      "sha256": "1c559ddcf59a4dfa54cc853f006e1e02694a2eaa78551e037fd6aff3a0cf45c2",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/cube_util.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/fused_matmul.cpp",
+      "bytes": 2671,
+      "sha256": "cdb063514ec629cf47b2714ad8baea1b90821a930d65b3cc5a8565f7bc4a89e5",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/fused_matmul.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/fusedmatmul.h",
+      "bytes": 1117,
+      "sha256": "e5a481fb7cc3db43f1a4d92b869bcf9fab65a919b1f66ef344fab06b10dc1c32",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/fusedmatmul.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul.cpp",
+      "bytes": 10525,
+      "sha256": "103f0eb7d10477e53f79969fe2a210431adb79dddd8720c61f280de9db0e983c",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul.h",
+      "bytes": 4281,
+      "sha256": "1f4142caed8929f8f347dd32f5e3147a517ddcdcd1ff22adb47a442386a9a04b",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul_util.cpp",
+      "bytes": 114243,
+      "sha256": "3848b36bc939f3e93a31abf473dba6a9870b98b46d328a4f9380a9840499ba8a",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul_util.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul_util.h",
+      "bytes": 15888,
+      "sha256": "5e53bfc6504107855267644832cf453505df28d1ede4a1b4ea40a6a130ad5702",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul_util.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul_v2tov3.cpp",
+      "bytes": 4156,
+      "sha256": "6e9c8e89e98ba9bb2fc6acda8ee1e7fdd642f3187f93176c58a502b49003ffa6",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul_v2tov3.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_api/matmul_v2tov3.h",
+      "bytes": 2383,
+      "sha256": "3436899a1b1ebcf674a1962f78d92f595b47c1515d9347451944501a2d4589d6",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_api/matmul_v2tov3.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/debug_tiling.cpp",
+      "bytes": 2663,
+      "sha256": "660c212fa669738662005d162bc3374ee0fa78768861de48ff1af43c581bff98",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/debug_tiling.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/debug_tiling.h",
+      "bytes": 1044,
+      "sha256": "2d9d34e0b789e8ec9c91908fea1591f628ab8ab6fcc81d944fa907b5e8d31b31",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/debug_tiling.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/hash.cpp",
+      "bytes": 2469,
+      "sha256": "e708a485f28e8d153a0aaf7a27399ba7014e8c05be1391cb783572742133a410",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/hash.cpp"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/hash.h",
+      "bytes": 1071,
+      "sha256": "241489ebb7457fadec07b5df3d272c98f75c1baa56edab566743cd7ebe63531b",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/hash.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/tiling_cache.h",
+      "bytes": 2354,
+      "sha256": "831758cf8a1b98b1f75d59478d67283f267360775493a385112a0550c00096c7",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/tiling_cache.h"
+    },
+    {
+      "path": "matmul/common/op_host/op_tiling/tiling_type.h",
+      "bytes": 3980,
+      "sha256": "adc7485740e9f7ef39d8941e8e27ae177bb8a46a1263ca8a3786b2a16e917d9f",
+      "source_url": "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/matmul/common/op_host/op_tiling/tiling_type.h"
+    }
+  ],
+  "omitted": [
+    "arch35/950 implementations",
+    "arch20/310P implementations",
+    "tests",
+    "configuration JSON knowledge bases",
+    "other build dependencies"
+  ],
+  "standalone_buildable": false
+}

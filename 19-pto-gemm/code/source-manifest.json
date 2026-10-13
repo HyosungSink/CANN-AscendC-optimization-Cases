@@ -1,0 +1,83 @@
+{
+  "repository": "https://gitcode.com/cann/pto-isa",
+  "tag": "v9.0.0",
+  "commit": "377526952e95c39f9149cb94d261eba9e394f0d4",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278
+    },
+    {
+      "path": "README.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/README.md",
+      "sha256": "29e2d9eba4f50cfb3554ea814e87fbaa9260d72755896fc868d19ae1595fa115",
+      "bytes": 12369
+    },
+    {
+      "path": "README_zh.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/README_zh.md",
+      "sha256": "6e0bd448d0e7928425d1c7e951df551effc1959dc9ac2dc840b1793d6dc312b7",
+      "bytes": 11053
+    },
+    {
+      "path": "version.cmake",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/version.cmake",
+      "sha256": "ed1172209ad05075a4e28fdb593b669c94afee9a1367078f70fcf74c2cae005d",
+      "bytes": 1328
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/CMakeLists.txt",
+      "sha256": "1c55116403962b4ab661384d3388054322df07ee82b2350477482b91952b353f",
+      "bytes": 3569
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/run.sh",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/run.sh",
+      "sha256": "bd346ae4f19db92acc91cfc1e11077a535a36df95ac3517c2ef6968ef5f2867a",
+      "bytes": 1820
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/README.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/README.md",
+      "sha256": "e6f5ea80cdba8d7a80252bf439b62d1facefb40e367bd5e23c6303675633c142",
+      "bytes": 9497
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/README_zh.md",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/README_zh.md",
+      "sha256": "bf5017565ebc2ea7d4397952c3e7734f8d786201a5f92759b85dcddbf2f67f39",
+      "bytes": 9086
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/gemm_performance_kernel.cpp",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/gemm_performance_kernel.cpp",
+      "sha256": "65b35bdb0ada61a506343fa3923af35f71165139d33e9cea2af2156f86c725dd",
+      "bytes": 12478
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/main.cpp",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/main.cpp",
+      "sha256": "36b29b29dc7886619847fb4d7f3b29e836239f456306d628e25cc51a1f267170",
+      "bytes": 3810
+    },
+    {
+      "path": "kernels/manual/a2a3/gemm_performance/scripts/gen_data.py",
+      "url": "https://gitcode.com/cann/pto-isa/blob/377526952e95c39f9149cb94d261eba9e394f0d4/kernels/manual/a2a3/gemm_performance/scripts/gen_data.py",
+      "sha256": "0a52551ebdb004de3f9026d141b3fab1965a8dd1db429cbab250e77f1f87e3de",
+      "bytes": 2447
+    }
+  ],
+  "evidence_sources": [
+    {
+      "repository": "https://gitcode.com/cann/release-management",
+      "commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+      "path": "9.0.0/release-notes.md",
+      "url": "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+      "local_path": "../docs/evidence/release-notes-9.0.0.md",
+      "sha256": "fa37f8c02107f25aa42ee4f5bbe12160a7035ce660a1a58a150cc0d6f2622950"
+    }
+  ]
+}

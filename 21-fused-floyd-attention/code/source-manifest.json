@@ -1,0 +1,139 @@
+{
+  "repository": "https://gitcode.com/cann/ops-transformer",
+  "tag": "v9.0.0",
+  "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+  "files": [
+    {
+      "path": "upstream/LICENSE",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/CMakeLists.txt",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/CMakeLists.txt",
+      "sha256": "716dd07dd44379e61a2c5b2cf77b7d131fb7596847706b04d70c17c18c72b684",
+      "bytes": 1197
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/README.md",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/README.md",
+      "sha256": "5b7dd16e4953a6539954c54d4b675e8b098646e6db0a08afda10cb5cbb21f499",
+      "bytes": 3959
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/docs/FFA算子设计介绍.md",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/docs/FFA算子设计介绍.md",
+      "sha256": "136665b7d8d0689d84fd116cb5db96e7e7afa571d25014524ad48f6f9dc22981",
+      "bytes": 10733
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/docs/aclnnFusedFloydAttention.md",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/docs/aclnnFusedFloydAttention.md",
+      "sha256": "3e03d11c97d8cca18c1e8d62038f88747b314660940501e5dbe9c7414cf8cc8f",
+      "bytes": 18302
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/examples/test_aclnn_fused_floyd_attention.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/examples/test_aclnn_fused_floyd_attention.cpp",
+      "sha256": "b9daaace12167557f11e398a3dee11d3b150699a63ab9c3ec21569543120740b",
+      "bytes": 9544
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/CMakeLists.txt",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/CMakeLists.txt",
+      "sha256": "cb43480166dbedf12d3b7bd4e9ba31d21c14b59a97481e7ef2d0e3b71e349926",
+      "bytes": 1879
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_def.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_def.cpp",
+      "sha256": "94162a4f25f585790331f04e80d1b9804a08dcb31e361860ce98f614170b3eff",
+      "bytes": 7109
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_infershape.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_infershape.cpp",
+      "sha256": "efd46ca83af6299ca7176b30355db18e53cb31beabc495f3faaca0b491fa8d4d",
+      "bytes": 3211
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling.cpp",
+      "sha256": "ca793331479ab46dd56242ac432e77d88aaca39d4fa14eb325acbd904fcbd8ba",
+      "bytes": 14716
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling.h",
+      "sha256": "28e19d40db0443bf677b5e7ab7dec5cf56eb962694f2637e11c02be90a528620",
+      "bytes": 17222
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_common.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_common.cpp",
+      "sha256": "dae096dba7eef7eff5d8d20b57caaa7c34322324015c866c3c70ba0bf4fafd7a",
+      "bytes": 6683
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_common.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_common.h",
+      "sha256": "e630ee1ba05b427accb0eb16bc5317bd9cb638b53b4f8da728fbc272a305aff2",
+      "bytes": 2423
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_general.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_host/fused_floyd_attention_tiling_general.cpp",
+      "sha256": "214a6b1c9890779b361d87eb4ad8dde0ccff3f68435358629cd82cf84dbfd3f0",
+      "bytes": 52331
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_kernel/fused_floyd_attention.cpp",
+      "sha256": "8e75a5663850d672d4cb07fd41765e9edb2de31208cafd3c4cb5656c06a59a48",
+      "bytes": 11150
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_common.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_common.h",
+      "sha256": "992a599c4bc33e36fbb62f4463d4598af8af35b823de37a1f4d78e9d68d49299",
+      "bytes": 10403
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_s1s2_bn2gs1.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_s1s2_bn2gs1.h",
+      "sha256": "fb946ff6c36b5a255a549b31cf8dc6fb6d878d6788df06deae8bc08ab8e37952",
+      "bytes": 81856
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/tests/CMakeLists.txt",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/tests/CMakeLists.txt",
+      "sha256": "efed6b4df901cf65106ca7b7e42478bd822084f2c7605dd069f9ac60c17709f5",
+      "bytes": 2950
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/tests/comm/fused_floyd_attention_case.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/tests/comm/fused_floyd_attention_case.cpp",
+      "sha256": "56299503455871a20fab21a63a1ce39d0576d66eb915899f07b4c3821f424bad",
+      "bytes": 7697
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/tests/comm/fused_floyd_attention_case.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/tests/comm/fused_floyd_attention_case.h",
+      "sha256": "b81980cc3a2bde00340da6373d6d60a0c81ab233b6ee2c268a2edc8c1d016b8e",
+      "bytes": 2348
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/tests/utest/ts_fused_floyd_attention.cpp",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/tests/utest/ts_fused_floyd_attention.cpp",
+      "sha256": "28ccda79e5f755f970cd009874bc0b3d5fdc136df6898f47ebcf5237e019ba5a",
+      "bytes": 1127
+    },
+    {
+      "path": "upstream/attention/fused_floyd_attention/tests/utest/ts_fused_floyd_attention.h",
+      "url": "https://raw.gitcode.com/cann/ops-transformer/raw/afe72144f9f2ac8441929035795db88a111b30c5/attention/fused_floyd_attention/tests/utest/ts_fused_floyd_attention.h",
+      "sha256": "f82cbb60a7d776f0af68d9ec3e03b92cf2bb0f93bf9e2fd02140fb4ad45d078f",
+      "bytes": 1004
+    }
+  ]
+}

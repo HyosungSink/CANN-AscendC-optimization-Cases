@@ -1,0 +1,43 @@
+{
+  "post_id": "08-rmsnorm",
+  "title": "RmsNorm 的多行归约与列拆分",
+  "case_type": "源码实战解析",
+  "scope": "单算子非 RegBase Kernel 与 Host Tiling",
+  "operator": "rms_norm",
+  "cann_version": "9.0.0",
+  "cann_release": "正式版",
+  "repository": "https://gitcode.com/cann/ops-nn.git",
+  "ref": "v9.0.0",
+  "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+  "hardware": [
+    "Atlas A2 / Ascend 910B",
+    "Atlas A3 / Ascend 910_93"
+  ],
+  "hardware_evidence": [
+    "https://gitcode.com/cann/ops-nn/blob/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/rms_norm/README.md",
+    "https://gitcode.com/cann/ops-nn/tree/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/rms_norm/op_host/config/ascend910b",
+    "https://gitcode.com/cann/ops-nn/tree/0413e303e6cd1986b592c3e039f2579ac0f10b62/norm/rms_norm/op_host/config/ascend910_93"
+  ],
+  "version_evidence": {
+    "repository": "https://gitcode.com/cann/release-management.git",
+    "commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+    "path": "9.0.0/release-notes.md",
+    "url": "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+    "claim": "ops-nn 9.0.0 -> v9.0.0 -> CANN 9.0.0"
+  },
+  "opbase_dependency_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+  "performance_evidence": {
+    "public_ab_benchmark": false,
+    "measured_locally": false,
+    "status": "Verified implementation mechanisms and concrete ablation points; no matched public A/B table or local NPU measurement."
+  },
+  "checked_on": "2026-10-08",
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "main_source_files": [
+    "norm/rms_norm/op_host/rms_norm_tiling.cpp",
+    "norm/rms_norm/op_kernel/rms_norm_merge_n.h",
+    "norm/rms_norm/op_kernel/rms_norm_split_d.h",
+    "norm/rms_norm/op_kernel/rms_norm_single_row.h"
+  ],
+  "implementation_language": "Ascend C"
+}

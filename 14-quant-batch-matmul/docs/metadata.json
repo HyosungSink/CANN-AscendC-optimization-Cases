@@ -1,0 +1,54 @@
+{
+  "id": "14-quant-batch-matmul",
+  "title": "INT8 per-token反量化的scale预计算与CV流水",
+  "language": "zh-CN",
+  "retrieved_at": "2026-10-08",
+  "scope": "operator-level",
+  "upstream": {
+    "repository": "https://gitcode.com/cann/ops-nn.git",
+    "tag": "v9.0.0",
+    "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+    "operator": "quant_batch_matmul_v3",
+    "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+    "release_evidence_commit": "c847330e202fbe9e724ef36c6219e49f42cda312"
+  },
+  "compatibility": {
+    "cann_version": "9.0.0",
+    "soc_targets": [
+      "ascend910b",
+      "ascend910_93"
+    ],
+    "excluded_soc": [
+      "ascend950",
+      "ascend310p"
+    ],
+    "hardware_evidence": {
+      "file": "matmul/quant_batch_matmul_v3/op_host/quant_batch_matmul_v3_def.cpp",
+      "lines": [
+        76,
+        77
+      ]
+    },
+    "future_cann_versions": "Use matching release source; no blanket ABI guarantee"
+  },
+  "analysis_focus": "BmmDequantPertokenOpt：小M、50MiB workspace限制、scale外积预计算、15次分组同步。",
+  "source_snapshot": {
+    "files": 74,
+    "standalone_buildable": false
+  },
+  "benchmark": {
+    "public_ab_latency_available": false,
+    "public_ab_latency_us": null,
+    "end_to_end_numbers_used": false
+  },
+  "validation": {
+    "source_hashes_verified": true,
+    "shell_syntax_checked": true,
+    "npu_compiled": false,
+    "npu_accuracy_tested": false,
+    "npu_benchmarked": false,
+    "host": "macOS without NPU"
+  },
+  "license": "CANN Open Software License Agreement Version 2.0",
+  "implementation_language": "Ascend C"
+}

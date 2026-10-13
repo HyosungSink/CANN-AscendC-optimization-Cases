@@ -1,0 +1,377 @@
+{
+  "repository": "https://gitcode.com/cann/ops-transformer",
+  "tag": "v9.0.0",
+  "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/LICENSE",
+      "sha256": "cb282ac2b66d7d6734c3fb354db792b28cf23ab29fbc16d5cfd8bd542bedeb1e",
+      "bytes": 5278
+    },
+    {
+      "path": "README.md",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/README.md",
+      "sha256": "b6e3724d8f6425ec2e604dfa43cb296c0f0a40d54f071803088aceb7fa250a74",
+      "bytes": 8244
+    },
+    {
+      "path": "QUICKSTART.md",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/QUICKSTART.md",
+      "sha256": "a544b3ea4c6af61bb9d53fd90d75c61bb226a985cece915c69c6f34ad82e5a7d",
+      "bytes": 16060
+    },
+    {
+      "path": "build.sh",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/build.sh",
+      "sha256": "ecab49da274ee68909b0efd4a093d2fed820554752289cbed5ed6205865af166",
+      "bytes": 62111
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/CMakeLists.txt",
+      "sha256": "7eb9aee0561144a842b0b736723c3aa20b034847432c6d8cc7818e806763df45",
+      "bytes": 1283
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/README.md",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/README.md",
+      "sha256": "62f4c6eda4a02d149b31252a9c6d1d8fc2fd491d5d7d99c744d40d0445aaef54",
+      "bytes": 5831
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_rotate_half_tiling.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_rotate_half_tiling.cpp",
+      "sha256": "47c082385127f42c33aeeb93af27aa9e833bb5fd9b1ff172faea03c1374de58e",
+      "bytes": 28714
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_rotate_half_tiling.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_rotate_half_tiling.h",
+      "sha256": "b930b96124296e39c5f93fdabb1eb3f18870ddd138eda76f47c9f73f63129ab5",
+      "bytes": 1861
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_rotate_matrix_tiling.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_rotate_matrix_tiling.cpp",
+      "sha256": "3dd6e7089de34969b81a842b3041e318cc3753d0664cdb2e6f58d9bcfaef6a13",
+      "bytes": 23941
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rotary_position_embedding_def.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rotary_position_embedding_def.cpp",
+      "sha256": "e111b056feb5a1cedf88c570d1c3d1362dcb6dee5ad6931d7919c1ae3f1f8ac4",
+      "bytes": 5120
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/CMakeLists.txt",
+      "sha256": "43ee1dce6eb18b1a6f93744dc67f0a361dae8f04c3e537ad76a75a01289585eb",
+      "bytes": 1777
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rotary_position_embedding_tiling.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rotary_position_embedding_tiling.h",
+      "sha256": "801d2472b6b6f49d4bb46609731739a676fa956d030ba774246202618d5384d4",
+      "bytes": 12270
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_rotate_matrix_tiling.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_rotate_matrix_tiling.h",
+      "sha256": "d23947dfcc72d542365d222ca8421778383dee05748a6ea699b9550f57a98ebe",
+      "bytes": 1803
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rotary_position_embedding_infershape.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rotary_position_embedding_infershape.cpp",
+      "sha256": "77b5f7b75e571f900bc2009cf559aa61ae3999a32b41e8b768a9d4e1437620b7",
+      "bytes": 2210
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rotary_position_embedding_tiling.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rotary_position_embedding_tiling.cpp",
+      "sha256": "41be32d6c66c205a8b4a63f6bc01d6016b8934b95bc63b73ad6908ade0e0f44a",
+      "bytes": 3291
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_interleaved_tiling.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_interleaved_tiling.h",
+      "sha256": "4f4df98438962540183b564e4e2cdc38d34a62dae1fe9821f242a4c05e1d034c",
+      "bytes": 1914
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/rope_interleaved_tiling.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/rope_interleaved_tiling.cpp",
+      "sha256": "71e2715c03dac130b26b3f9dbcfd258d32e06caf44356d2a5b0b268538e1b677",
+      "bytes": 18791
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/op_api/rotary_position_embedding.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/op_api/rotary_position_embedding.h",
+      "sha256": "7ed79b20401e91ce3d760c36371871e2a067e4158c3d4d8d7b60c5a438be8ab7",
+      "bytes": 1136
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding.h",
+      "sha256": "f21296a35fa8e3d052920e1bc0ccbf8bf4df5275918cf751b868e39da4d74558",
+      "bytes": 3073
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding_v2.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding_v2.h",
+      "sha256": "f8f83a42ec0e134790757af6eec852fc2502d9ff68d9d3d03a70b9f4a18c6806",
+      "bytes": 3346
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/op_api/rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/op_api/rotary_position_embedding.cpp",
+      "sha256": "c2b9ae79cf16b85c893ef52955200687cfd277158570d272babd1f3e55f914cb",
+      "bytes": 1948
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/op_api/aclnn_rotary_position_embedding.cpp",
+      "sha256": "12ed0b280b13db5b5293b40c086d7e06c73e848eaf198b2c85048a7c7f110393",
+      "bytes": 6096
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/framework/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/framework/CMakeLists.txt",
+      "sha256": "e03d450af3b2d3c3b7fb8d58cc9207f3703ca8bc4714cda7d0702d1ba7d38721",
+      "bytes": 896
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/framework/npu_rotary_position_embedding_onnx_plugin.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/framework/npu_rotary_position_embedding_onnx_plugin.cpp",
+      "sha256": "b050c6759388b73e77c51518ded30110f3a1b3c85cc93da1660b1be7755f00fc",
+      "bytes": 2702
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/CMakeLists.txt",
+      "sha256": "5c411ba56d747f8aaeedad924462f7ad60e465e76f03e17ecef964de46879fe0",
+      "bytes": 1263
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/CMakeLists.txt",
+      "sha256": "f6f0263297854c382b425344bdefc2bba34e41b7672ca1bf3fc10ccf640e3a22",
+      "bytes": 1170
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_host/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_host/CMakeLists.txt",
+      "sha256": "6ebe8c2696ebbcd9c8c6d8db0e658aff465f7f4e87424708eae151ec90e2fbb2",
+      "bytes": 1366
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_host/test_rotary_position_embedding_infershape.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_host/test_rotary_position_embedding_infershape.cpp",
+      "sha256": "033785072eb6dbe154a136e07a3e699b20fc6847b54aef926e4eca9739ad2d5e",
+      "bytes": 6443
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_host/test_rotary_position_embedding_tiling.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_host/test_rotary_position_embedding_tiling.cpp",
+      "sha256": "4f700c50f24de781f99ec9a17b26ecf359b092ae42353d9c22c3ad251213c889",
+      "bytes": 22716
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_host/op_api/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_host/op_api/CMakeLists.txt",
+      "sha256": "17369c46dba42bbc077ff45bff4024af19b2adf64544a73cdfbe342dbf600b69",
+      "bytes": 1073
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_host/op_api/test_aclnn_rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_host/op_api/test_aclnn_rotary_position_embedding.cpp",
+      "sha256": "f2d77f6da7da70dc405dd53a67583484c05f5ffe758b4d05fc0401e9e1816477",
+      "bytes": 5551
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/CMakeLists.txt",
+      "sha256": "eaebe92d5887e8205cb9b2052a765d789c2d4055255c267b917ee4e2b05a14a7",
+      "bytes": 1893
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/test_rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/test_rotary_position_embedding.cpp",
+      "sha256": "c5156606ce3905ea331b408eba2577f83c7dca333d68536fb5bb132f5dbe0967",
+      "bytes": 11724
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/test_rotary_position_embedding.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/test_rotary_position_embedding.h",
+      "sha256": "db7982ceab90ead2a10984727975113942c55aa90e3cda6483e2d9cc17f23e45",
+      "bytes": 1447
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_data_torch.py",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_data_torch.py",
+      "sha256": "5851747a2728aeeb6f1f36b68e4cacaa2804a24f2cb5123698c4f16b302a24be",
+      "bytes": 2398
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_tiling.py",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_tiling.py",
+      "sha256": "538b6d688f503532d2fbc6e6696926d379140d7f87b29aa0edff3a3a6b7a6fe4",
+      "bytes": 3230
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_data.py",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/tests/ut/op_kernel/rotary_position_embedding_data/gen_data.py",
+      "sha256": "98473a7c1a22a89e69aa5ca39d94bcf13f29b67006f28d0e80c283aade9e6fe9",
+      "bytes": 1460
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bs_pad.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bs_pad.h",
+      "sha256": "cd83f30faec1d9f8d758744a71df19d54f82e0a11790d2ac7517423f23bd7fb7",
+      "bytes": 14306
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_half.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_half.h",
+      "sha256": "2f35b52a79558fcafb1f27c21a8bd3a812958c77fcad32f7ee3c5cb368777ebf",
+      "bytes": 17844
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_matrix.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_matrix.h",
+      "sha256": "13825dab3b90e5f7a5d2ed9d59307acd726ea998843cba30845282055639f008",
+      "bytes": 29233
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bsn.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bsn.h",
+      "sha256": "38cfec2fab30c9ab8ed6658f3907ecf3b5b6c0e08ccd071d69409a6b24b6e304",
+      "bytes": 12893
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_half_base.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_half_base.h",
+      "sha256": "24b569ec5eddc6e4f918abe29bdd824cfd2d6ed030f6eef42a09b562eb0c158a",
+      "bytes": 11298
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bs.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bs.h",
+      "sha256": "496e8ea67370473a1ce95311ca20228ffd547548b2a8d7691b882a765f4244b2",
+      "bytes": 12491
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotary_position_embedding.cpp",
+      "sha256": "34a4baa068d4b8d55618024664417b7f29c3e754fffb9119c095dfe0e3d2eb72",
+      "bytes": 11364
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_s_pad.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_s_pad.h",
+      "sha256": "d58cc77970fc0fc1ba3a854f88b8dc58fb6666034621ee932a365c3255403183",
+      "bytes": 13435
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_s.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_s.h",
+      "sha256": "a76d0f3b3d093d68920e0a21b64ecff6345d4f8e4df8392d969fce74b0f172c3",
+      "bytes": 12646
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_half_bf16.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_half_bf16.h",
+      "sha256": "313e00c5a7c5003d1bd81095cbba58e30aad8b19a8926779ed425d42c437de21",
+      "bytes": 20293
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bsn_pad.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_split_bsn_pad.h",
+      "sha256": "00bb0b451600369133e333ce27313b7a2d45b68cfe929f220c02c89a034e285f",
+      "bytes": 13393
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_common.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_kernel/rotate_interleaved_common.h",
+      "sha256": "5d9550761140261dc1248d2c056cd3e818dab858c07f76ccb3a2c5eeb6a4899c",
+      "bytes": 6228
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/docs/aclnnRotaryPositionEmbedding.md",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/docs/aclnnRotaryPositionEmbedding.md",
+      "sha256": "f5282e5168a2ee7c9413a12fe9b0b2ae20937c50477a22f4f8718534559224bd",
+      "bytes": 19660
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/docs/aclnnRotaryPositionEmbeddingV2.md",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/docs/aclnnRotaryPositionEmbeddingV2.md",
+      "sha256": "90ff98dbc3e7053f092ca32ab328135dc751d8ecf04d6b2887dfb92e7ef234a7",
+      "bytes": 21049
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_graph/CMakeLists.txt",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_graph/CMakeLists.txt",
+      "sha256": "5cdeed98a3fd60c932c0bfa77e6b524088a11ca96a7ba10990c25e258ed3245d",
+      "bytes": 956
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_graph/rotary_position_embedding_proto.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_graph/rotary_position_embedding_proto.h",
+      "sha256": "0d3303f4a298c1c3e22cd4a9bd5a4afd67ddc4d2130fc7501f629429af0953c0",
+      "bytes": 3800
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_graph/fusion_pass/.gitkeep",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_graph/fusion_pass/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/examples/aclnn_rotary_position_embedding.h",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/examples/aclnn_rotary_position_embedding.h",
+      "sha256": "f21296a35fa8e3d052920e1bc0ccbf8bf4df5275918cf751b868e39da4d74558",
+      "bytes": 3073
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/examples/test_aclnn_rotary_position_embedding.cpp",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/examples/test_aclnn_rotary_position_embedding.cpp",
+      "sha256": "d610db5787baee5e6d135f179c6ca4e589c636a7265e689887ca79262037f74a",
+      "bytes": 9276
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/config/ascend910b/rotary_position_embedding_binary.json",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/config/ascend910b/rotary_position_embedding_binary.json",
+      "sha256": "3b814659f9bbf195bddb6a2df87286a204c32f36050db4b69834afba73503fe6",
+      "bytes": 7685
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/config/ascend910b/rotary_position_embedding_simplified_key.ini",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/config/ascend910b/rotary_position_embedding_simplified_key.ini",
+      "sha256": "0ce3b70bd21f56f3ee9a5cc753d9f791271f4b781304dbd7d6452abe6a268e00",
+      "bytes": 1247
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/config/ascend910_93/rotary_position_embedding_binary.json",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/config/ascend910_93/rotary_position_embedding_binary.json",
+      "sha256": "3b814659f9bbf195bddb6a2df87286a204c32f36050db4b69834afba73503fe6",
+      "bytes": 7685
+    },
+    {
+      "path": "posembedding/rotary_position_embedding/op_host/config/ascend910_93/rotary_position_embedding_simplified_key.ini",
+      "url": "https://gitcode.com/cann/ops-transformer/blob/afe72144f9f2ac8441929035795db88a111b30c5/posembedding/rotary_position_embedding/op_host/config/ascend910_93/rotary_position_embedding_simplified_key.ini",
+      "sha256": "0ce3b70bd21f56f3ee9a5cc753d9f791271f4b781304dbd7d6452abe6a268e00",
+      "bytes": 1247
+    }
+  ],
+  "evidence_sources": [
+    {
+      "repository": "https://gitcode.com/cann/release-management",
+      "commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+      "path": "9.0.0/release-notes.md",
+      "url": "https://gitcode.com/cann/release-management/blob/c847330e202fbe9e724ef36c6219e49f42cda312/9.0.0/release-notes.md",
+      "local_path": "../docs/evidence/release-notes-9.0.0.md",
+      "sha256": "fa37f8c02107f25aa42ee4f5bbe12160a7035ce660a1a58a150cc0d6f2622950"
+    }
+  ]
+}
