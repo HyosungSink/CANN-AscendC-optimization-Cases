@@ -1,0 +1,1071 @@
+{
+  "schema_version": 1,
+  "title": "CANN 9.0+ A2/A3 Ascend C operator optimization case collection",
+  "implementation_language": "Ascend C",
+  "collected_on": "2026-10-08",
+  "post_count": 18,
+  "official_v9_0_0_post_count": 17,
+  "explicit_compatibility_post_count": 1,
+  "snapshot_file_entries": 885,
+  "snapshot_count_note": "Includes per-post copies of shared dependencies, README and LICENSE; not a count of distinct kernels.",
+  "performance_evidence_counts": {
+    "source_analysis": 15,
+    "public_absolute": 1,
+    "public_ab": 1,
+    "release_aggregate": 1
+  },
+  "release_management_commit": "c847330e202fbe9e724ef36c6219e49f42cda312",
+  "local_validation_scope": "Offline structure, hashes, syntax, links, and Ascend C kernel evidence only",
+  "posts": [
+    {
+      "id": "01-deepseek-lightning-indexer",
+      "title": "LightningIndexer 的 Cube Vector 流水与 TopK 归并",
+      "category": "deepseek_attention",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "01-deepseek-lightning-indexer/code/upstream/attention/lightning_indexer/op_kernel/lightning_indexer.cpp",
+          "01-deepseek-lightning-indexer/code/upstream/attention/lightning_indexer/op_kernel/lightning_indexer_kernel.h",
+          "01-deepseek-lightning-indexer/code/upstream/attention/lightning_indexer/op_kernel/lightning_indexer_service_cube.h"
+        ]
+      },
+      "paths": {
+        "article": "01-deepseek-lightning-indexer/docs/post.md",
+        "reproduction": "01-deepseek-lightning-indexer/docs/reproduce.md",
+        "sources": "01-deepseek-lightning-indexer/docs/sources.md",
+        "metadata": "01-deepseek-lightning-indexer/docs/metadata.json",
+        "source_snapshot": "01-deepseek-lightning-indexer/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer.git",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 34,
+        "snapshot_bytes": 396668,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "02-deepseek-sparse-flash-attention",
+      "title": "SparseFlashAttention 的离散 KV 聚合与三阶段流水",
+      "category": "deepseek_attention",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "02-deepseek-sparse-flash-attention/code/upstream/attention/sparse_flash_attention/op_kernel/sparse_flash_attention.cpp",
+          "02-deepseek-sparse-flash-attention/code/upstream/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_common.h",
+          "02-deepseek-sparse-flash-attention/code/upstream/attention/sparse_flash_attention/op_kernel/sparse_flash_attention_kernel_mla.h"
+        ]
+      },
+      "paths": {
+        "article": "02-deepseek-sparse-flash-attention/docs/post.md",
+        "reproduction": "02-deepseek-sparse-flash-attention/docs/reproduce.md",
+        "sources": "02-deepseek-sparse-flash-attention/docs/sources.md",
+        "metadata": "02-deepseek-sparse-flash-attention/docs/metadata.json",
+        "source_snapshot": "02-deepseek-sparse-flash-attention/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": null,
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer.git",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 33,
+        "snapshot_bytes": 580941,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": [
+        "README lists A3 inference, but fixed Host only accepts ASCEND910B; A3 not established."
+      ]
+    },
+    {
+      "id": "03-moe-grouped-matmul-swiglu-quant",
+      "title": "MoE GroupedMatmul + SwiGLU + INT8 动态量化的 CV 流水",
+      "category": "moe_fusion",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "03-moe-grouped-matmul-swiglu-quant/code/upstream/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_spilit_fusion.h",
+          "03-moe-grouped-matmul-swiglu-quant/code/upstream/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2.cpp",
+          "03-moe-grouped-matmul-swiglu-quant/code/upstream/gmm/grouped_matmul_swiglu_quant_v2/op_kernel/grouped_matmul_swiglu_quant_v2_a4w4_mid.h"
+        ]
+      },
+      "paths": {
+        "article": "03-moe-grouped-matmul-swiglu-quant/docs/post.md",
+        "reproduction": "03-moe-grouped-matmul-swiglu-quant/docs/reproduce.md",
+        "sources": "03-moe-grouped-matmul-swiglu-quant/docs/sources.md",
+        "metadata": "03-moe-grouped-matmul-swiglu-quant/docs/metadata.json",
+        "source_snapshot": "03-moe-grouped-matmul-swiglu-quant/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer.git",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 42,
+        "snapshot_bytes": 535681,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "04-deepseek-mla-prolog",
+      "title": "DeepSeek MLA 前处理融合的 Split-N、反量化与 Cache 流水",
+      "category": "deepseek_attention",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "04-deepseek-mla-prolog/code/upstream/attention/mla_prolog/op_kernel/arch32/rms_norm.h",
+          "04-deepseek-mla-prolog/code/upstream/attention/mla_prolog/op_kernel/kernel_mla_prolog_split_n.h",
+          "04-deepseek-mla-prolog/code/upstream/attention/mla_prolog/op_kernel/mla_prolog_comm.h"
+        ]
+      },
+      "paths": {
+        "article": "04-deepseek-mla-prolog/docs/post.md",
+        "reproduction": "04-deepseek-mla-prolog/docs/reproduce.md",
+        "sources": "04-deepseek-mla-prolog/docs/sources.md",
+        "metadata": "04-deepseek-mla-prolog/docs/metadata.json",
+        "source_snapshot": "04-deepseek-mla-prolog/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer.git",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 49,
+        "snapshot_bytes": 677952,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "05-moe-dispatch-combine",
+      "title": "DeepSeek 风格 MoE 的 Dispatch / Combine：算子内路由、量化与通信",
+      "category": "moe_communication",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "05-moe-dispatch-combine/code/upstream/csrc/deepep/ops/op_kernel/moe_distribute_combine_v2.h",
+          "05-moe-dispatch-combine/code/upstream/csrc/deepep/ops/op_kernel/moe_distribute_dispatch_v2.h",
+          "05-moe-dispatch-combine/code/upstream/csrc/deepep/ops/op_kernel/moe_distribute_v2_base.h"
+        ]
+      },
+      "paths": {
+        "article": "05-moe-dispatch-combine/docs/post.md",
+        "reproduction": "05-moe-dispatch-combine/docs/reproduce.md",
+        "sources": "05-moe-dispatch-combine/docs/sources.md",
+        "metadata": "05-moe-dispatch-combine/docs/metadata.json",
+        "source_snapshot": "05-moe-dispatch-combine/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0",
+          "9.1.0"
+        ],
+        "evidence_type": "explicit_9.0_compatibility",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2",
+          "A3"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://github.com/sgl-project/sgl-kernel-npu",
+        "commit": "653e519cf9556b0cc8d9e7966aa4551eb65143ae",
+        "ref": null,
+        "opbase_commit": null,
+        "snapshot_file_entries": 29,
+        "snapshot_bytes": 845141,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "public_absolute",
+        "description": "Published absolute operator timings; no matched speedup baseline",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": [
+        "Published latency is A3 HCCS; fixed snapshot A2 multi-node CI is disabled."
+      ]
+    },
+    {
+      "id": "08-rmsnorm",
+      "title": "RmsNorm 的多行归约与列拆分",
+      "category": "normalization",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "08-rmsnorm/code/upstream/norm/rms_norm/op_kernel/reduce_common.h",
+          "08-rmsnorm/code/upstream/norm/rms_norm/op_kernel/rms_norm.cpp",
+          "08-rmsnorm/code/upstream/norm/rms_norm/op_kernel/rms_norm.h"
+        ]
+      },
+      "paths": {
+        "article": "08-rmsnorm/docs/post.md",
+        "reproduction": "08-rmsnorm/docs/reproduce.md",
+        "sources": "08-rmsnorm/docs/sources.md",
+        "metadata": "08-rmsnorm/docs/metadata.json",
+        "source_snapshot": "08-rmsnorm/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 54,
+        "snapshot_bytes": 706829,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "09-add-rmsnorm-quant",
+      "title": "AddRmsNormQuant 的 UB 预算与量化融合",
+      "category": "normalization_quantization",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "09-add-rmsnorm-quant/code/upstream/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.cpp",
+          "09-add-rmsnorm-quant/code/upstream/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant.h",
+          "09-add-rmsnorm-quant/code/upstream/norm/add_rms_norm_quant/op_kernel/add_rms_norm_quant_apt.cpp"
+        ]
+      },
+      "paths": {
+        "article": "09-add-rmsnorm-quant/docs/post.md",
+        "reproduction": "09-add-rmsnorm-quant/docs/reproduce.md",
+        "sources": "09-add-rmsnorm-quant/docs/sources.md",
+        "metadata": "09-add-rmsnorm-quant/docs/metadata.json",
+        "source_snapshot": "09-add-rmsnorm-quant/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 52,
+        "snapshot_bytes": 1091656,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "10-layernorm",
+      "title": "LayerNormV4 的 Single Read 与短行转置归约",
+      "category": "normalization",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "10-layernorm/code/upstream/norm/layer_norm_v4/op_kernel/block/block_layer_norm_copy_in_x.h",
+          "10-layernorm/code/upstream/norm/layer_norm_v4/op_kernel/block/block_layer_norm_copy_out.h",
+          "10-layernorm/code/upstream/norm/layer_norm_v4/op_kernel/kernel/kernel_layer_norm.h"
+        ]
+      },
+      "paths": {
+        "article": "10-layernorm/docs/post.md",
+        "reproduction": "10-layernorm/docs/reproduce.md",
+        "sources": "10-layernorm/docs/sources.md",
+        "metadata": "10-layernorm/docs/metadata.json",
+        "source_snapshot": "10-layernorm/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 77,
+        "snapshot_bytes": 1204647,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "11-add-layernorm",
+      "title": "AddLayerNorm 的少缓冲整行计算",
+      "category": "normalization_fusion",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "11-add-layernorm/code/upstream/norm/add_layer_norm/op_kernel/add_layer_norm_base.h",
+          "11-add-layernorm/code/upstream/norm/add_layer_norm/op_kernel/add_layer_norm_normal_special_reduce.h",
+          "11-add-layernorm/code/upstream/norm/add_layer_norm/tests/ut/op_kernel/test_add_layer_norm.cpp"
+        ]
+      },
+      "paths": {
+        "article": "11-add-layernorm/docs/post.md",
+        "reproduction": "11-add-layernorm/docs/reproduce.md",
+        "sources": "11-add-layernorm/docs/sources.md",
+        "metadata": "11-add-layernorm/docs/metadata.json",
+        "source_snapshot": "11-add-layernorm/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 47,
+        "snapshot_bytes": 1091976,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "12-matmul",
+      "title": "小 M 大 K FP32 Matmul 的 AL1 全载",
+      "category": "matmul",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "12-matmul/code/upstream/matmul/mat_mul_v3/op_kernel/batch_mat_mul_nd2nz.h",
+          "12-matmul/code/upstream/matmul/mat_mul_v3/op_kernel/mat_mul_base_block.h",
+          "12-matmul/code/upstream/matmul/mat_mul_v3/op_kernel/mat_mul_base_kernel.h"
+        ]
+      },
+      "paths": {
+        "article": "12-matmul/docs/post.md",
+        "reproduction": "12-matmul/docs/reproduce.md",
+        "sources": "12-matmul/docs/sources.md",
+        "metadata": "12-matmul/docs/metadata.json",
+        "source_snapshot": "12-matmul/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 76,
+        "snapshot_bytes": 1122296,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "13-weight-quant-batch-matmul",
+      "title": "权重量化 GEMM 的 NZ Split-K 四槽流水",
+      "category": "weight_quant_matmul",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "13-weight-quant-batch-matmul/code/upstream/matmul/weight_quant_batch_matmul_v2/op_kernel/anti_quant.h",
+          "13-weight-quant-batch-matmul/code/upstream/matmul/weight_quant_batch_matmul_v2/op_kernel/fixpipe/weight_quant_batch_matmul_v2_fixpipe.h",
+          "13-weight-quant-batch-matmul/code/upstream/matmul/weight_quant_batch_matmul_v2/op_kernel/fixpipe/weight_quant_batch_matmul_v2_fixpipe_stage1.h"
+        ]
+      },
+      "paths": {
+        "article": "13-weight-quant-batch-matmul/docs/post.md",
+        "reproduction": "13-weight-quant-batch-matmul/docs/reproduce.md",
+        "sources": "13-weight-quant-batch-matmul/docs/sources.md",
+        "metadata": "13-weight-quant-batch-matmul/docs/metadata.json",
+        "source_snapshot": "13-weight-quant-batch-matmul/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 87,
+        "snapshot_bytes": 1647004,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "14-quant-batch-matmul",
+      "title": "INT8 per-token反量化的scale预计算与CV流水",
+      "category": "activation_quant_matmul",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "14-quant-batch-matmul/code/upstream/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.cpp",
+          "14-quant-batch-matmul/code/upstream/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3.h",
+          "14-quant-batch-matmul/code/upstream/matmul/quant_batch_matmul_v3/op_kernel/quant_batch_matmul_v3_apt.cpp"
+        ]
+      },
+      "paths": {
+        "article": "14-quant-batch-matmul/docs/post.md",
+        "reproduction": "14-quant-batch-matmul/docs/reproduce.md",
+        "sources": "14-quant-batch-matmul/docs/sources.md",
+        "metadata": "14-quant-batch-matmul/docs/metadata.json",
+        "source_snapshot": "14-quant-batch-matmul/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 74,
+        "snapshot_bytes": 1284684,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "15-dynamic-quant",
+      "title": "DynamicQuant 的DeepSeek尺寸批量行与长行两遍扫描",
+      "category": "dynamic_quantization",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "15-dynamic-quant/code/upstream/quant/dynamic_quant/op_kernel/dynamic_quant.cpp",
+          "15-dynamic-quant/code/upstream/quant/dynamic_quant/op_kernel/dynamic_quant.h",
+          "15-dynamic-quant/code/upstream/quant/dynamic_quant/op_kernel/dynamic_quant_apt.cpp"
+        ]
+      },
+      "paths": {
+        "article": "15-dynamic-quant/docs/post.md",
+        "reproduction": "15-dynamic-quant/docs/reproduce.md",
+        "sources": "15-dynamic-quant/docs/sources.md",
+        "metadata": "15-dynamic-quant/docs/metadata.json",
+        "source_snapshot": "15-dynamic-quant/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 28,
+        "snapshot_bytes": 317430,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "16-rope",
+      "title": "RoPE：广播参数复用与融合旋转乘加",
+      "category": "position_embedding",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "16-rope/code/upstream/posembedding/rotary_position_embedding/op_kernel/rotary_position_embedding.cpp",
+          "16-rope/code/upstream/posembedding/rotary_position_embedding/op_kernel/rotate_half.h",
+          "16-rope/code/upstream/posembedding/rotary_position_embedding/op_kernel/rotate_half_base.h"
+        ]
+      },
+      "paths": {
+        "article": "16-rope/docs/post.md",
+        "reproduction": "16-rope/docs/reproduce.md",
+        "sources": "16-rope/docs/sources.md",
+        "metadata": "16-rope/docs/metadata.json",
+        "source_snapshot": "16-rope/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": null,
+        "snapshot_file_entries": 60,
+        "snapshot_bytes": 532532,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "20-swiglu",
+      "title": "SwiGLU 的单缓冲和双缓冲选择",
+      "category": "activation",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "20-swiglu/code/upstream/activation/swi_glu/op_kernel/glu_tiling_kernel.hpp",
+          "20-swiglu/code/upstream/activation/swi_glu/op_kernel/swi_glu.cpp",
+          "20-swiglu/code/upstream/activation/swi_glu/op_kernel/swi_glu_bf16.hpp"
+        ]
+      },
+      "paths": {
+        "article": "20-swiglu/docs/post.md",
+        "reproduction": "20-swiglu/docs/reproduce.md",
+        "sources": "20-swiglu/docs/sources.md",
+        "metadata": "20-swiglu/docs/metadata.json",
+        "source_snapshot": "20-swiglu/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 33,
+        "snapshot_bytes": 148279,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "21-fused-floyd-attention",
+      "title": "Floyd Attention 的 CV 分块与在线累积",
+      "category": "attention_fusion",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "21-fused-floyd-attention/code/upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention.cpp",
+          "21-fused-floyd-attention/code/upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_common.h",
+          "21-fused-floyd-attention/code/upstream/attention/fused_floyd_attention/op_kernel/fused_floyd_attention_s1s2_bn2gs1.h"
+        ]
+      },
+      "paths": {
+        "article": "21-fused-floyd-attention/docs/post.md",
+        "reproduction": "21-fused-floyd-attention/docs/reproduce.md",
+        "sources": "21-fused-floyd-attention/docs/sources.md",
+        "metadata": "21-fused-floyd-attention/docs/metadata.json",
+        "source_snapshot": "21-fused-floyd-attention/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 22,
+        "snapshot_bytes": 273122,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "public_ab",
+        "description": "Published operator before/after latency; measurement CANN version unspecified",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": [
+        "A2 inference is not supported by the documented product matrix."
+      ]
+    },
+    {
+      "id": "22-deformable-conv2d",
+      "title": "可变形卷积的坐标复用、相邻访存合并与Cube融合",
+      "category": "deformable_convolution",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "22-deformable-conv2d/code/upstream/conv/deformable_conv2d/op_kernel/deformable_conv2d_base.h"
+        ]
+      },
+      "paths": {
+        "article": "22-deformable-conv2d/docs/post.md",
+        "reproduction": "22-deformable-conv2d/docs/reproduce.md",
+        "sources": "22-deformable-conv2d/docs/sources.md",
+        "metadata": "22-deformable-conv2d/docs/metadata.json",
+        "source_snapshot": "22-deformable-conv2d/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training/inference",
+          "A3 training/inference"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-nn.git",
+        "commit": "0413e303e6cd1986b592c3e039f2579ac0f10b62",
+        "ref": "v9.0.0",
+        "opbase_commit": "ec88904b611b04f9b23b529aee66c78bb7cf6140",
+        "snapshot_file_entries": 19,
+        "snapshot_bytes": 205818,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "source_analysis",
+        "description": "Production or reference kernel source; matched A/B numbers unavailable",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": []
+    },
+    {
+      "id": "23-flash-attention-grad",
+      "title": "FlashAttention反向SAMEAB/BN2基础Cube API与CV流水",
+      "category": "attention_backward",
+      "scope": "operator_internal",
+      "implementation": {
+        "language": "Ascend C",
+        "evidence_paths": [
+          "23-flash-attention-grad/code/upstream/attention/flash_attention_score_grad/op_kernel/arch32/basic_modules/addr_compute_det.h",
+          "23-flash-attention-grad/code/upstream/attention/flash_attention_score_grad/op_kernel/arch32/basic_modules/common_header.h",
+          "23-flash-attention-grad/code/upstream/attention/flash_attention_score_grad/op_kernel/arch32/basic_modules/cube_modules/cube1_op.h"
+        ]
+      },
+      "paths": {
+        "article": "23-flash-attention-grad/docs/post.md",
+        "reproduction": "23-flash-attention-grad/docs/reproduce.md",
+        "sources": "23-flash-attention-grad/docs/sources.md",
+        "metadata": "23-flash-attention-grad/docs/metadata.json",
+        "source_snapshot": "23-flash-attention-grad/code/upstream"
+      },
+      "cann": {
+        "minimum_eligible_version": "9.0.0",
+        "documented_versions": [
+          "9.0.0"
+        ],
+        "evidence_type": "official_v9.0.0_release",
+        "blanket_future_version_compatibility_claimed": false
+      },
+      "hardware": {
+        "supported_products": [
+          "A2 training",
+          "A3 training"
+        ],
+        "a2_soc_family": "ascend910b",
+        "a3_soc_family": "ascend910_93",
+        "ascend950_in_scope": false
+      },
+      "upstream": {
+        "repository": "https://gitcode.com/cann/ops-transformer.git",
+        "commit": "afe72144f9f2ac8441929035795db88a111b30c5",
+        "ref": "v9.0.0",
+        "opbase_commit": "929902e577bb809a377a6ab17cb7b00a4dfddc1a",
+        "snapshot_file_entries": 69,
+        "snapshot_bytes": 2473379,
+        "standalone_build_tree": false
+      },
+      "performance_evidence": {
+        "type": "release_aggregate",
+        "description": "Official 8.5.0 to 9.0.0 template-level mean improvement; no shape-level timings",
+        "local_npu_compile": false,
+        "local_npu_accuracy": false,
+        "local_npu_benchmark": false,
+        "historical_measurement_cann_version": null,
+        "end_to_end_scores_used": false,
+        "details_in_post_metadata": true
+      },
+      "notes": [
+        "Official release claim is template-level aggregate, not a per-shape A2/A3 guarantee."
+      ]
+    }
+  ]
+}
