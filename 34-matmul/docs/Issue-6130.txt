@@ -1,0 +1,29 @@
+Thanks for sending an issue! Please fill in the following template to help quickly solve your problem.
+
+Describe the current behavior / 问题描述 (Mandatory / 必填)
+
+固定 N=20480, K∈[9216,20480], 50 对齐(K%256==0) + 50 半界(K%256==128), M∈{32,64}, trA=0 trB=0, bf16（2）固定 K=12672 (=256×49+128, 半界值), N∈[9216,32768], 50 对齐(N%256==0) + 50 半界(N%256==128), M∈{32,64}, trA=0 trB=0, bf16
+aclnnMatmul接口较上版本存在用例性能劣化超5%
+
+Environment Information / 环境信息 (Mandatory / 必填)
+
+Ascend910B
+CANN9.2.0.B020
+
+Steps to reproduce the issue / 重现步骤 (Mandatory / 必填)
+
+使用atk工具基于B020版本测基线性能，与主线代码进行性能对比
+采集基线性能数据
+atk task -c result/aclnnMatMul/json/aclnnMatMul_kgen.json-n node_performance.yaml -p function_aclnn_mat_mul.py -cp
+性能对比
+atk task -c result/aclnnMatMul/json/aclnnMatMul_kgen.json -n node_new.yaml -p function_aclnn_mat_mul.py -cp
+
+Describe the expected behavior / 预期结果 (Mandatory / 必填)
+
+性能：单用例性能劣化不超过5%
+
+Related log / screenshot / 日志 / 截图 (Mandatory / 必填)
+
+固定 N=20480, K∈[9216,20480], 50 对齐(K%256==0) + 50 半界(K%256==128), M∈{32,64}, trA=0 trB=0, bf16（2）固定 K=12672 (=256×49+128, 半界值), N∈[9216,32768], 50 对齐(N%256==0) + 50 半界(N%256==128), M∈{32,64}, trA=0 trB=0, bf16
+
+Special notes for this issue/备注 (Optional / 选填)

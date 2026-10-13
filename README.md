@@ -42,7 +42,7 @@
 | **S** | 有明确的 CANN 9.0.0 配套与 A2 支持依据：正式版本支持表、项目声明或原始验证记录 | 51 | 01–05、13–14、16–17、20–52、59–67 |
 | **E** | 有 CANN 9.0.0/9.1.0 工程与 A2 接入依据，缺少 9.0.0＋A2 的单算子组合验证 | 8 | 18–19、53–58 |
 | **V** | 有明确 A2 支持或测试说明，当前版本证据是 9.0.1/9.1.0，9.0.0 本身待确认 | 5 | 06–09、11 |
-| **A3** | 已有 CANN 9.0.0＋A3 测试记录，A2 支持待补依据 | 3 | 10、12、15 |
+| **A3** | 已有 CANN 9.0.0＋A3 测试记录，A2 支持依据不充分 | 3 | 10、12、15 |
 
 E 类来自 SGLang 原生算子：其 [CMake 配置](https://github.com/sgl-project/sgl-kernel-npu/blob/00db6cd6bd2280650281ea187292fe8913619abf/csrc/CMakeLists.txt)允许 A2/A3 架构族，`SGL_KERNEL_ENABLE_A3_ONLY_OPS` 开关在该版本也覆盖 A2；[算子测试 CI](https://github.com/sgl-project/sgl-kernel-npu/blob/00db6cd6bd2280650281ea187292fe8913619abf/.github/workflows/pr-test-kernels.yml)的设备矩阵只列 A3。DeepEP 的 A2 CI 覆盖不能直接套用到其他算子。
 
@@ -50,17 +50,17 @@ V 类的具体版本依据为：08、11 使用 9.0.1；09 使用 9.1.0；06、07
 
 ### 实战资料完整度
 
-案例质量按“是否说明优化过程”和“是否给出算子级性能证据”两条独立维度评估。以下判断依据当前收录的上游原文与图表；缺少报告标为待补材料，不据此判断内核实现优劣。有材料的 O／P 标记可直接点击查看依据。
+案例质量按“是否说明优化过程”和“是否给出算子级性能证据”两条独立维度评估。以下判断依据当前收录的上游原文与图表；资料未覆盖的部分明确标注，不据此判断内核实现优劣。有材料的 O／P 标记可直接点击查看依据。
 
 | 维度 | 标记 | 已收录的资料 | 数量 | 案例编号 |
 | --- | --- | --- | ---: | --- |
 | 优化资料 | **O2** | 多轮优化记录，包含尝试、测量结果，以及退化／撤回或修订过程 | 4 | 12–15 |
-| 优化资料 | **O1** | 与该算子直接相关的实现、优化或设计说明；未形成完整多轮实验记录 | 11 | 05–11、19、28、36、58 |
-| 优化资料 | **O0** | 以源码、接口／功能或项目介绍为主，未收录专门的优化过程说明 | 52 | 01–04、16–18、20–27、29–35、37–57、59–67 |
+| 优化资料 | **O1** | 与该算子直接相关的实现、优化或设计说明；未形成完整多轮实验记录 | 15 | 05–11、17、19、24、26、28、34、36、58 |
+| 优化资料 | **O0** | 以源码、接口／功能或项目介绍为主，未收录专门的优化过程说明 | 48 | 01–04、16、18、20–23、25、27、29–33、35、37–57、59–67 |
 | 性能资料 | **P2** | 该算子的量化基线或方案对比，包含逐形状数据、前后测量或基线曲线 | 12 | 05–09、11–15、28、63 |
-| 性能资料 | **P1** | 该算子的实测耗时／带宽；未收录完整的前后对比数据 | 2 | 10、36 |
+| 性能资料 | **P1** | 该算子的实测耗时／带宽或汇总收益；缺少可逐项复核的前后对比数据 | 3 | 10、34、36 |
 | 性能资料 | **PM** | 该算子的基准方法或测量入口；未收录测量结果 | 2 | 58、62 |
-| 性能资料 | **P0** | 未收录可审阅的该算子性能测量结果；仅收益声明也归入此类 | 51 | 01–04、16–27、29–35、37–57、59–61、64–67 |
+| 性能资料 | **P0** | 未收录可审阅的该算子性能测量结果；仅收益声明也归入此类 | 50 | 01–04、16–27、29–33、35、37–57、59–61、64–67 |
 
 **P2 表示有对比材料，其实验完整程度仍需逐项审阅。** 优先检查基线版本、设备与 CANN 版本、shape／dtype、计时边界、预热与重复次数、统计口径、正确性和退化结果。NPU task、单算子调用、Graph Replay 的计时范围分别比较；模型吞吐、测试通过和理论收益不计作算子性能报告。
 
@@ -68,7 +68,10 @@ V 类的具体版本依据为：08、11 使用 9.0.1；09 使用 9.1.0；06、07
 
 - **05–09、11** 的 PR 原文包含单算子对比。08 记录配对样本、对照路径与置信区间；09 区分设备、Wall 和 Graph 计时，并保留持平／退化结果；11 的 P2 依据是 TP8／EP8 的精确形状算子测试，其原文对服务器性能仍给出 `INSUFFICIENT_EVIDENCE`。
 - **10、12–15** 包含比赛／社区优化资料。12–15 中的历史数字须结合原文所对应的版本和计时口径阅读；10 的 [性能参考](./10-community-rope-rowgroup-a3/docs/RotaryPosEmb.md#附性能参考)给出逐形状耗时，README 虽报告相对首轮基线的合计改善，但未附逐形状首轮对照，因此列为 P1。
-- **28** 的 [官方设计文档](./28-fused-floyd-attention/docs/FFA算子设计介绍.md)包含 CV Tiling、流水设计、Chunk 与 Ascend C 的逐形状耗时及显存对比；**33** 的接口文档只有“性能提升 50%”声明，缺少对应输入和测量表，列为 P0。
+- **17、26、28** 的官方设计文档来自 [ops-transformer 正式 v9.0.0 固定提交](https://gitcode.com/cann/ops-transformer/tree/afe72144f9f2ac8441929035795db88a111b30c5)。17 的文档对应 `code/mla_prolog/` 中的 MlaProlog V1，详述四组 Matmul 的分核、CV 同步、量化与 Cache 写回，[产品支持表](./17-deepseek-mla-prolog/docs/mla_prolog/README.md)明确支持 A2；26 详述 CV 基本块、Double Buffer、模板特化与主从核编程，评估依据 Atlas A2 训练系列产品章节；两者均为 O1/P0。28 另有 Chunk 与 Ascend C 的逐形状耗时及显存对比，属于 O1/P2。文档正文保留上游表述，图片对应同一源码版本。
+- **24** 的 [MR !1107 原始记录](./24-dynamic-quant/docs/MR-1107.md)对应正式 v9.0.0 内核与 Tiling 中的小 shape 头开销、尾轴 8 倍数模板优化；[产品支持表](./24-dynamic-quant/docs/README.md)包含 A2。原文仅有简要方案与泛化测试记录，缺少可审阅的计时表，属于 O1/P0。
+- **34** 的 [原始问题单](./34-matmul/docs/Issue-6130.txt)明确记录 **Ascend910B、CANN 9.2.0.B020、BF16**、输入范围和 ATK 对比方法。[MR !10720](./34-matmul/docs/MR-10720.md)解释 A/B 的 L2 Cache 策略、单核切 K 全载模板的 baseN/baseK 选择，并报告较 9.2 B020 平均性能改善 19%；缺少逐用例原始耗时表，属于 O1/P1。`code/` 为 v9.0.0 快照，报告对应 9.2 B020 问题及其后续上游修复，汇总收益不代表本仓源码快照的实测结果。来源为 [Issue #6130](https://gitcode.com/cann/ops-nn/issues/6130) 与 [MR !10720](https://gitcode.com/cann/ops-nn/merge_requests/10720)。
+- **33** 的接口文档只有“性能提升 50%”声明，缺少对应输入和测量表，列为 P0。
 - **36** 的 P1 依据是 [共享项目报告](./53-sgl-causal-conv1d/docs/README.md#deepep-ascend-performance)中的 Dispatch／Combine 基准，环境为 **A3 384 SuperPOD**，不能标作 A2 实测。该报告随附于多个 SGLang 案例，其中的 DeepEP 数据仅用于评估 36；不用于给 18、53–57 等其他算子标记性能结果。
 - **58、62** 的文档提供基准入口／方法，未附结果。**63** 的 [SpMV 图表](./63-tcuscan-sparse-matrix-vector/docs/spmv_soa_comparison.svg)对比 Ascend910B4、MKL 和 Eigen 的多组矩阵耗时；已收录图表，尚缺原始数值表和完整测量环境说明。
 
@@ -81,12 +84,12 @@ V 类的具体版本依据为：08、11 使用 9.0.1；09 使用 9.1.0；06、07
 | 编号 | 案例 | 来源 | 支持状态 | 优化资料 | 性能资料 |
 | --- | --- | --- | --- | --- | --- |
 | 16 | [DeepSeek Lightning Indexer](./16-deepseek-lightning-indexer/) | CANN | S | O0 | P0 |
-| 17 | [DeepSeek MLA Prolog](./17-deepseek-mla-prolog/) | CANN | S | O0 | P0 |
+| 17 | [DeepSeek MLA Prolog](./17-deepseek-mla-prolog/) | CANN | S | [O1](./17-deepseek-mla-prolog/docs/MlaProlog算子设计介绍.md) | P0 |
 | 18 | [DeepSeek SGL MLA Preprocess](./18-deepseek-sgl-mla-preprocess/) | SGLang | E | O0 | P0 |
 | 19 | [DeepSeek SGL Sparse Shared-KV Attention](./19-deepseek-sgl-sparse-shared-kv-attention/) | SGLang | E | [O1](./19-deepseek-sgl-sparse-shared-kv-attention/docs/PR-708.md) | P0 |
 | 20 | [DeepSeek Sparse Flash Attention](./20-deepseek-sparse-flash-attention/) | CANN | S | O0 | P0 |
 | 22 | [Dequant RoPE Quant KVCache](./22-dequant-rope-quant-kvcache/) | CANN | S | O0 | P0 |
-| 26 | [Flash Attention Grad](./26-flash-attention-grad/) | CANN | S | O0 | P0 |
+| 26 | [Flash Attention Grad](./26-flash-attention-grad/) | CANN | S | [O1](./26-flash-attention-grad/docs/FAG算子设计介绍.md) | P0 |
 | 27 | [Flash Attention Score](./27-flash-attention-score/) | CANN | S | O0 | P0 |
 | 28 | [Fused Floyd Attention](./28-fused-floyd-attention/) | CANN | S | [O1](./28-fused-floyd-attention/docs/FFA算子设计介绍.md) | [P2](./28-fused-floyd-attention/docs/FFA算子设计介绍.md) |
 | 32 | [Incre Flash Attention](./32-incre-flash-attention/) | CANN | S | O0 | P0 |
@@ -101,10 +104,10 @@ V 类的具体版本依据为：08、11 使用 9.0.1；09 使用 9.1.0；06、07
 | --- | --- | --- | --- | --- | --- |
 | 08 | [GMM NZ Scale Sync](./08-community-gmm-nz-scale-sync-a2/) | vLLM Ascend 社区 PR | V | [O1](./08-community-gmm-nz-scale-sync-a2/docs/PR-15725.md) | [P2](./08-community-gmm-nz-scale-sync-a2/docs/PR-15725.md) |
 | 23 | [Dequant SwiGLU Quant](./23-dequant-swiglu-quant/) | CANN | S | O0 | P0 |
-| 24 | [Dynamic Quant](./24-dynamic-quant/) | CANN | S | O0 | P0 |
+| 24 | [Dynamic Quant](./24-dynamic-quant/) | CANN | S | [O1](./24-dynamic-quant/docs/MR-1107.md) | P0 |
 | 25 | [FFN](./25-ffn/) | CANN | S | O0 | P0 |
 | 29 | [Grouped Matmul](./29-grouped-matmul/) | CANN | S | O0 | P0 |
-| 34 | [Matmul](./34-matmul/) | CANN | S | O0 | P0 |
+| 34 | [Matmul](./34-matmul/) | CANN | S | [O1](./34-matmul/docs/MR-10720.md) | [P1](./34-matmul/docs/MR-10720.md) |
 | 40 | [MoE Grouped Matmul SwiGLU Quant](./40-moe-grouped-matmul-swiglu-quant/) | CANN | S | O0 | P0 |
 | 48 | [Quant Batch Matmul](./48-quant-batch-matmul/) | CANN | S | O0 | P0 |
 | 56 | [SGL SoftFP8 Grouped Matmul](./56-sgl-softfp8-grouped-matmul/) | SGLang | E | O0 | P0 |
@@ -220,6 +223,6 @@ DeepSeek 相关案例来自上述不同项目，包括 LI、SFA、MLA、MoE、NS
 
 本仓排除 Triton、PTO、950/310P 专用代码，以及模型运行器、服务端、项目级 Buffer/分配器、训练与推理流程。每个案例中不放构建、复现、测试、校验脚本、源码清单或独立许可证文件；源码自身的版权注释保留。
 
-明确不支持 A2 的案例不收录；只有更新版 CANN 依据、同时缺少明确 A2 支持或验证依据的案例也不收录。已有 CANN 9.0.0＋A3 记录以及 A2 工程适配的保留案例，分别标注其待补证据。
+明确不支持 A2 的案例不收录；只有更新版 CANN 依据、同时缺少明确 A2 支持或验证依据的案例也不收录。已有 CANN 9.0.0＋A3 记录以及 A2 工程适配的保留案例，分别标注其证据范围。
 
 源码采用固定上游提交，并按目标范围整理目录、修正 include 路径、裁剪不相关分支与依赖。具体来源与提交可结合本仓 Git 历史和案例内的原始资料追溯。
